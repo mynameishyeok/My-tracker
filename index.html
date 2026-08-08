@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="나의 트래커">
+<title>나의 프로젝트 트래커</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:#F0EFEA; font-family:'Helvetica Neue',Arial,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif; }
+  #root { min-height:100vh; }
+  input, textarea, button { font-family: inherit; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel" data-type="module">
+const { useState, useCallback } = React;
+
+// =========================================================
+// 여기에 구글 Gemini API 키를 붙여넣으세요 (aistudio.google.com/apikey 에서 발급)
+const GEMINI_API_KEY = "여기에_발급받은_API_키를_붙여넣으세요";
+const GEMINI_MODEL = "gemini-3.5-flash";
+// =========================================================
+
+const T = {
+  text: "#1B1A17", textSecondary: "#9B9A97", textMuted: "#B7B4AD", accent: "#1B1A17",
+  border: "#E9E9E7", rowBorder: "#F1F0EE", chipBg: "#F1F0EE", chipText: "#6B6A66",
+  track: "#EDECEA", holidayBg: "#F7ECEA", holidayText: "#B5504A", sun: "#B5504A", sat: "#4A6FA5",
+};
+const CATEGORY_STYLES = { 본업: { dot: "#3B5BA9" }, 부업: { dot: "#D97706" }, 자기계발: { dot: "#3F9142" } };
+const CATEGORIES = Object.keys(CATEGORY_STYLES);
+
+const HOLIDAYS_2026 = {
+  "2026-01-01": "신정", "2026-02-16": "설날 연휴", "2026-02-17": "설날", "2026-02-18": "설날 연휴",
+  "2026-03-01": "삼일절", "2026-03-02": "대체(삼일절)", "2026-05-01": "근로자의 날", "2026-05-05": "어린이날",
+  "2026-05-24": "부처님오신날", "2026-05-25": "대체(부처님)", "2026-06-03": "지방선거일", "2026-06-06": "현충일",
+  "2026-07-17": "제헌절", "2026-08-15": "광복절", "2026-08-17": "대체(광복절)", "2026-09-24": "추석 연휴",
+  "2026-09-25": "추석", "2026-09-26": "추석 연휴", "2026-10-03": "개천절", "2026-10-05": "대체(개천절)",
+  "2026-10-09": "한글날", "2026-12-25": "크리스마스",
+};
+const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
+
+function pad(n) { return n < 10 ? "0" + n : "" + n; }
+function toDateStr(d) { return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
+function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+function getMonday(d) {
+  const date = new Date(d);
+  const day = date.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  date.setDate(date.getDate() + diff);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+const storage = {
+  get(key) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch (e) { return null; } },
+  set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch (e) { return false; } },
+};
+
+function chipStyle(selected) {
+  return {
+    padding: "6px 12px", borderRadius: 6, fontSize: 12.5, whiteSpace: "nowrap",
+    border: selected ? `1px solid ${T.accent}` : `1px solid ${T.border}`,
+    background: selected ? T.accent : "#fff", color: selected ? "#fff" : T.chipText,
+    cursor: "pointer", flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 6,
+  };
+}
+function Dot({ color }) {
+  return <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, display: "inline-block", flexShrink: 0 }} />;
+}
+function Checkbox({ done, onClick }) {
+  return (
+    <button onClick={onClick} style={{
+      width: 16, height: 16, borderRadius: 4, border: done ? "none" : "1.5px solid #D3D1CB",
+      background: done ? T.accent : "transparent", display: "flex", alignItems: "center", justifyContent: "center",
+      flexShrink: 0, cursor: "pointer", padding: 0, color: "#fff", fontSize: 10,
+    }}>{done && "✓"}</button>
+  );
+}
+
+function App() {
+  const [tab, setTab] = useState("today");
+  const [projects, setProjects] = useState(() => storage.get("tracker-projects") || [{ id: "seed-1", name: "안전관리자 업무", category: "본업" }]);
+  const [tasks, setTasks] = useState(() => storage.get("tracker-tasks") || []);
+  const [notes, setNotes] = useState(() => storage.get("tracker-notes") || {});
+  const [weeklyGoals, setWeeklyGoals] = useState(() => storage.get("tracker-weekly-goals") || {});
+  const [weeklySummaries, setWeeklySummaries] = useState(() => storage.get("tracker-weekly-summaries") || {});
+
+  const [newTask, setNewTask] = useState("");
+  const [newTaskProj, setNewTaskProj] = useState("");
+  const [newProjName, setNewProjName] = useState("");
+  const [newProjCat, setNewProjCat] = useState(CATEGORIES[0]);
+
+  const today = new Date();
+  const todayStr = toDateStr(today);
+
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth() + 1);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [noteDraft, setNoteDraft] = useState("");
+
+  const [viewWeekStart, setViewWeekStart] = useState(getMonday(today));
+  const [expandedProjectId, setExpandedProjectId] = useState(null);
+  const [dayDrafts, setDayDrafts] = useState({});
+  const [aiLoadingId, setAiLoadingId] = useState(null);
+
+  const saveProjects = useCallback((next) => { setProjects(next); storage.set("tracker-projects", next); }, []);
+  const saveTasks = useCallback((next) => { setTasks(next); storage.set("tracker-tasks", next); }, []);
+  const saveNotes = useCallback((next) => { setNotes(next); storage.set("tracker-notes", next); }, []);
+  const saveWeeklyGoals = useCallback((next) => { setWeeklyGoals(next); storage.set("tracker-weekly-goals", next); }, []);
+  const saveWeeklySummaries = useCallback((next) => { setWeeklySummaries(next); storage.set("tracker-weekly-summaries", next); }, []);
+
+  const addTask = () => {
+    const title = newTask.trim();
+    if (!title) return;
+    saveTasks([{ id: "t-" + Date.now(), title, projectId: newTaskProj || null, done: false, date: todayStr }, ...tasks]);
+    setNewTask("");
+  };
+  const addTaskOnDate = (dateStr, projectId, title) => {
+    const t = title.trim();
+    if (!t) return;
+    saveTasks([{ id: "t-" + Date.now(), title: t, projectId, done: false, date: dateStr }, ...tasks]);
+  };
+  const toggleTask = (id) => saveTasks(tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+  const deleteTask = (id) => saveTasks(tasks.filter((t) => t.id !== id));
+  const addProject = () => {
+    const name = newProjName.trim();
+    if (!name) return;
+    saveProjects([...projects, { id: "p-" + Date.now(), name, category: newProjCat }]);
+    setNewProjName("");
+  };
+  const deleteProject = (id) => saveProjects(projects.filter((p) => p.id !== id));
+
+  const todaysTasks = tasks.filter((t) => t.date === todayStr);
+  const doneCount = todaysTasks.filter((t) => t.done).length;
+  const projectMap = Object.fromEntries(projects.map((p) => [p.id, p]));
+
+  const totalTasks = tasks.length;
+  const totalDone = tasks.filter((t) => t.done).length;
+  const overallPct = totalTasks ? Math.round((totalDone / totalTasks) * 100) : 0;
+
+  const last7Days = Array.from({ length: 7 }, (_, i) => { const d = new Date(today); d.setDate(d.getDate() - (6 - i)); return d; });
+  const last7Stats = last7Days.map((d) => {
+    const ds = toDateStr(d);
+    const dayTasks = tasks.filter((t) => t.date === ds);
+    return { date: d, ds, total: dayTasks.length, done: dayTasks.filter((t) => t.done).length };
+  });
+  const maxDayTotal = Math.max(1, ...last7Stats.map((s) => s.total));
+
+  const firstOfMonth = new Date(viewYear, viewMonth - 1, 1);
+  const startOffset = firstOfMonth.getDay();
+  const gridStart = new Date(viewYear, viewMonth - 1, 1 - startOffset);
+  const gridDates = Array.from({ length: 42 }, (_, i) => { const d = new Date(gridStart); d.setDate(gridStart.getDate() + i); return d; });
+
+  const goMonth = (delta) => {
+    let m = viewMonth + delta, y = viewYear;
+    if (m < 1) { m = 12; y -= 1; }
+    if (m > 12) { m = 1; y += 1; }
+    setViewMonth(m); setViewYear(y);
+  };
+  const openDay = (d) => { const ds = toDateStr(d); setSelectedDate(ds); setNoteDraft(notes[ds] || ""); };
+  const saveNote = () => {
+    const next = { ...notes };
+    if (noteDraft.trim()) next[selectedDate] = noteDraft.trim(); else delete next[selectedDate];
+    saveNotes(next); setSelectedDate(null);
+  };
+
+  const todayLabel = `${today.getMonth() + 1}월 ${today.getDate()}일 (${WEEKDAYS[today.getDay()]})`;
+
+  const weekDates = Array.from({ length: 7 }, (_, i) => addDays(viewWeekStart, i));
+  const weekKeyStr = toDateStr(viewWeekStart);
+  const weekLabel = `${viewWeekStart.getMonth() + 1}/${viewWeekStart.getDate()} - ${weekDates[6].getMonth() + 1}/${weekDates[6].getDate()}`;
+  const goWeek = (delta) => setViewWeekStart(addDays(viewWeekStart, delta * 7));
+
+  const generateSummary = async (projectId) => {
+    const proj = projectMap[projectId];
+    if (!proj) return;
+    const key = projectId + "_" + weekKeyStr;
+
+    if (!GEMINI_API_KEY || GEMINI_API_KEY.indexOf("여기에") !== -1) {
+      saveWeeklySummaries({ ...weeklySummaries, [key]: { text: "먼저 코드 상단의 GEMINI_API_KEY 자리에 발급받은 키를 넣어주세요.", generatedAt: new Date().toISOString() } });
+      return;
+    }
+
+    const weekTaskList = tasks.filter((t) => t.projectId === projectId && weekDates.some((d) => toDateStr(d) === t.date));
+    const doneList = weekTaskList.filter((t) => t.done).map((t) => "- " + t.title);
+    const undoneList = weekTaskList.filter((t) => !t.done).map((t) => "- " + t.title);
+    const goal = weeklyGoals[key] || "설정 안 함";
+    const prompt = `다음은 "${proj.name}" 프로젝트의 ${weekLabel} 주간 기록이야.
+
+이번 주 목표: ${goal}
+
+완료한 일:
+${doneList.length ? doneList.join("\n") : "(없음)"}
+
+완료하지 못한 일:
+${undoneList.length ? undoneList.join("\n") : "(없음)"}
+
+이 내용을 바탕으로 이번 주에 무엇을 달성했고 무엇을 놓쳤는지 3~4줄로 담백하게 한국어로 요약해줘. 불릿 없이 짧은 문단으로 써줘.`;
+
+    setAiLoadingId(projectId);
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": GEMINI_API_KEY },
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+        }
+      );
+      const data = await response.json();
+      const parts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
+      const text = parts.map((p) => p.text || "").join("\n").trim();
+      saveWeeklySummaries({ ...weeklySummaries, [key]: { text: text || "요약을 만들지 못했어요. API 키를 확인해주세요.", generatedAt: new Date().toISOString() } });
+    } catch (e) {
+      saveWeeklySummaries({ ...weeklySummaries, [key]: { text: "요약 생성에 실패했어요. API 키가 올바른지 확인해주세요.", generatedAt: new Date().toISOString() } });
+    } finally {
+      setAiLoadingId(null);
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: 420, margin: "0 auto", background: "#FFFFFF", color: T.text, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <div style={{ flex: 1, overflowY: "auto", padding: "22px 16px 18px" }}>
+
+        {tab === "dashboard" && (
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 600, margin: "2px 0 14px" }}>대시보드</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, marginBottom: 16, border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden", background: T.rowBorder }}>
+              {[
+                { label: "전체 프로젝트", value: projects.length },
+                { label: "전체 할 일", value: totalTasks },
+                { label: "전체 완료율", value: `${overallPct}%` },
+                { label: "오늘 완료", value: todaysTasks.length ? `${doneCount}/${todaysTasks.length}` : "-" },
+              ].map((s) => (
+                <div key={s.label} style={{ background: "#fff", padding: "14px 12px" }}>
+                  <div style={{ fontSize: 11, color: T.textSecondary, marginBottom: 4 }}>{s.label}</div>
+                  <div style={{ fontSize: 20, fontWeight: 600 }}>{s.value}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: "#fff", borderRadius: 10, padding: 16, marginBottom: 16, border: `1px solid ${T.border}` }}>
+              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>전체 진행률</div>
+              <div style={{ height: 6, background: T.track, borderRadius: 3, overflow: "hidden", marginBottom: 8 }}>
+                <div style={{ height: "100%", width: `${overallPct}%`, background: T.accent, borderRadius: 3 }} />
+              </div>
+              <div style={{ fontSize: 11.5, color: T.textSecondary }}>
+                {totalTasks === 0 ? "아직 등록된 할 일이 없어요" : `${totalDone}개 완료 · ${totalTasks - totalDone}개 남음`}
+              </div>
+            </div>
+            <div style={{ background: "#fff", borderRadius: 10, padding: 16, marginBottom: 16, border: `1px solid ${T.border}` }}>
+              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>최근 7일 활동</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", height: 70 }}>
+                {last7Stats.map((s) => {
+                  const barH = Math.max(4, Math.round((s.total / maxDayTotal) * 60));
+                  const fillH = s.total ? Math.round((s.done / s.total) * barH) : 0;
+                  const isToday = s.ds === todayStr;
+                  return (
+                    <div key={s.ds} style={{ display: "flex", flexDirection: "column", alignItems: "center", flex: 1 }}>
+                      <div style={{ width: 14, height: 60, display: "flex", alignItems: "flex-end" }}>
+                        <div style={{ width: "100%", height: barH, background: T.track, borderRadius: 2, display: "flex", flexDirection: "column", justifyContent: "flex-end", overflow: "hidden" }}>
+                          <div style={{ width: "100%", height: fillH, background: T.accent }} />
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 9.5, color: isToday ? T.text : T.textMuted, fontWeight: isToday ? 600 : 400, marginTop: 5 }}>{WEEKDAYS[s.date.getDay()]}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>프로젝트별 진행률</div>
+            {projects.length === 0 && <div style={{ textAlign: "center", color: T.textMuted, fontSize: 13, padding: "20px 0" }}>아직 등록된 프로젝트가 없어요.</div>}
+            {projects.length > 0 && (
+              <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden" }}>
+                {projects.map((p, idx) => {
+                  const pt = tasks.filter((t) => t.projectId === p.id);
+                  const done = pt.filter((t) => t.done).length;
+                  const pct = pt.length ? Math.round((done / pt.length) * 100) : 0;
+                  const cs = CATEGORY_STYLES[p.category] || CATEGORY_STYLES["본업"];
+                  return (
+                    <div key={p.id} style={{ background: "#fff", padding: 14, borderBottom: idx < projects.length - 1 ? `1px solid ${T.rowBorder}` : "none" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13.5, fontWeight: 500 }}><Dot color={cs.dot} />{p.name}</span>
+                        <span style={{ fontSize: 12.5, fontWeight: 600 }}>{pct}%</span>
+                      </div>
+                      <div style={{ height: 4, background: T.track, borderRadius: 2, overflow: "hidden" }}>
+                        <div style={{ height: "100%", width: `${pct}%`, background: T.text, borderRadius: 2 }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === "today" && (
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 600, marginBottom: 2 }}>{todayLabel}</div>
+            <div style={{ fontSize: 12.5, color: T.textSecondary, marginBottom: 16 }}>
+              {todaysTasks.length === 0 ? "오늘 할 일을 추가해보세요" : `${todaysTasks.length}개 중 ${doneCount}개 완료`}
+            </div>
+            {todaysTasks.length > 0 && (
+              <div style={{ height: 3, background: T.track, borderRadius: 2, overflow: "hidden", marginBottom: 18 }}>
+                <div style={{ height: "100%", width: `${Math.round((doneCount / todaysTasks.length) * 100)}%`, background: T.accent, borderRadius: 2 }} />
+              </div>
+            )}
+            <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+              <input value={newTask} onChange={(e) => setNewTask(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") addTask(); }}
+                placeholder="오늘 할 일을 적어보세요"
+                style={{ flex: 1, border: `1px solid ${T.border}`, borderRadius: 8, padding: "11px 14px", fontSize: 14, outline: "none", background: "#fff", minWidth: 0, color: T.text }} />
+              <button onClick={addTask} style={{ width: 42, height: 42, borderRadius: 8, background: T.accent, border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, color: "#fff", fontSize: 20 }}>+</button>
+            </div>
+            {projects.length > 0 && (
+              <div style={{ display: "flex", gap: 6, overflowX: "auto", marginBottom: 18, paddingBottom: 2 }}>
+                <button onClick={() => setNewTaskProj("")} style={chipStyle(newTaskProj === "")}>없음</button>
+                {projects.map((p) => (
+                  <button key={p.id} onClick={() => setNewTaskProj(p.id)} style={chipStyle(newTaskProj === p.id)}>
+                    <Dot color={newTaskProj === p.id ? "#fff" : CATEGORY_STYLES[p.category].dot} />{p.name}
+                  </button>
+                ))}
+              </div>
+            )}
+            {todaysTasks.length === 0 && <div style={{ textAlign: "center", color: T.textMuted, fontSize: 13, padding: "30px 0" }}>아직 오늘 할 일이 없어요.</div>}
+            {todaysTasks.length > 0 && (
+              <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden" }}>
+                {todaysTasks.map((t, idx) => {
+                  const proj = t.projectId ? projectMap[t.projectId] : null;
+                  const cs = proj ? CATEGORY_STYLES[proj.category] : null;
+                  return (
+                    <div key={t.id} style={{ display: "flex", alignItems: "center", gap: 10, background: "#fff", padding: "12px 14px", borderBottom: idx < todaysTasks.length - 1 ? `1px solid ${T.rowBorder}` : "none" }}>
+                      <Checkbox done={t.done} onClick={() => toggleTask(t.id)} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 14, color: t.done ? T.textMuted : T.text, textDecoration: t.done ? "line-through" : "none", wordBreak: "break-word" }}>{t.title}</div>
+                        {proj && (
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 4, fontSize: 11, color: T.chipText, background: T.chipBg, borderRadius: 4, padding: "2px 7px" }}>
+                            <Dot color={cs.dot} />{proj.name}
+                          </span>
+                        )}
+                      </div>
+                      <button onClick={() => deleteTask(t.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0, fontSize: 15 }}>✕</button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === "weekly" && (
+          <div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+              <button onClick={() => goWeek(-1)} style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 15 }}>‹</button>
+              <div style={{ fontSize: 15, fontWeight: 600 }}>{viewWeekStart.getFullYear()}년 {weekLabel}</div>
+              <button onClick={() => goWeek(1)} style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 15 }}>›</button>
+            </div>
+            <div style={{ fontSize: 11.5, color: T.textMuted, textAlign: "center", marginBottom: 16 }}>프로젝트를 눌러 이번 주 목표와 일별 할 일을 관리하세요</div>
+
+            {projects.length === 0 && <div style={{ textAlign: "center", color: T.textMuted, fontSize: 13, padding: "20px 0" }}>아직 등록된 프로젝트가 없어요. 프로젝트 탭에서 먼저 추가해주세요.</div>}
+
+            {projects.map((p) => {
+              const cs = CATEGORY_STYLES[p.category] || CATEGORY_STYLES["본업"];
+              const wTasks = tasks.filter((t) => t.projectId === p.id && weekDates.some((d) => toDateStr(d) === t.date));
+              const wDone = wTasks.filter((t) => t.done).length;
+              const goalKey = p.id + "_" + weekKeyStr;
+              const goalText = weeklyGoals[goalKey] || "";
+              const summary = weeklySummaries[goalKey];
+              const isOpen = expandedProjectId === p.id;
+              return (
+                <div key={p.id} style={{ border: `1px solid ${T.border}`, borderRadius: 10, marginBottom: 10, overflow: "hidden" }}>
+                  <button onClick={() => setExpandedProjectId(isOpen ? null : p.id)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, background: "#fff", border: "none", padding: "13px 14px", cursor: "pointer", textAlign: "left" }}>
+                    <Dot color={cs.dot} />
+                    <span style={{ fontSize: 14, fontWeight: 500, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</span>
+                    <span style={{ fontSize: 12, color: T.textSecondary, flexShrink: 0 }}>{wTasks.length ? `${wDone}/${wTasks.length}` : "-"}</span>
+                  </button>
+                  {!isOpen && goalText && <div style={{ padding: "0 14px 12px", fontSize: 12, color: T.textSecondary }}>🎯 {goalText}</div>}
+
+                  {isOpen && (
+                    <div style={{ borderTop: `1px solid ${T.border}`, padding: 14 }}>
+                      <div style={{ fontSize: 11, color: T.textSecondary, marginBottom: 5 }}>이번 주 목표</div>
+                      <input value={goalText} onChange={(e) => saveWeeklyGoals({ ...weeklyGoals, [goalKey]: e.target.value })} placeholder="이번 주 큰 틀을 적어보세요"
+                        style={{ width: "100%", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 11px", fontSize: 13.5, outline: "none", boxSizing: "border-box", marginBottom: 16, color: T.text }} />
+
+                      {weekDates.map((d) => {
+                        const ds = toDateStr(d);
+                        const dTasks = tasks.filter((t) => t.projectId === p.id && t.date === ds);
+                        return (
+                          <div key={ds} style={{ marginBottom: 12 }}>
+                            <div style={{ fontSize: 11.5, fontWeight: 600, color: ds === todayStr ? T.accent : T.textSecondary, marginBottom: 5 }}>
+                              {WEEKDAYS[d.getDay()]} {d.getMonth() + 1}/{d.getDate()}{ds === todayStr ? " · 오늘" : ""}
+                            </div>
+                            {dTasks.map((t) => (
+                              <div key={t.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0" }}>
+                                <Checkbox done={t.done} onClick={() => toggleTask(t.id)} />
+                                <div style={{ flex: 1, fontSize: 13, color: t.done ? T.textMuted : T.text, textDecoration: t.done ? "line-through" : "none", wordBreak: "break-word" }}>{t.title}</div>
+                                <button onClick={() => deleteTask(t.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 2, flexShrink: 0, fontSize: 12 }}>✕</button>
+                              </div>
+                            ))}
+                            <input value={dayDrafts[ds] || ""} onChange={(e) => setDayDrafts({ ...dayDrafts, [ds]: e.target.value })}
+                              onKeyDown={(e) => { if (e.key === "Enter") { addTaskOnDate(ds, p.id, dayDrafts[ds] || ""); setDayDrafts({ ...dayDrafts, [ds]: "" }); } }}
+                              placeholder="+ 할 일 추가"
+                              style={{ width: "100%", border: "none", borderBottom: `1px solid ${T.rowBorder}`, padding: "5px 2px", fontSize: 13, outline: "none", boxSizing: "border-box", color: T.text, background: "transparent" }} />
+                          </div>
+                        );
+                      })}
+
+                      <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${T.border}` }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                          <div style={{ fontSize: 12, fontWeight: 600 }}>✨ AI 주간 요약</div>
+                          <button onClick={() => generateSummary(p.id)} disabled={aiLoadingId === p.id}
+                            style={{ fontSize: 11.5, padding: "5px 10px", borderRadius: 6, border: `1px solid ${T.border}`, background: "#fff", color: T.text, cursor: aiLoadingId === p.id ? "default" : "pointer" }}>
+                            {aiLoadingId === p.id ? "생성 중..." : summary ? "다시 생성" : "요약 만들기"}
+                          </button>
+                        </div>
+                        {summary ? (
+                          <div style={{ fontSize: 12.5, color: T.text, lineHeight: 1.6, background: T.chipBg, borderRadius: 8, padding: 12 }}>{summary.text}</div>
+                        ) : (
+                          <div style={{ fontSize: 12, color: T.textMuted }}>아직 만든 요약이 없어요.</div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {tab === "projects" && (
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 600, margin: "2px 0 14px" }}>프로젝트</div>
+            <div style={{ background: "#fff", borderRadius: 10, padding: 14, marginBottom: 16, border: `1px solid ${T.border}` }}>
+              <input value={newProjName} onChange={(e) => setNewProjName(e.target.value)} placeholder="새 프로젝트 이름"
+                style={{ width: "100%", border: `1px solid ${T.border}`, borderRadius: 8, padding: "10px 12px", fontSize: 14, marginBottom: 10, outline: "none", boxSizing: "border-box", color: T.text }} />
+              <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+                {CATEGORIES.map((c) => (
+                  <button key={c} onClick={() => setNewProjCat(c)} style={chipStyle(newProjCat === c)}>
+                    <Dot color={newProjCat === c ? "#fff" : CATEGORY_STYLES[c].dot} />{c}
+                  </button>
+                ))}
+              </div>
+              <button onClick={addProject} style={{ width: "100%", background: T.accent, color: "#fff", border: "none", borderRadius: 8, padding: "10px 0", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>프로젝트 추가</button>
+            </div>
+            {projects.length === 0 && <div style={{ textAlign: "center", color: T.textMuted, fontSize: 13, padding: "20px 0" }}>아직 등록된 프로젝트가 없어요.</div>}
+            {projects.length > 0 && (
+              <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden" }}>
+                {projects.map((p, idx) => {
+                  const pt = tasks.filter((t) => t.projectId === p.id);
+                  const done = pt.filter((t) => t.done).length;
+                  const pct = pt.length ? Math.round((done / pt.length) * 100) : 0;
+                  const cs = CATEGORY_STYLES[p.category] || CATEGORY_STYLES["본업"];
+                  return (
+                    <div key={p.id} style={{ background: "#fff", padding: 14, borderBottom: idx < projects.length - 1 ? `1px solid ${T.rowBorder}` : "none" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, padding: "2px 8px", borderRadius: 4, background: T.chipBg, color: T.chipText, flexShrink: 0 }}><Dot color={cs.dot} />{p.category}</span>
+                          <span style={{ fontSize: 14.5, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</span>
+                        </div>
+                        <button onClick={() => deleteProject(p.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", flexShrink: 0, fontSize: 15 }}>✕</button>
+                      </div>
+                      <div style={{ fontSize: 12, color: T.textSecondary, marginBottom: 6 }}>총 {pt.length}개 · 완료 {done}개</div>
+                      <div style={{ height: 4, background: T.track, borderRadius: 2, overflow: "hidden" }}>
+                        <div style={{ height: "100%", width: `${pct}%`, background: T.text, borderRadius: 2 }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === "calendar" && (
+          <div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+              <button onClick={() => goMonth(-1)} style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 15 }}>‹</button>
+              <div style={{ fontSize: 15, fontWeight: 600 }}>{viewYear}년 {viewMonth}월</div>
+              <button onClick={() => goMonth(1)} style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 15 }}>›</button>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", marginBottom: 4 }}>
+              {WEEKDAYS.map((w, i) => (
+                <div key={w} style={{ textAlign: "center", fontSize: 11, fontWeight: 500, color: i === 0 ? T.sun : i === 6 ? T.sat : T.textSecondary, padding: "4px 0" }}>{w}</div>
+              ))}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 3 }}>
+              {gridDates.map((d, i) => {
+                const inMonth = d.getMonth() + 1 === viewMonth;
+                const ds = toDateStr(d);
+                const holiday = HOLIDAYS_2026[ds];
+                const isToday = ds === todayStr;
+                const hasNote = !!notes[ds];
+                const dow = d.getDay();
+                return (
+                  <button key={i} onClick={() => openDay(d)} style={{
+                    aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", paddingTop: 4,
+                    borderRadius: 6, border: isToday ? `1px solid ${T.accent}` : "1px solid transparent",
+                    background: holiday && inMonth ? T.holidayBg : "#fff", opacity: inMonth ? 1 : 0.35, cursor: "pointer", position: "relative",
+                  }}>
+                    <span style={{ fontSize: 12.5, fontWeight: isToday ? 600 : 400, color: holiday ? T.holidayText : dow === 0 ? T.sun : dow === 6 ? T.sat : T.text }}>{d.getDate()}</span>
+                    {holiday && inMonth && <span style={{ fontSize: 8, color: T.holidayText, marginTop: 1, lineHeight: 1.1, textAlign: "center" }}>{holiday}</span>}
+                    {hasNote && <span style={{ position: "absolute", bottom: 4, width: 4, height: 4, borderRadius: "50%", background: T.accent }} />}
+                  </button>
+                );
+              })}
+            </div>
+            <div style={{ fontSize: 11, color: T.textMuted, marginTop: 12, textAlign: "center" }}>날짜를 눌러 메모를 남길 수 있어요 · 공휴일은 2026년 기준</div>
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: "flex", borderTop: `1px solid ${T.border}`, background: "#fff", position: "sticky", bottom: 0 }}>
+        {[
+          { key: "dashboard", label: "대시보드" },
+          { key: "today", label: "오늘" },
+          { key: "weekly", label: "주간" },
+          { key: "projects", label: "프로젝트" },
+          { key: "calendar", label: "캘린더" },
+        ].map((item) => (
+          <button key={item.key} onClick={() => setTab(item.key)} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 2, padding: "10px 0 8px", background: "none", border: "none", cursor: "pointer", color: tab === item.key ? T.accent : T.textMuted }}>
+            <span style={{ fontSize: 10, fontWeight: tab === item.key ? 600 : 400 }}>{item.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {selectedDate && (
+        <div onClick={() => setSelectedDate(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 50 }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 420, borderRadius: "16px 16px 0 0", padding: 20, boxSizing: "border-box" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <div style={{ fontSize: 15, fontWeight: 600 }}>{selectedDate} 메모</div>
+              <button onClick={() => setSelectedDate(null)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", fontSize: 16 }}>✕</button>
+            </div>
+            <textarea value={noteDraft} onChange={(e) => setNoteDraft(e.target.value)} rows={4} placeholder="메모를 입력하세요"
+              style={{ width: "100%", border: `1px solid ${T.border}`, borderRadius: 8, padding: 10, fontSize: 14, outline: "none", boxSizing: "border-box", resize: "none", fontFamily: "inherit", color: T.text }} />
+            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+              <button onClick={() => setSelectedDate(null)} style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 14, cursor: "pointer", color: T.text }}>닫기</button>
+              <button onClick={saveNote} style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>저장</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
