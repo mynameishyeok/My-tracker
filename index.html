@@ -48,7 +48,7 @@ const { useState, useEffect, useCallback } = React;
 
 // =========================================================
 // 여기에 구글 Gemini API 키를 붙여넣으세요 (aistudio.google.com/apikey 에서 발급)
-const GEMINI_API_KEY = "AQ.Ab8RN6L3i87u4W4-2fX9kzfiz_jMuaxaqPQr3MBPpYMp9GDgOA";
+const GEMINI_API_KEY = "여기에_발급받은_API_키를_붙여넣으세요";
 const GEMINI_MODEL = "gemini-3.5-flash";
 // =========================================================
 
@@ -138,6 +138,8 @@ const STRINGS = {
     reminderClear: "알림 해제",
     reminderNotSupported: "이 브라우저에서는 알림을 지원하지 않아요.",
     reminderDenied: "알림 권한이 꺼져있어요. 브라우저 설정에서 허용해주세요.",
+    reminderFiredTitle: "⏰ 알림",
+    ok: "확인",
   },
   en: {
     loading: "Loading...",
@@ -195,6 +197,8 @@ const STRINGS = {
     reminderClear: "Clear Reminder",
     reminderNotSupported: "This browser doesn't support notifications.",
     reminderDenied: "Notifications are turned off. Please allow them in your browser settings.",
+    reminderFiredTitle: "⏰ Reminder",
+    ok: "OK",
   },
 };
 
@@ -353,6 +357,7 @@ function App() {
   const [archiveUnassignedOnly, setArchiveUnassignedOnly] = useState(false);
   const [reminderTaskId, setReminderTaskId] = useState(null);
   const [reminderDraft, setReminderDraft] = useState("");
+  const [firedReminder, setFiredReminder] = useState(null);
   const [ready, setReady] = useState(false);
 
   const [newTask, setNewTask] = useState("");
@@ -441,15 +446,18 @@ function App() {
     if (pageIdx !== -1) setNavPageIndex(pageIdx);
   }, [tab]);
 
-  // 설정해둔 알림 시간이 지난 할 일을 30초마다 확인해서 브라우저 알림을 띄움 (앱이 열려있을 때만 작동)
+  // 설정해둔 알림 시간이 지난 할 일을 10초마다 확인해서 알림을 띄움 (앱이 열려있을 때만 작동)
+  // 브라우저 알림 권한이 막혀있어도 확실히 보이도록, 앱 화면 안에 직접 뜨는 알림도 함께 띄움
   useEffect(() => {
     const id = setInterval(() => {
       const now = new Date();
       setTasks((prev) => {
         let changed = false;
+        let justFired = null;
         const next = prev.map((t) => {
           if (t.reminderAt && !t.reminderFired && !t.done && new Date(t.reminderAt) <= now) {
             changed = true;
+            justFired = t;
             try {
               if (typeof Notification !== "undefined" && Notification.permission === "granted") {
                 new Notification(t.title);
@@ -459,6 +467,7 @@ function App() {
           }
           return t;
         });
+        if (justFired) setFiredReminder(justFired);
         if (changed) {
           try {
             window.storage.set("tracker-tasks", JSON.stringify(next));
@@ -467,7 +476,7 @@ function App() {
         }
         return prev;
       });
-    }, 30000);
+    }, 10000);
     return () => clearInterval(id);
   }, []);
 
@@ -994,6 +1003,8 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                   justifyContent: "center",
                   cursor: "pointer",
                   flexShrink: 0,
+                  fontSize: 20,
+                  color: "#fff",
                 }}
               >
                 "+"
@@ -1053,13 +1064,13 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                     </div>
                     <button
                       onClick={() => openReminder(t.id)}
-                      style={{ background: "none", border: "none", color: t.reminderAt && !t.reminderFired ? T.accent : T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0 }}
+                      style={{ background: "none", border: "none", color: t.reminderAt && !t.reminderFired ? T.accent : T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0, fontSize: 17, opacity: t.reminderAt && !t.reminderFired ? 1 : 0.4 }}
                     >
                       "🔔"
                     </button>
                     <button
                       onClick={() => deleteTask(t.id)}
-                      style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0 }}
+                      style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0 , fontSize: 16 }}
                     >
                       "✕"
                     </button>
@@ -1075,14 +1086,14 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
               <button
                 onClick={() => goWeek(-1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
               >
                 "‹"
               </button>
               <div style={{ fontSize: 15, fontWeight: 600 }}>{language === "ko" ? `${viewWeekStart.getFullYear()}년 ${weekLabel}` : `${weekLabel}, ${viewWeekStart.getFullYear()}`}</div>
               <button
                 onClick={() => goWeek(1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
               >
                 "›"
               </button>
@@ -1144,10 +1155,10 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                                 <div style={{ flex: 1, fontSize: 13, color: tk.done ? T.textMuted : T.text, textDecoration: tk.done ? "line-through" : "none", wordBreak: "break-word" }}>
                                   {tk.title}
                                 </div>
-                                <button onClick={() => openReminder(tk.id)} style={{ background: "none", border: "none", color: tk.reminderAt && !tk.reminderFired ? T.accent : T.textMuted, cursor: "pointer", padding: 2, flexShrink: 0 }}>
+                                <button onClick={() => openReminder(tk.id)} style={{ background: "none", border: "none", color: tk.reminderAt && !tk.reminderFired ? T.accent : T.textMuted, cursor: "pointer", padding: 2, flexShrink: 0, fontSize: 15, opacity: tk.reminderAt && !tk.reminderFired ? 1 : 0.4 }}>
                                   "🔔"
                                 </button>
-                                <button onClick={() => deleteTask(tk.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 2, flexShrink: 0 }}>
+                                <button onClick={() => deleteTask(tk.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 2, flexShrink: 0 , fontSize: 16 }}>
                                   "✕"
                                 </button>
                               </div>
@@ -1221,6 +1232,8 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
+                  fontSize: 18,
+                  color: "#fff",
                 }}
               >
                 "+"
@@ -1256,7 +1269,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                   <span style={{ fontSize: 10.5, color: T.textMuted }}>
                     {fmtDate(new Date(m.createdAt), { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                   </span>
-                  <button onClick={() => deleteMemo(m.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 2 }}>
+                  <button onClick={() => deleteMemo(m.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 2 , fontSize: 16 }}>
                     "✕"
                   </button>
                 </div>
@@ -1338,7 +1351,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                                   <span style={{ fontSize: 10.5, color: T.textMuted }}>{t.date}</span>
                                 </div>
                               </div>
-                              <button onClick={() => deleteTask(t.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0 }}>
+                              <button onClick={() => deleteTask(t.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0 , fontSize: 16 }}>
                                 "✕"
                               </button>
                             </div>
@@ -1480,14 +1493,14 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                     {items.map((t, idx) => (
                       <div
                         key={t.id}
-                        style={{ display: "flex", alignItems: "center", gap: 10, background: "#fff", padding: "10px 14px", borderBottom: idx < items.length - 1 ? `1px solid ${T.rowBorder}` : "none" }}
+                        style={{ display: "flex", alignItems: "center", gap: 10, background: "#fff", padding: "10px 14px", borderBottom: idx < items.length - 1 ? `1px solid ${T.rowBorder}` : "none" , fontSize: 16 }}
                       >
                         <Checkbox done={t.done} onClick={() => toggleTask(t.id)} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 13.5, color: T.textMuted, textDecoration: "line-through", wordBreak: "break-word" }}>{t.title}</div>
                           <ProjectTag projectId={t.projectId} />
                         </div>
-                        <button onClick={() => deleteTask(t.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0 }}>
+                        <button onClick={() => deleteTask(t.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0 , fontSize: 16 }}>
                           "✕"
                         </button>
                       </div>
@@ -1569,7 +1582,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                             {p.name}
                           </span>
                         </div>
-                        <button onClick={() => deleteProject(p.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", flexShrink: 0 }}>
+                        <button onClick={() => deleteProject(p.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", flexShrink: 0 , fontSize: 16 }}>
                           "✕"
                         </button>
                       </div>
@@ -1592,7 +1605,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
               <button
                 onClick={() => goMonth(-1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
               >
                 "‹"
               </button>
@@ -1601,7 +1614,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
               </div>
               <button
                 onClick={() => goMonth(1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
               >
                 "›"
               </button>
@@ -1694,14 +1707,14 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                   flexDirection: "column",
                   alignItems: "center",
                   gap: 2,
-                  padding: "10px 0 6px",
+                  padding: "14px 0 10px",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
                   color: tab === key ? T.accent : T.textMuted,
                 }}
               >
-                <span style={{ fontSize: 10, fontWeight: tab === key ? 600 : 400 }}>{L[key]}</span>
+                <span style={{ fontSize: 14, fontWeight: tab === key ? 700 : 500 }}>{L[key]}</span>
               </button>
             );
           })}
@@ -1741,11 +1754,11 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ background: "#fff", width: "100%", maxWidth: 420, borderRadius: "16px 16px 0 0", padding: 20, boxSizing: "border-box" }}
+            style={{ background: "#fff", width: "100%", maxWidth: 420, borderRadius: "16px 16px 0 0", padding: 20, boxSizing: "border-box" , fontSize: 16 }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
               <div style={{ fontSize: 15, fontWeight: 600 }}>{L.noteFor(selectedDate)}</div>
-              <button onClick={() => setSelectedDate(null)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer" }}>
+              <button onClick={() => setSelectedDate(null)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer" , fontSize: 16 }}>
                 "✕"
               </button>
             </div>
@@ -1834,13 +1847,13 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
           onClick={() => setReminderTaskId(null)}
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60, padding: 20 }}
         >
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 340, borderRadius: 14, padding: 20, boxSizing: "border-box" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 380, borderRadius: 14, padding: 20, boxSizing: "border-box", overflowX: "auto" }}>
             <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>{L.reminderTitle}</div>
             <input
               type="datetime-local"
               value={reminderDraft}
               onChange={(e) => setReminderDraft(e.target.value)}
-              style={{ width: "100%", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 11px", fontSize: 14, outline: "none", boxSizing: "border-box", color: T.text, marginBottom: 16 }}
+              style={{ width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 8px", fontSize: 13, outline: "none", color: T.text, marginBottom: 16, display: "block" }}
             />
             <div style={{ display: "flex", gap: 8 }}>
               <button
@@ -1856,6 +1869,24 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                 {L.save}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {firedReminder && (
+        <div
+          onClick={() => setFiredReminder(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 70, padding: 20 }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 14, padding: 22, boxSizing: "border-box", textAlign: "center" }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: T.accent, marginBottom: 10 }}>{L.reminderFiredTitle}</div>
+            <div style={{ fontSize: 15, color: T.text, marginBottom: 20, wordBreak: "break-word" }}>{firedReminder.title}</div>
+            <button
+              onClick={() => setFiredReminder(null)}
+              style={{ width: "100%", padding: "11px 0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+            >
+              {L.ok}
+            </button>
           </div>
         </div>
       )}
