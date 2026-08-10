@@ -1847,14 +1847,22 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
           onClick={() => setReminderTaskId(null)}
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60, padding: 20 }}
         >
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 380, borderRadius: 14, padding: 20, boxSizing: "border-box", overflowX: "auto" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 380, borderRadius: 14, padding: 20, boxSizing: "border-box" }}>
             <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>{L.reminderTitle}</div>
-            <input
-              type="datetime-local"
-              value={reminderDraft}
-              onChange={(e) => setReminderDraft(e.target.value)}
-              style={{ width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 8px", fontSize: 13, outline: "none", color: T.text, marginBottom: 16, display: "block" }}
-            />
+            <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+              <input
+                type="date"
+                value={reminderDraft ? reminderDraft.split("T")[0] : ""}
+                onChange={(e) => setReminderDraft(e.target.value + "T" + (reminderDraft && reminderDraft.split("T")[1] ? reminderDraft.split("T")[1] : "09:00"))}
+                style={{ flex: 1, minWidth: 0, width: 0, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 6px", fontSize: 12.5, outline: "none", color: T.text }}
+              />
+              <input
+                type="time"
+                value={reminderDraft && reminderDraft.split("T")[1] ? reminderDraft.split("T")[1] : ""}
+                onChange={(e) => setReminderDraft((reminderDraft && reminderDraft.split("T")[0] ? reminderDraft.split("T")[0] : todayStr) + "T" + e.target.value)}
+                style={{ flex: 1, minWidth: 0, width: 0, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 6px", fontSize: 12.5, outline: "none", color: T.text }}
+              />
+            </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 onClick={clearReminder}
