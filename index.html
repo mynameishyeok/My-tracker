@@ -2,18 +2,24 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="나의 트래커">
 <title>나의 프로젝트 트래커</title>
 <style>
   * { box-sizing: border-box; }
-  html, body { margin:0; padding:0; background:#F0EFEA; font-family:'Helvetica Neue',Arial,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif; }
-  #root { min-height:100vh; }
+  html, body { margin:0; padding:0; height:100%; overflow:hidden; overscroll-behavior:none; background:#FFFFFF; font-family:'Helvetica Neue',Arial,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif; }
+  #root { height:100%; }
   input, textarea, button { font-family: inherit; }
   button { touch-action: manipulation; }
-  .app-shell { min-height: 100vh; min-height: 100dvh; }
+  .app-shell {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 </style>
 </head>
 <body>
@@ -384,7 +390,6 @@ function Checkbox({ done, onClick }) {
 function App() {
   const [tab, setTab] = useState("dashboard");
   const [navPageIndex, setNavPageIndex] = useState(0);
-  const [touchStartX, setTouchStartX] = useState(null);
   const [projects, setProjects] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [notes, setNotes] = useState({});
@@ -522,17 +527,6 @@ function App() {
     }, 10000);
     return () => clearInterval(id);
   }, []);
-
-  const handleNavTouchStart = (e) => setTouchStartX(e.touches[0].clientX);
-  const handleNavTouchEnd = (e) => {
-    if (touchStartX === null) return;
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 40) {
-      if (dx < 0) setNavPageIndex((p) => Math.min(p + 1, NAV_PAGES.length - 1));
-      else setNavPageIndex((p) => Math.max(p - 1, 0));
-    }
-    setTouchStartX(null);
-  };
 
   const saveProjects = useCallback(async (next) => {
     setProjects(next);
@@ -954,7 +948,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
         border: `1px solid ${T.border}`,
       }}
     >
-      <div style={{ flex: 1, overflowY: "auto", padding: "22px 16px 18px", minHeight: 560 }}>
+      <div style={{ flex: 1, overflowY: "auto", overscrollBehavior: "none", padding: "22px 16px 18px", minHeight: 560 }}>
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
           <button
             onClick={toggleLanguage}
@@ -1822,9 +1816,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
       </div>
 
       <div
-        onTouchStart={handleNavTouchStart}
-        onTouchEnd={handleNavTouchEnd}
-        style={{ borderTop: `1px solid ${T.border}`, background: "#fff", touchAction: "pan-y" }}
+        style={{ borderTop: `1px solid ${T.border}`, background: "#fff" }}
       >
         <div style={{ display: "flex" }}>
           {NAV_PAGES[navPageIndex].map((key) => {
