@@ -183,7 +183,6 @@ const STRINGS = {
     plazaCreateFailed: "처리 중 문제가 생겼어요. 다시 시도해주세요.",
     plazaUploadFailed: "파일 업로드에 실패했어요. 다시 시도해주세요.",
     plazaLeave: "나가기",
-    plazaHome: "홈으로",
     plazaDeleteRoom: "방 삭제",
     plazaDeleteRoomTitle: "이 방을 삭제할까요?",
     plazaDeleteRoomBody: "방 안의 대화와 파일이 모두 사라지고, 되돌릴 수 없어요.",
@@ -275,7 +274,6 @@ const STRINGS = {
     plazaCreateFailed: "Something went wrong. Please try again.",
     plazaUploadFailed: "File upload failed. Please try again.",
     plazaLeave: "Leave",
-    plazaHome: "Home",
     plazaDeleteRoom: "Delete Room",
     plazaDeleteRoomTitle: "Delete this room?",
     plazaDeleteRoomBody: "All messages and files in this room will be gone for good.",
@@ -1243,7 +1241,13 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
       }}
     >
       <div style={{ flex: 1, overflowY: "auto", overscrollBehavior: "none", padding: "22px 16px 18px", minHeight: 560 }}>
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+          <button
+            onClick={goHome}
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 28, height: 28, border: `1px solid ${T.border}`, borderRadius: "50%", background: "#fff", fontSize: 13, cursor: "pointer", padding: 0 }}
+          >
+            🏠
+          </button>
           <button
             onClick={toggleLanguage}
             style={{
@@ -1256,10 +1260,10 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
               background: "#fff",
             }}
           >
-            <span style={{ padding: "4px 10px", background: language === "ko" ? T.accent : "transparent", color: language === "ko" ? "#fff" : T.textMuted, fontWeight: language === "ko" ? 600 : 400 }}>
+            <span style={{ padding: "4px 10px", borderRadius: "20px 0 0 20px", background: language === "ko" ? T.accent : "transparent", color: language === "ko" ? "#fff" : T.textMuted, fontWeight: language === "ko" ? 600 : 400 }}>
               한국어
             </span>
-            <span style={{ padding: "4px 10px", background: language === "en" ? T.accent : "transparent", color: language === "en" ? "#fff" : T.textMuted, fontWeight: language === "en" ? 600 : 400 }}>
+            <span style={{ padding: "4px 10px", borderRadius: "0 20px 20px 0", background: language === "en" ? T.accent : "transparent", color: language === "en" ? "#fff" : T.textMuted, fontWeight: language === "en" ? 600 : 400 }}>
               English
             </span>
           </button>
@@ -2112,9 +2116,6 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
           <div>
             {!activeRoomId ? (
               <div>
-                <button onClick={goHome} style={{ background: "none", border: "none", color: T.textMuted, fontSize: 13, cursor: "pointer", padding: 0, marginBottom: 10 }}>
-                  {"‹ "}{L.plazaHome}
-                </button>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
                   <div style={{ fontSize: 15, fontWeight: 600, display: "flex", alignItems: "center" }}>
                     {L.plaza}
