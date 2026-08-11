@@ -114,7 +114,7 @@ const CATEGORY_LABELS = {
 const STRINGS = {
   ko: {
     loading: "불러오는 중...",
-    dashboard: "대시보드", today: "오늘", weekly: "주간", projects: "프로젝트",
+    dashboard: "대시보드", today: "오늘", projects: "프로젝트",
     calendar: "캘린더", memos: "메모", search: "검색", archive: "아카이브", plaza: "광장",
     statProjects: "전체 프로젝트", statTasks: "전체 할 일", statCompletion: "전체 완료율", statToday: "오늘 완료",
     overallProgress: "전체 진행률",
@@ -128,12 +128,6 @@ const STRINGS = {
     addTaskPlaceholder: "오늘 할 일을 적어보세요",
     none: "없음",
     noTasksToday: "아직 오늘 할 일이 없어요.",
-    noProjectsWeekly: "아직 등록된 프로젝트가 없어요. 프로젝트 탭에서 먼저 추가해주세요.",
-    thisWeekGoal: "이번 주 목표",
-    weekGoalPlaceholder: "이번 주 큰 틀을 적어보세요",
-    todaySuffix: " · 오늘",
-    addTaskDayPlaceholder: "+ 할 일 추가",
-    aiWeeklySummary: "AI 주간 요약",
     generating: "생성 중...", regenerate: "다시 생성", generateSummary: "요약 만들기",
     noSummaryYet: "아직 만든 요약이 없어요.",
     memosEmpty: "오른쪽 위 + 버튼을 눌러 메모를 추가해보세요.",
@@ -194,10 +188,9 @@ const STRINGS = {
     tabInfo: {
       dashboard: "전체 진행 상황과 최근 활동을 한눈에 볼 수 있어요.",
       today: "오늘 할 일을 적고 체크하며 관리하세요.",
-      weekly: "프로젝트별로 이번 주 목표를 정하고, 요일별로 할 일을 계획해보세요.",
       memos: "형식 없이 자유롭게 메모를 남기고 관리하세요.",
       search: "할 일, 메모, 프로젝트를 한 번에 검색하세요. 초성 검색도 가능해요.",
-      archive: "완료한 할 일과 주간 요약을 모아보고, 백업 파일로 내보낼 수 있어요.",
+      archive: "완료한 할 일을 모아보고, 오늘 탭 내용을 월요일~일요일 기준 한 주 단위로 요약한 기록도 만들어볼 수 있어요. 백업 파일로 내보내는 것도 여기서 해요.",
       projects: "프로젝트를 등록하고 카테고리별로 관리하세요.",
       calendar: "월별 일정과 공휴일을 확인하고, 날짜별로 메모를 남기세요.",
       plaza: "누구나 방을 만들어 다른 사람과 텍스트와 파일을 나눌 수 있는 공간이에요.\n\n· 방을 만든 사람이 4자리 PIN을 직접 정해요. 입장하려면 그 PIN을 알아야 해요.\n· 방 하나에 최대 3명까지 들어올 수 있어요.\n· 광장에는 방을 최대 5개까지만 만들 수 있어요. 방은 자동으로 없어지지 않고, 방을 만든 사람만 삭제할 수 있어요. 5개가 다 찼다면 방장에게 정리를 부탁하세요.\n· 공유한 파일은 올린 날로부터 7일 후 자동으로 삭제돼요 (대화 내용은 남아있어요).\n· 로그인이 없는 앱이라 PIN은 화면에서만 확인하는 가벼운 수준의 보호예요. 완전한 보안이 아니니 민감한 파일은 올리지 마세요.",
@@ -205,7 +198,7 @@ const STRINGS = {
   },
   en: {
     loading: "Loading...",
-    dashboard: "Dashboard", today: "Today", weekly: "Weekly", projects: "Projects",
+    dashboard: "Dashboard", today: "Today", projects: "Projects",
     calendar: "Calendar", memos: "Notes", search: "Search", archive: "Archive", plaza: "Plaza",
     statProjects: "Total Projects", statTasks: "Total Tasks", statCompletion: "Completion Rate", statToday: "Today's Progress",
     overallProgress: "Overall Progress",
@@ -219,12 +212,6 @@ const STRINGS = {
     addTaskPlaceholder: "What do you need to do today?",
     none: "None",
     noTasksToday: "Nothing on your list yet.",
-    noProjectsWeekly: "No projects yet. Add one in the Projects tab first.",
-    thisWeekGoal: "This Week's Goal",
-    weekGoalPlaceholder: "What's the big picture for this week?",
-    todaySuffix: " · Today",
-    addTaskDayPlaceholder: "+ Add a task",
-    aiWeeklySummary: "AI Weekly Summary",
     generating: "Generating...", regenerate: "Regenerate", generateSummary: "Generate Summary",
     noSummaryYet: "No summary yet.",
     memosEmpty: "Tap + in the top right to add a note.",
@@ -285,10 +272,9 @@ const STRINGS = {
     tabInfo: {
       dashboard: "See your overall progress and recent activity at a glance.",
       today: "Add and check off today's tasks.",
-      weekly: "Set this week's goal per project and plan tasks by day.",
       memos: "Jot down and manage free-form notes.",
       search: "Search tasks, notes, and projects at once.",
-      archive: "Review completed tasks and weekly summaries, and export a backup file.",
+      archive: "Review completed tasks, and build weekly summaries of your Today tab from Monday to Sunday. Export a backup file here too.",
       projects: "Add and manage your projects by category.",
       calendar: "View the month's schedule and holidays, and leave notes on any date.",
       plaza: "A space where anyone can create a room to share text and files with others.\n\n· Whoever creates a room picks its 4-digit PIN. You need that PIN to enter.\n· Each room holds up to 3 people.\n· Up to 5 rooms can exist in the Plaza at once. Rooms don't expire on their own — only the creator can delete one. If all 5 are taken, ask a room's creator to clear it out.\n· Shared files are automatically deleted 7 days after upload (the conversation itself stays).\n· This app has no login, so the PIN is just a light, on-screen check — not real security. Don't share anything sensitive.",
@@ -297,9 +283,8 @@ const STRINGS = {
 };
 
 const NAV_PAGES = [
-  ["dashboard", "today", "weekly", "projects"],
-  ["calendar", "memos", "search", "archive"],
-  ["plaza"],
+  ["dashboard", "today", "projects"],
+  ["calendar", "memos", "search", "archive", "plaza"],
 ];
 
 const FIXED_HOLIDAYS = [
@@ -456,7 +441,6 @@ function App() {
   const [projects, setProjects] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [notes, setNotes] = useState({});
-  const [weeklyGoals, setWeeklyGoals] = useState({});
   const [weeklySummaries, setWeeklySummaries] = useState({});
   const [memos, setMemos] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -505,9 +489,8 @@ function App() {
   const [noteDraft, setNoteDraft] = useState("");
 
   const [viewWeekStart, setViewWeekStart] = useState(getMonday(today));
-  const [expandedProjectId, setExpandedProjectId] = useState(null);
-  const [dayDrafts, setDayDrafts] = useState({});
-  const [aiLoadingId, setAiLoadingId] = useState(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [openSummaryKey, setOpenSummaryKey] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -515,7 +498,6 @@ function App() {
       let proj = null;
       let tsk = [];
       let nt = {};
-      let wg = {};
       let ws = {};
       let mm = [];
       try {
@@ -529,10 +511,6 @@ function App() {
       try {
         const r = await window.storage.get("tracker-notes");
         if (r && r.value) nt = JSON.parse(r.value);
-      } catch (e) {}
-      try {
-        const r = await window.storage.get("tracker-weekly-goals");
-        if (r && r.value) wg = JSON.parse(r.value);
       } catch (e) {}
       try {
         const r = await window.storage.get("tracker-weekly-summaries");
@@ -556,7 +534,6 @@ function App() {
         setProjects(proj || []);
         setTasks(tsk);
         setNotes(nt);
-        setWeeklyGoals(wg);
         setWeeklySummaries(ws);
         setMemos(mm);
         setLastExportAt(lastExport);
@@ -832,12 +809,6 @@ function App() {
       await window.storage.set("tracker-notes", JSON.stringify(next));
     } catch (e) {}
   }, []);
-  const saveWeeklyGoals = useCallback(async (next) => {
-    setWeeklyGoals(next);
-    try {
-      await window.storage.set("tracker-weekly-goals", JSON.stringify(next));
-    } catch (e) {}
-  }, []);
   const saveWeeklySummaries = useCallback(async (next) => {
     setWeeklySummaries(next);
     try {
@@ -882,13 +853,12 @@ function App() {
     saveTasks([t, ...tasks]);
     setNewTask("");
   };
-  const addTaskOnDate = (dateStr, projectId, title) => {
-    const t = title.trim();
-    if (!t) return;
-    saveTasks([{ id: "t-" + Date.now(), title: t, projectId, done: false, date: dateStr }, ...tasks]);
-  };
   const toggleTask = (id) => {
-    saveTasks(tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+    saveTasks(tasks.map((t) => {
+      if (t.id !== id) return t;
+      const done = !t.done;
+      return { ...t, done, completedAt: done ? new Date().toISOString() : null };
+    }));
   };
   const deleteTask = (id) => {
     const tk = tasks.find((t) => t.id === id);
@@ -1000,7 +970,6 @@ function App() {
       tasks,
       memos,
       notes,
-      weeklyGoals,
       weeklySummaries,
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -1115,12 +1084,13 @@ function App() {
     setSelectedDate(ds);
     setNoteDraft(notes[ds] || "");
   };
-  const saveNote = () => {
+  // 타이핑할 때마다 바로 저장 - 앱을 나갔다 들어와도 방금 쓴 내용이 사라지지 않도록 함
+  const editNoteDraft = (value) => {
+    setNoteDraft(value);
     const next = { ...notes };
-    if (noteDraft.trim()) next[selectedDate] = noteDraft.trim();
+    if (value.trim()) next[selectedDate] = value.trim();
     else delete next[selectedDate];
     saveNotes(next);
-    setSelectedDate(null);
   };
 
   const todayLabel = fmtDate(today, { month: "long", day: "numeric", weekday: language === "ko" ? "short" : "long" });
@@ -1142,13 +1112,8 @@ function App() {
     else completedByDate.push({ date: t.date, items: [t] });
   }
   const archivedSummaries = Object.entries(weeklySummaries)
-    .map(([key, val]) => {
-      const idx = key.lastIndexOf("_");
-      const projectId = key.slice(0, idx);
-      const weekStart = key.slice(idx + 1);
-      return { key, projectId, weekStart, proj: projectMap[projectId], ...val };
-    })
-    .filter((s) => s.proj)
+    .filter(([key]) => /^\d{4}-\d{2}-\d{2}$/.test(key))
+    .map(([key, val]) => ({ key, weekStart: key, ...val }))
     .sort((a, b) => (a.weekStart < b.weekStart ? 1 : -1));
   function formatWeekRangeLabel(weekStartStr) {
     const wd = new Date(weekStartStr);
@@ -1157,46 +1122,98 @@ function App() {
       ? `${wd.getFullYear()}년 ${wd.getMonth() + 1}/${wd.getDate()} - ${wdEnd.getMonth() + 1}/${wdEnd.getDate()}`
       : `${fmtDate(wd, { month: "short", day: "numeric" })} – ${fmtDate(wdEnd, { month: "short", day: "numeric" })}, ${wd.getFullYear()}`;
   }
+  const WEEK_ORDINALS_KO = ["첫째", "둘째", "셋째", "넷째", "다섯째"];
+  function weekOfMonthLabel(weekStartStr) {
+    const d = new Date(weekStartStr);
+    const n = Math.min(5, Math.ceil(d.getDate() / 7));
+    if (language === "ko") return `${d.getMonth() + 1}월 ${WEEK_ORDINALS_KO[n - 1]}주`;
+    const ord = n === 1 ? "1st" : n === 2 ? "2nd" : n === 3 ? "3rd" : `${n}th`;
+    return `${ord} week of ${d.toLocaleDateString("en-US", { month: "long" })}`;
+  }
+  const summaryItemTitle = (weekStartStr) =>
+    language === "ko" ? `${weekOfMonthLabel(weekStartStr)} 기록 요약` : `${weekOfMonthLabel(weekStartStr)} Summary`;
 
-  const generateSummary = async (projectId) => {
-    const proj = projectMap[projectId];
-    if (!proj) return;
-    const key = projectId + "_" + weekKeyStr;
-    const weekTaskList = tasks.filter((t) => t.projectId === projectId && weekDates.some((d) => toDateStr(d) === t.date));
-    const doneList = weekTaskList.filter((t) => t.done).map((t) => "- " + t.title);
-    const undoneList = weekTaskList.filter((t) => !t.done).map((t) => "- " + t.title);
-    const goal = weeklyGoals[key] || (language === "ko" ? "설정 안 함" : "Not set");
+  // 완료 시점 기준 평가: 마감일 당일 완료 = 잘한 점, 1~2일 늦음 = 미흡,
+  // 3일 이상 늦었거나 3일 넘도록 미완료 = 많이 부족, 그 외 아직 기한 안 지난 미완료 = 진행 중
+  function taskDelayCategory(t, refDate) {
+    const due = new Date(t.date + "T00:00:00");
+    if (t.done) {
+      if (!t.completedAt) return "onTime";
+      const completed = new Date(t.completedAt);
+      const completedDay = new Date(completed.getFullYear(), completed.getMonth(), completed.getDate());
+      const diff = Math.round((completedDay - due) / 86400000);
+      if (diff <= 0) return "onTime";
+      if (diff < 3) return "late";
+      return "veryLate";
+    }
+    const diff = Math.round((refDate - due) / 86400000);
+    return diff >= 3 ? "veryLate" : "open";
+  }
+
+  const generateWeeklySummary = async () => {
+    const weekTasks = tasks.filter((t) => weekDates.some((d) => toDateStr(d) === t.date));
+    const refDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const nameFor = (t) => {
+      const proj = t.projectId ? projectMap[t.projectId] : null;
+      return proj ? `${t.title} (${proj.name})` : t.title;
+    };
+    const onTime = [], late = [], veryLate = [], stillOpen = [];
+    weekTasks.forEach((t) => {
+      const cat = taskDelayCategory(t, refDate);
+      if (cat === "onTime") onTime.push(nameFor(t));
+      else if (cat === "late") late.push(nameFor(t));
+      else if (cat === "veryLate") veryLate.push(nameFor(t));
+      else stillOpen.push(nameFor(t));
+    });
+    const fmt = (list, none) => (list.length ? list.map((s) => "- " + s).join("\n") : none);
+
     const prompt = language === "ko"
-      ? `다음은 "${proj.name}" 프로젝트의 ${weekLabel} 주간 기록이야.
+      ? `다음은 ${weekLabel} (월요일~일요일) 한 주간의 할 일 기록이야. 평가 기준은 이래:
+- 마감일 당일에 완료: 잘한 점
+- 마감일보다 1~2일 늦게 완료: 미흡
+- 마감일보다 3일 이상 늦게 완료됐거나, 3일 이상 지나도록 아직 완료 못 함: 많이 부족
+- 아직 기한이 3일 안 지났고 미완료: 진행 중 (평가에서 감점하지 말 것)
 
-이번 주 목표: ${goal}
+잘한 점 (제때 완료):
+${fmt(onTime, "(없음)")}
 
-완료한 일:
-${doneList.length ? doneList.join("\n") : "(없음)"}
+미흡 (1~2일 늦게 완료):
+${fmt(late, "(없음)")}
 
-완료하지 못한 일:
-${undoneList.length ? undoneList.join("\n") : "(없음)"}
+많이 부족 (3일 이상 늦었거나 여전히 미완료):
+${fmt(veryLate, "(없음)")}
 
-이 내용을 바탕으로 이번 주에 무엇을 달성했고 무엇을 놓쳤는지 3~4줄로 담백하게 한국어로 요약해줘. 불릿 없이 짧은 문단으로 써줘.`
-      : `Here is the ${weekLabel} weekly log for the "${proj.name}" project.
+진행 중 (아직 기한 안 지남):
+${fmt(stillOpen, "(없음)")}
 
-This week's goal: ${goal}
+이 내용을 바탕으로 이번 주에 잘한 점과 부족했던 점을 구분해서 4~6줄로 담백하게 한국어로 요약해줘. 위 분류를 자연스럽게 반영해서 쓰고, 불릿 없이 짧은 문단으로 써줘.`
+      : `Here is this week's (Monday-Sunday, ${weekLabel}) task log. The grading rule is:
+- Completed on its due date: did well
+- Completed 1-2 days after the due date: lacking
+- Completed 3+ days late, or still not done 3+ days past the due date: seriously lacking
+- Due date hasn't passed 3 days yet and still open: in progress (don't penalize this)
 
-Completed:
-${doneList.length ? doneList.join("\n") : "(none)"}
+Did well (completed on time):
+${fmt(onTime, "(none)")}
 
-Not completed:
-${undoneList.length ? undoneList.join("\n") : "(none)"}
+Lacking (completed 1-2 days late):
+${fmt(late, "(none)")}
 
-Write a plain, natural 3-4 sentence summary in English of what was accomplished and what was missed this week. Short paragraph, no bullet points.`;
+Seriously lacking (3+ days late or still incomplete):
+${fmt(veryLate, "(none)")}
 
-    setAiLoadingId(projectId);
+In progress (due date not passed yet):
+${fmt(stillOpen, "(none)")}
+
+Write a plain, natural 4-6 sentence summary in English distinguishing what went well from what fell short this week, reflecting the categories above. Short paragraph, no bullet points.`;
+
+    setSummaryLoading(true);
     if (!GEMINI_API_KEY || GEMINI_API_KEY.indexOf("여기에") !== -1) {
       saveWeeklySummaries({
         ...weeklySummaries,
-        [key]: { text: language === "ko" ? "먼저 코드 상단의 GEMINI_API_KEY 자리에 발급받은 키를 넣어주세요." : "Please add your Gemini API key to GEMINI_API_KEY near the top of the code first.", generatedAt: new Date().toISOString() },
+        [weekKeyStr]: { text: language === "ko" ? "먼저 코드 상단의 GEMINI_API_KEY 자리에 발급받은 키를 넣어주세요." : "Please add your Gemini API key to GEMINI_API_KEY near the top of the code first.", generatedAt: new Date().toISOString() },
       });
-      setAiLoadingId(null);
+      setSummaryLoading(false);
       return;
     }
     try {
@@ -1213,15 +1230,15 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
       const text = parts.map((p) => p.text || "").join("\n").trim();
       saveWeeklySummaries({
         ...weeklySummaries,
-        [key]: { text: text || L.noSummaryYet, generatedAt: new Date().toISOString() },
+        [weekKeyStr]: { text: text || L.noSummaryYet, generatedAt: new Date().toISOString() },
       });
     } catch (e) {
       saveWeeklySummaries({
         ...weeklySummaries,
-        [key]: { text: language === "ko" ? "요약 생성에 실패했어요. 다시 시도해주세요." : "Couldn't generate a summary. Please try again.", generatedAt: new Date().toISOString() },
+        [weekKeyStr]: { text: language === "ko" ? "요약 생성에 실패했어요. 다시 시도해주세요." : "Couldn't generate a summary. Please try again.", generatedAt: new Date().toISOString() },
       });
     } finally {
-      setAiLoadingId(null);
+      setSummaryLoading(false);
     }
   };
 
@@ -1258,12 +1275,17 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
               fontSize: 11,
               cursor: "pointer",
               background: "#fff",
+              padding: 0,
+              margin: 0,
+              WebkitAppearance: "none",
+              appearance: "none",
+              lineHeight: "normal",
             }}
           >
-            <span style={{ padding: "4px 10px", borderRadius: "20px 0 0 20px", background: language === "ko" ? T.accent : "transparent", color: language === "ko" ? "#fff" : T.textMuted, fontWeight: language === "ko" ? 600 : 400 }}>
+            <span style={{ display: "inline-block", padding: "6px 10px", borderRadius: "20px 0 0 20px", background: language === "ko" ? T.accent : "transparent", color: language === "ko" ? "#fff" : T.textMuted, fontWeight: language === "ko" ? 600 : 400 }}>
               한국어
             </span>
-            <span style={{ padding: "4px 10px", borderRadius: "0 20px 20px 0", background: language === "en" ? T.accent : "transparent", color: language === "en" ? "#fff" : T.textMuted, fontWeight: language === "en" ? 600 : 400 }}>
+            <span style={{ display: "inline-block", padding: "6px 10px", borderRadius: "0 20px 20px 0", background: language === "en" ? T.accent : "transparent", color: language === "en" ? "#fff" : T.textMuted, fontWeight: language === "en" ? 600 : 400 }}>
               English
             </span>
           </button>
@@ -1491,141 +1513,6 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
           </div>
         )}
 
-        {tab === "weekly" && (
-          <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <button
-                onClick={() => goWeek(-1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
-              >
-                "‹"
-              </button>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 15, fontWeight: 600 }}>{language === "ko" ? `${viewWeekStart.getFullYear()}년 ${weekLabel}` : `${weekLabel}, ${viewWeekStart.getFullYear()}`}</span>
-                <InfoIcon tabKey="weekly" />
-              </div>
-              <button
-                onClick={() => goWeek(1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
-              >
-                "›"
-              </button>
-            </div>
-
-            {projects.length === 0 && (
-              <div style={{ textAlign: "center", color: T.textMuted, fontSize: 13, padding: "20px 0" }}>
-                {L.noProjectsWeekly}
-              </div>
-            )}
-
-            {projects.map((p) => {
-              const cs = CATEGORY_STYLES[p.category] || CATEGORY_STYLES["본업"];
-              const wTasks = tasks.filter((t) => t.projectId === p.id && weekDates.some((d) => toDateStr(d) === t.date));
-              const wDone = wTasks.filter((t) => t.done).length;
-              const goalKey = p.id + "_" + weekKeyStr;
-              const goalText = weeklyGoals[goalKey] || "";
-              const summary = weeklySummaries[goalKey];
-              const isOpen = expandedProjectId === p.id;
-              return (
-                <div key={p.id} style={{ border: `1px solid ${T.border}`, borderRadius: 10, marginBottom: 10, overflow: "hidden" }}>
-                  <button
-                    onClick={() => setExpandedProjectId(isOpen ? null : p.id)}
-                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, background: "#fff", border: "none", padding: "13px 14px", cursor: "pointer", textAlign: "left" }}
-                  >
-                    <Dot color={cs.dot} />
-                    <span style={{ fontSize: 14, fontWeight: 500, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</span>
-                    <span style={{ fontSize: 12, color: T.textSecondary, flexShrink: 0 }}>{wTasks.length ? `${wDone}/${wTasks.length}` : "-"}</span>
-                  </button>
-                  {!isOpen && goalText && (
-                    <div style={{ padding: "0 14px 12px", fontSize: 12, color: T.textSecondary }}>🎯 {goalText}</div>
-                  )}
-
-                  {isOpen && (
-                    <div style={{ borderTop: `1px solid ${T.border}`, padding: 14 }}>
-                      <div style={{ fontSize: 11, color: T.textSecondary, marginBottom: 5 }}>{L.thisWeekGoal}</div>
-                      <input
-                        value={goalText}
-                        onChange={(e) => saveWeeklyGoals({ ...weeklyGoals, [goalKey]: e.target.value })}
-                        placeholder={L.weekGoalPlaceholder}
-                        style={{ width: "100%", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 11px", fontSize: 13.5, outline: "none", boxSizing: "border-box", marginBottom: 16, color: T.text }}
-                      />
-
-                      {weekDates.map((d) => {
-                        const ds = toDateStr(d);
-                        const dTasks = tasks.filter((tk) => tk.projectId === p.id && tk.date === ds);
-                        return (
-                          <div key={ds} style={{ marginBottom: 12 }}>
-                            <div style={{ fontSize: 11.5, fontWeight: 600, color: ds === todayStr ? T.accent : T.textSecondary, marginBottom: 5 }}>
-                              {WD[d.getDay()]} {d.getMonth() + 1}/{d.getDate()}
-                              {ds === todayStr ? L.todaySuffix : ""}
-                            </div>
-                            {dTasks.map((tk) => (
-                              <div key={tk.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0" }}>
-                                <Checkbox done={tk.done} onClick={() => toggleTask(tk.id)} />
-                                <div style={{ flex: 1, fontSize: 13, color: tk.done ? T.textMuted : T.text, textDecoration: tk.done ? "line-through" : "none", wordBreak: "break-word" }}>
-                                  {tk.title}
-                                </div>
-                                <button onClick={() => openReminder(tk.id)} style={{ background: "none", border: "none", color: tk.reminderAt && !tk.reminderFired ? T.accent : T.textMuted, cursor: "pointer", padding: 2, flexShrink: 0, fontSize: 15, opacity: tk.reminderAt && !tk.reminderFired ? 1 : 0.4 }}>
-                                  "🔔"
-                                </button>
-                                <button onClick={() => deleteTask(tk.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 2, flexShrink: 0 , fontSize: 16 }}>
-                                  "✕"
-                                </button>
-                              </div>
-                            ))}
-                            <input
-                              value={dayDrafts[ds] || ""}
-                              onChange={(e) => setDayDrafts({ ...dayDrafts, [ds]: e.target.value })}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  addTaskOnDate(ds, p.id, dayDrafts[ds] || "");
-                                  setDayDrafts({ ...dayDrafts, [ds]: "" });
-                                }
-                              }}
-                              placeholder={L.addTaskDayPlaceholder}
-                              style={{ width: "100%", border: "none", borderBottom: `1px solid ${T.rowBorder}`, padding: "5px 2px", fontSize: 13, outline: "none", boxSizing: "border-box", color: T.text, background: "transparent" }}
-                            />
-                          </div>
-                        );
-                      })}
-
-                      <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${T.border}` }}>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                          <div style={{ fontSize: 12, fontWeight: 600, display: "flex", alignItems: "center", gap: 5 }}>
-                            "✨" {L.aiWeeklySummary}
-                          </div>
-                          <button
-                            onClick={() => generateSummary(p.id)}
-                            disabled={aiLoadingId === p.id}
-                            style={{
-                              fontSize: 11.5,
-                              padding: "5px 10px",
-                              borderRadius: 6,
-                              border: `1px solid ${T.border}`,
-                              background: "#fff",
-                              color: T.text,
-                              cursor: aiLoadingId === p.id ? "default" : "pointer",
-                            }}
-                          >
-                            {aiLoadingId === p.id ? L.generating : summary ? L.regenerate : L.generateSummary}
-                          </button>
-                        </div>
-                        {summary ? (
-                          <div style={{ fontSize: 12.5, color: T.text, lineHeight: 1.6, background: T.chipBg, borderRadius: 8, padding: 12 }}>
-                            {summary.text}
-                          </div>
-                        ) : (
-                          <div style={{ fontSize: 12, color: T.textMuted }}>{L.noSummaryYet}</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-
         {tab === "memos" && (
           <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
@@ -1821,23 +1708,19 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                   {matchedSummaries.length > 0 && (
                     <div style={{ marginBottom: 18 }}>
                       <div style={{ fontSize: 11.5, fontWeight: 600, color: T.textSecondary, marginBottom: 6 }}>{L.resultsSummaries} ({matchedSummaries.length})</div>
-                      {matchedSummaries.map((s) => {
-                        const cs = CATEGORY_STYLES[s.proj.category] || CATEGORY_STYLES["본업"];
-                        return (
-                          <button
-                            key={s.key}
-                            onClick={() => setTab("archive")}
-                            style={{ display: "block", width: "100%", textAlign: "left", border: `1px solid ${T.border}`, borderRadius: 10, padding: 12, marginBottom: 8, background: "#fff", cursor: "pointer" }}
-                          >
-                            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
-                              <Dot color={cs.dot} />
-                              <span style={{ fontSize: 12.5, fontWeight: 600 }}>{s.proj.name}</span>
-                              <span style={{ fontSize: 10.5, color: T.textMuted, marginLeft: "auto" }}>{formatWeekRangeLabel(s.weekStart)}</span>
-                            </div>
-                            <div style={{ fontSize: 12.5, color: T.text, lineHeight: 1.5 }}>{s.text}</div>
-                          </button>
-                        );
-                      })}
+                      {matchedSummaries.map((s) => (
+                        <button
+                          key={s.key}
+                          onClick={() => { setTab("archive"); setOpenSummaryKey(s.key); }}
+                          style={{ display: "block", width: "100%", textAlign: "left", border: `1px solid ${T.border}`, borderRadius: 10, padding: 12, marginBottom: 8, background: "#fff", cursor: "pointer" }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+                            <span style={{ fontSize: 12.5, fontWeight: 600 }}>{summaryItemTitle(s.weekStart)}</span>
+                            <span style={{ fontSize: 10.5, color: T.textMuted, marginLeft: "auto" }}>{formatWeekRangeLabel(s.weekStart)}</span>
+                          </div>
+                          <div style={{ fontSize: 12.5, color: T.text, lineHeight: 1.5, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{s.text}</div>
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -1867,24 +1750,51 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
             </div>
 
             <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>{L.weeklySummaryHistory}</div>
-            {archivedSummaries.length === 0 && (
+
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+              <button
+                onClick={() => goWeek(-1)}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 16 }}
+              >
+                "‹"
+              </button>
+              <span style={{ fontSize: 12.5, fontWeight: 600 }}>{language === "ko" ? `${viewWeekStart.getFullYear()}년 ${weekLabel}` : `${weekLabel}, ${viewWeekStart.getFullYear()}`}</span>
+              <button
+                onClick={() => goWeek(1)}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 16 }}
+              >
+                "›"
+              </button>
+            </div>
+            <button
+              onClick={generateWeeklySummary}
+              disabled={summaryLoading}
+              style={{ width: "100%", padding: "9px 0", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 12.5, fontWeight: 600, color: T.text, cursor: summaryLoading ? "default" : "pointer", marginBottom: 12 }}
+            >
+              {summaryLoading ? L.generating : weeklySummaries[weekKeyStr] ? L.regenerate : L.generateSummary}
+            </button>
+
+            {archivedSummaries.length === 0 ? (
               <div style={{ textAlign: "center", color: T.textMuted, fontSize: 12.5, padding: "16px 0", marginBottom: 8 }}>
                 {L.noSummariesArchive}
               </div>
+            ) : (
+              <div style={{ maxHeight: 240, overflowY: "auto", marginBottom: 8, paddingRight: 2 }}>
+                {archivedSummaries.map((s) => (
+                  <button
+                    key={s.key}
+                    onClick={() => setOpenSummaryKey(s.key)}
+                    style={{ display: "block", width: "100%", textAlign: "left", border: `1px solid ${T.border}`, borderRadius: 10, padding: 12, marginBottom: 8, background: "#fff", cursor: "pointer" }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+                      <span style={{ fontSize: 12.5, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{summaryItemTitle(s.weekStart)}</span>
+                      <span style={{ fontSize: 10.5, color: T.textMuted, marginLeft: "auto", flexShrink: 0 }}>{formatWeekRangeLabel(s.weekStart)}</span>
+                    </div>
+                    <div style={{ fontSize: 12.5, color: T.text, lineHeight: 1.5, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{s.text}</div>
+                  </button>
+                ))}
+              </div>
             )}
-            {archivedSummaries.map((s) => {
-              const cs = CATEGORY_STYLES[s.proj.category] || CATEGORY_STYLES["본업"];
-              return (
-                <div key={s.key} style={{ border: `1px solid ${T.border}`, borderRadius: 10, padding: 12, marginBottom: 8, background: "#fff" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
-                    <Dot color={cs.dot} />
-                    <span style={{ fontSize: 12.5, fontWeight: 600 }}>{s.proj.name}</span>
-                    <span style={{ fontSize: 10.5, color: T.textMuted, marginLeft: "auto" }}>{formatWeekRangeLabel(s.weekStart)}</span>
-                  </div>
-                  <div style={{ fontSize: 12.5, color: T.text, lineHeight: 1.5 }}>{s.text}</div>
-                </div>
-              );
-            })}
 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "18px 0 10px" }}>
               <div style={{ fontSize: 13, fontWeight: 600 }}>{L.completedTasks}</div>
@@ -1954,7 +1864,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                   color: T.text,
                 }}
               />
-              <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
                 {CATEGORIES.map((c) => (
                   <button key={c} onClick={() => setNewProjCat(c)} style={chipStyle(newProjCat === c)}>
                     <Dot color={newProjCat === c ? "#fff" : CATEGORY_STYLES[c].dot} />
@@ -2303,7 +2213,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
             </div>
             <textarea
               value={noteDraft}
-              onChange={(e) => setNoteDraft(e.target.value)}
+              onChange={(e) => editNoteDraft(e.target.value)}
               rows={4}
               placeholder={L.notePlaceholder}
               style={{
@@ -2322,15 +2232,9 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
             <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
               <button
                 onClick={() => setSelectedDate(null)}
-                style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 14, cursor: "pointer", color: T.text }}
-              >
-                {L.close}
-              </button>
-              <button
-                onClick={saveNote}
                 style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
               >
-                {L.save}
+                {L.close}
               </button>
             </div>
           </div>
@@ -2452,6 +2356,27 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
             >
               {L.ok}
             </button>
+          </div>
+        </div>
+      )}
+
+      {openSummaryKey && weeklySummaries[openSummaryKey] && (
+        <div
+          onClick={() => setOpenSummaryKey(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 75, padding: 20 }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: "#fff", width: "100%", maxWidth: 380, maxHeight: "80vh", overflowY: "auto", borderRadius: 14, padding: 20, boxSizing: "border-box" }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, wordBreak: "break-word" }}>{summaryItemTitle(openSummaryKey)}</div>
+              <button onClick={() => setOpenSummaryKey(null)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", flexShrink: 0, fontSize: 16 }}>
+                "✕"
+              </button>
+            </div>
+            <div style={{ fontSize: 11, color: T.textMuted, marginBottom: 14 }}>{formatWeekRangeLabel(openSummaryKey)}</div>
+            <div style={{ fontSize: 13.5, color: T.text, lineHeight: 1.7, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{weeklySummaries[openSummaryKey].text}</div>
           </div>
         </div>
       )}
