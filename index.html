@@ -12,6 +12,8 @@
   html, body { margin:0; padding:0; background:#F0EFEA; font-family:'Helvetica Neue',Arial,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif; }
   #root { min-height:100vh; }
   input, textarea, button { font-family: inherit; }
+  button { touch-action: manipulation; }
+  .app-shell { min-height: 100vh; min-height: 100dvh; }
 </style>
 </head>
 <body>
@@ -119,7 +121,6 @@ const STRINGS = {
     addTaskPlaceholder: "오늘 할 일을 적어보세요",
     none: "없음",
     noTasksToday: "아직 오늘 할 일이 없어요.",
-    weeklyHint: "프로젝트를 눌러 이번 주 목표와 일별 할 일을 관리하세요",
     noProjectsWeekly: "아직 등록된 프로젝트가 없어요. 프로젝트 탭에서 먼저 추가해주세요.",
     thisWeekGoal: "이번 주 목표",
     weekGoalPlaceholder: "이번 주 큰 틀을 적어보세요",
@@ -188,7 +189,6 @@ const STRINGS = {
     addTaskPlaceholder: "What do you need to do today?",
     none: "None",
     noTasksToday: "Nothing on your list yet.",
-    weeklyHint: "Tap a project to set this week's goal and manage daily tasks",
     noProjectsWeekly: "No projects yet. Add one in the Projects tab first.",
     thisWeekGoal: "This Week's Goal",
     weekGoalPlaceholder: "What's the big picture for this week?",
@@ -940,6 +940,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
 
   return (
     <div
+      className="app-shell"
       style={{
         maxWidth: 420,
         margin: "0 auto",
@@ -1200,24 +1201,23 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
 
         {tab === "weekly" && (
           <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
               <button
                 onClick={() => goWeek(-1)}
                 style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
               >
                 "‹"
               </button>
-              <div style={{ fontSize: 15, fontWeight: 600 }}>{language === "ko" ? `${viewWeekStart.getFullYear()}년 ${weekLabel}` : `${weekLabel}, ${viewWeekStart.getFullYear()}`}</div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 15, fontWeight: 600 }}>{language === "ko" ? `${viewWeekStart.getFullYear()}년 ${weekLabel}` : `${weekLabel}, ${viewWeekStart.getFullYear()}`}</span>
+                <InfoIcon tabKey="weekly" />
+              </div>
               <button
                 onClick={() => goWeek(1)}
                 style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
               >
                 "›"
               </button>
-            </div>
-            <div style={{ fontSize: 11.5, color: T.textMuted, textAlign: "center", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              {L.weeklyHint}
-              <InfoIcon tabKey="weekly" />
             </div>
 
             {projects.length === 0 && (
@@ -1824,7 +1824,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
       <div
         onTouchStart={handleNavTouchStart}
         onTouchEnd={handleNavTouchEnd}
-        style={{ borderTop: `1px solid ${T.border}`, background: "#fff" }}
+        style={{ borderTop: `1px solid ${T.border}`, background: "#fff", touchAction: "pan-y" }}
       >
         <div style={{ display: "flex" }}>
           {NAV_PAGES[navPageIndex].map((key) => {
