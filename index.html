@@ -18,7 +18,6 @@
     height: 100dvh;
     overflow: hidden;
     padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
   }
 </style>
 </head>
@@ -528,6 +527,16 @@ function App() {
     return () => clearInterval(id);
   }, []);
 
+  const dismissFiredReminder = () => {
+    const fr = firedReminder;
+    setFiredReminder(null);
+    if (fr && fr.firestoreReminderId && window.fbDb) {
+      window.fbDb.collection("reminders").doc(fr.firestoreReminderId).update({ acknowledged: true }).catch((e) => {
+        console.error("Firestore reminder acknowledge failed", e);
+      });
+    }
+  };
+
   const saveProjects = useCallback(async (next) => {
     setProjects(next);
     try {
@@ -642,7 +651,8 @@ function App() {
         const docData = {
           title: tk ? tk.title : "",
           remindAt: firebase.firestore.Timestamp.fromDate(new Date(reminderDraft)),
-          fired: false,
+          acknowledged: false,
+          sentCount: 0,
           fcmToken: token || null,
         };
         if (firestoreId) {
@@ -1841,7 +1851,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
             );
           })}
         </div>
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", paddingBottom: 10 }}>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "calc(env(safe-area-inset-bottom) + 34px)" }}>
           {NAV_PAGES.map((_, i) => (
             <button
               key={i}
@@ -2035,14 +2045,14 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
 
       {firedReminder && (
         <div
-          onClick={() => setFiredReminder(null)}
+          onClick={dismissFiredReminder}
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 70, padding: 20 }}
         >
           <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 14, padding: 22, boxSizing: "border-box", textAlign: "center" }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: T.accent, marginBottom: 10 }}>{L.reminderFiredTitle}</div>
             <div style={{ fontSize: 15, color: T.text, marginBottom: 20, wordBreak: "break-word" }}>{firedReminder.title}</div>
             <button
-              onClick={() => setFiredReminder(null)}
+              onClick={dismissFiredReminder}
               style={{ width: "100%", padding: "11px 0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
             >
               {L.ok}

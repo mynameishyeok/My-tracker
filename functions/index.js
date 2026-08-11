@@ -26,24 +26,28 @@ admin.initializeApp();
 // this will be the maximum concurrent request count.
 setGlobalOptions({ maxInstances: 10 });
 
-// 매분 실행되어 remindAt이 지난, 아직 발송 안 된 reminders를 FCM으로 푸시 발송
+// 알림을 몇 번까지 반복 발송할지 (예약 시각부터 1분 간격으로 총 5회 = 4분 뒤까지)
+const MAX_REMINDER_SENDS = 5;
+
+// 매분 실행되어 remindAt이 지났고 사용자가 아직 확인 안 한 reminders를 FCM으로 푸시 발송.
+// 확인(acknowledged)하기 전까지 1분마다 최대 MAX_REMINDER_SENDS번 반복 발송한다.
 exports.sendDueReminders = onSchedule(
   { schedule: "* * * * *", timeZone: "Asia/Seoul" },
   async () => {
     const db = admin.firestore();
     const now = admin.firestore.Timestamp.now();
 
-    const snapshot = await db.collection("reminders").where("fired", "==", false).get();
+    const snapshot = await db.collection("reminders").where("acknowledged", "==", false).get();
     if (snapshot.empty) return;
 
     const due = snapshot.docs.filter((doc) => {
-      const remindAt = doc.data().remindAt;
-      return remindAt && remindAt.toMillis() <= now.toMillis();
+      const { remindAt, sentCount } = doc.data();
+      return remindAt && remindAt.toMillis() <= now.toMillis() && (sentCount || 0) < MAX_REMINDER_SENDS;
     });
     if (due.length === 0) return;
 
     await Promise.all(due.map(async (doc) => {
-      const { title, fcmToken } = doc.data();
+      const { title, fcmToken, sentCount } = doc.data();
 
       if (fcmToken) {
         try {
@@ -59,7 +63,10 @@ exports.sendDueReminders = onSchedule(
         }
       }
 
-      await doc.ref.update({ fired: true, firedAt: admin.firestore.FieldValue.serverTimestamp() });
+      await doc.ref.update({
+        sentCount: (sentCount || 0) + 1,
+        lastSentAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
     }));
 
     logger.info(`reminder ${due.length}건 발송 완료`);
