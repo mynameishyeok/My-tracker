@@ -1,0 +1,17 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // 광장(공유방) 파일 공유용. 로그인 없는 개인/지인용 앱이라 PIN도 화면단 체크 수준이고,
+    // 여기도 같은 수준으로 열어두되 파일 하나당 20MB로 제한해 스토리지 비용을 통제합니다.
+    match /plaza/{roomId}/{fileName} {
+      allow read: if true;
+      allow write: if request.resource.size < 20 * 1024 * 1024;
+      allow delete: if true;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

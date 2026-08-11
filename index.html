@@ -28,10 +28,11 @@
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<!-- Firebase (알림 예약 저장용) -->
+<!-- Firebase (알림 예약 저장 + 광장 파일 공유용) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage-compat.js"></script>
 <script>
   // =========================================================
   // 이 값들은 본인 Firebase 프로젝트 설정값으로 이미 채워져 있습니다.
@@ -47,6 +48,7 @@
   // =========================================================
   firebase.initializeApp(FIREBASE_CONFIG);
   window.fbDb = firebase.firestore();
+  window.fbStorage = firebase.storage();
 </script>
 
 <script>
@@ -113,7 +115,7 @@ const STRINGS = {
   ko: {
     loading: "불러오는 중...",
     dashboard: "대시보드", today: "오늘", weekly: "주간", projects: "프로젝트",
-    calendar: "캘린더", memos: "메모", search: "검색", archive: "아카이브",
+    calendar: "캘린더", memos: "메모", search: "검색", archive: "아카이브", plaza: "광장",
     statProjects: "전체 프로젝트", statTasks: "전체 할 일", statCompletion: "전체 완료율", statToday: "오늘 완료",
     overallProgress: "전체 진행률",
     noTasksYet: "아직 등록된 할 일이 없어요",
@@ -167,6 +169,29 @@ const STRINGS = {
     reminderDenied: "알림 권한이 꺼져있어요. 브라우저 설정에서 허용해주세요.",
     reminderFiredTitle: "⏰ 알림",
     ok: "확인",
+    plazaCreateRoom: "방 만들기",
+    plazaRoomNamePlaceholder: "방 이름 (예: 자료 공유방)",
+    plazaPinPlaceholder: "4자리 PIN",
+    plazaEnterPinTitle: "PIN을 입력하세요",
+    plazaEnterRoom: "입장",
+    plazaMembers: (n, max) => `${n}/${max}명`,
+    plazaNoRooms: "아직 만들어진 방이 없어요. 방을 만들어보세요.",
+    plazaRoomsFull: "방이 가득 찼어요 (최대 5개). 새 방을 만들려면 기존 방을 정리해주세요.",
+    plazaMemberFull: "이 방은 인원이 가득 찼어요 (최대 3명).",
+    plazaWrongPin: "PIN이 올바르지 않아요.",
+    plazaInvalidCreate: "방 이름과 4자리 PIN을 모두 입력해주세요.",
+    plazaCreateFailed: "처리 중 문제가 생겼어요. 다시 시도해주세요.",
+    plazaUploadFailed: "파일 업로드에 실패했어요. 다시 시도해주세요.",
+    plazaLeave: "나가기",
+    plazaHome: "홈으로",
+    plazaDeleteRoom: "방 삭제",
+    plazaDeleteRoomTitle: "이 방을 삭제할까요?",
+    plazaDeleteRoomBody: "방 안의 대화와 파일이 모두 사라지고, 되돌릴 수 없어요.",
+    plazaMessagePlaceholder: "메시지를 입력하세요",
+    plazaSend: "전송",
+    plazaUploading: "업로드 중...",
+    plazaNoMessages: "아직 메시지가 없어요.",
+    plazaFileExpiry: "공유된 파일은 7일 후 자동으로 삭제돼요.",
     tabInfo: {
       dashboard: "전체 진행 상황과 최근 활동을 한눈에 볼 수 있어요.",
       today: "오늘 할 일을 적고 체크하며 관리하세요.",
@@ -176,12 +201,13 @@ const STRINGS = {
       archive: "완료한 할 일과 주간 요약을 모아보고, 백업 파일로 내보낼 수 있어요.",
       projects: "프로젝트를 등록하고 카테고리별로 관리하세요.",
       calendar: "월별 일정과 공휴일을 확인하고, 날짜별로 메모를 남기세요.",
+      plaza: "누구나 방을 만들어 다른 사람과 텍스트와 파일을 나눌 수 있는 공간이에요.\n\n· 방을 만든 사람이 4자리 PIN을 직접 정해요. 입장하려면 그 PIN을 알아야 해요.\n· 방 하나에 최대 3명까지 들어올 수 있어요.\n· 광장에는 방을 최대 5개까지만 만들 수 있어요. 방은 자동으로 없어지지 않고, 방을 만든 사람만 삭제할 수 있어요. 5개가 다 찼다면 방장에게 정리를 부탁하세요.\n· 공유한 파일은 올린 날로부터 7일 후 자동으로 삭제돼요 (대화 내용은 남아있어요).\n· 로그인이 없는 앱이라 PIN은 화면에서만 확인하는 가벼운 수준의 보호예요. 완전한 보안이 아니니 민감한 파일은 올리지 마세요.",
     },
   },
   en: {
     loading: "Loading...",
     dashboard: "Dashboard", today: "Today", weekly: "Weekly", projects: "Projects",
-    calendar: "Calendar", memos: "Notes", search: "Search", archive: "Archive",
+    calendar: "Calendar", memos: "Notes", search: "Search", archive: "Archive", plaza: "Plaza",
     statProjects: "Total Projects", statTasks: "Total Tasks", statCompletion: "Completion Rate", statToday: "Today's Progress",
     overallProgress: "Overall Progress",
     noTasksYet: "No tasks yet",
@@ -235,6 +261,29 @@ const STRINGS = {
     reminderDenied: "Notifications are turned off. Please allow them in your browser settings.",
     reminderFiredTitle: "⏰ Reminder",
     ok: "OK",
+    plazaCreateRoom: "Create Room",
+    plazaRoomNamePlaceholder: "Room name (e.g. File sharing)",
+    plazaPinPlaceholder: "4-digit PIN",
+    plazaEnterPinTitle: "Enter the PIN",
+    plazaEnterRoom: "Enter",
+    plazaMembers: (n, max) => `${n}/${max}`,
+    plazaNoRooms: "No rooms yet. Create one to get started.",
+    plazaRoomsFull: "Rooms are full (max 5). Delete an old room to make space.",
+    plazaMemberFull: "This room is full (max 3 members).",
+    plazaWrongPin: "Incorrect PIN.",
+    plazaInvalidCreate: "Please enter a room name and a 4-digit PIN.",
+    plazaCreateFailed: "Something went wrong. Please try again.",
+    plazaUploadFailed: "File upload failed. Please try again.",
+    plazaLeave: "Leave",
+    plazaHome: "Home",
+    plazaDeleteRoom: "Delete Room",
+    plazaDeleteRoomTitle: "Delete this room?",
+    plazaDeleteRoomBody: "All messages and files in this room will be gone for good.",
+    plazaMessagePlaceholder: "Type a message",
+    plazaSend: "Send",
+    plazaUploading: "Uploading...",
+    plazaNoMessages: "No messages yet.",
+    plazaFileExpiry: "Shared files are automatically deleted after 7 days.",
     tabInfo: {
       dashboard: "See your overall progress and recent activity at a glance.",
       today: "Add and check off today's tasks.",
@@ -244,6 +293,7 @@ const STRINGS = {
       archive: "Review completed tasks and weekly summaries, and export a backup file.",
       projects: "Add and manage your projects by category.",
       calendar: "View the month's schedule and holidays, and leave notes on any date.",
+      plaza: "A space where anyone can create a room to share text and files with others.\n\n· Whoever creates a room picks its 4-digit PIN. You need that PIN to enter.\n· Each room holds up to 3 people.\n· Up to 5 rooms can exist in the Plaza at once. Rooms don't expire on their own — only the creator can delete one. If all 5 are taken, ask a room's creator to clear it out.\n· Shared files are automatically deleted 7 days after upload (the conversation itself stays).\n· This app has no login, so the PIN is just a light, on-screen check — not real security. Don't share anything sensitive.",
     },
   },
 };
@@ -251,6 +301,7 @@ const STRINGS = {
 const NAV_PAGES = [
   ["dashboard", "today", "weekly", "projects"],
   ["calendar", "memos", "search", "archive"],
+  ["plaza"],
 ];
 
 const FIXED_HOLIDAYS = [
@@ -304,6 +355,18 @@ function toDateStr(d) {
 }
 function toTimeStr(d) {
   return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function getDeviceId() {
+  try {
+    let id = localStorage.getItem("tracker-device-id");
+    if (!id) {
+      id = "d-" + Date.now() + "-" + Math.random().toString(36).slice(2, 10);
+      localStorage.setItem("tracker-device-id", id);
+    }
+    return id;
+  } catch (e) {
+    return "d-" + Date.now();
+  }
 }
 function addDays(d, n) {
   const r = new Date(d);
@@ -409,6 +472,25 @@ function App() {
   const [infoTab, setInfoTab] = useState(null);
   const [fcmToken, setFcmToken] = useState(null);
   const [ready, setReady] = useState(false);
+
+  const [deviceId] = useState(getDeviceId);
+  const [plazaRooms, setPlazaRooms] = useState([]);
+  const [plazaLoading, setPlazaLoading] = useState(false);
+  const [plazaError, setPlazaError] = useState("");
+  const [activeRoomId, setActiveRoomId] = useState(null);
+  const [activeRoomName, setActiveRoomName] = useState("");
+  const [activeRoomCreatorId, setActiveRoomCreatorId] = useState(null);
+  const [roomMessages, setRoomMessages] = useState([]);
+  const [createRoomOpen, setCreateRoomOpen] = useState(false);
+  const [newRoomName, setNewRoomName] = useState("");
+  const [newRoomPin, setNewRoomPin] = useState("");
+  const [joinRoomTarget, setJoinRoomTarget] = useState(null);
+  const [joinPinDraft, setJoinPinDraft] = useState("");
+  const [joinError, setJoinError] = useState("");
+  const [plazaVerified, setPlazaVerified] = useState({});
+  const [messageDraft, setMessageDraft] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [confirmDeleteRoomId, setConfirmDeleteRoomId] = useState(null);
 
   const [newTask, setNewTask] = useState("");
   const [newTaskProj, setNewTaskProj] = useState("");
@@ -540,6 +622,200 @@ function App() {
     }
   };
 
+  const loadPlazaRooms = useCallback(async () => {
+    if (!window.fbDb) return;
+    setPlazaLoading(true);
+    try {
+      const snap = await window.fbDb.collection("plazaRooms").orderBy("createdAt", "desc").get();
+      setPlazaRooms(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    } catch (e) {
+      console.error("Plaza room list failed", e);
+    }
+    setPlazaLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (tab === "plaza" && !activeRoomId) loadPlazaRooms();
+  }, [tab, activeRoomId, loadPlazaRooms]);
+
+  const loadRoomMessages = useCallback(async (roomId) => {
+    if (!window.fbDb) return;
+    try {
+      const snap = await window.fbDb.collection("plazaRooms").doc(roomId).collection("messages").orderBy("createdAt", "asc").get();
+      setRoomMessages(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    } catch (e) {
+      console.error("Plaza messages load failed", e);
+    }
+  }, []);
+
+  // 방에 들어가있는 동안 5초마다 새 메시지를 확인 (실시간 리스너 없이 가볍게 폴링)
+  useEffect(() => {
+    if (!activeRoomId) return;
+    const id = setInterval(() => loadRoomMessages(activeRoomId), 5000);
+    return () => clearInterval(id);
+  }, [activeRoomId, loadRoomMessages]);
+
+  const enterRoom = (roomId, name, creatorDeviceId) => {
+    setActiveRoomId(roomId);
+    setActiveRoomName(name);
+    setActiveRoomCreatorId(creatorDeviceId || null);
+    setRoomMessages([]);
+    loadRoomMessages(roomId);
+  };
+
+  // 방을 나가면 30초 동안은 같은 기기에서 PIN을 다시 안 물어봄
+  const leaveRoom = () => {
+    if (activeRoomId) {
+      setPlazaVerified((prev) => ({ ...prev, [activeRoomId]: Date.now() + 30000 }));
+    }
+    setActiveRoomId(null);
+    setActiveRoomName("");
+    setActiveRoomCreatorId(null);
+    setRoomMessages([]);
+    loadPlazaRooms();
+  };
+
+  const goHome = () => {
+    setTab("dashboard");
+    setNavPageIndex(0);
+  };
+
+  const openRoom = (room) => {
+    const grace = plazaVerified[room.id];
+    if (grace && grace > Date.now()) {
+      enterRoom(room.id, room.name, room.creatorDeviceId);
+      return;
+    }
+    setJoinRoomTarget(room);
+    setJoinPinDraft("");
+    setJoinError("");
+  };
+
+  const createPlazaRoom = async () => {
+    const name = newRoomName.trim();
+    const pin = newRoomPin.trim();
+    setPlazaError("");
+    if (!name || !/^\d{4}$/.test(pin)) {
+      setPlazaError(L.plazaInvalidCreate);
+      return;
+    }
+    if (plazaRooms.length >= 5) {
+      setPlazaError(L.plazaRoomsFull);
+      return;
+    }
+    try {
+      const roomRef = window.fbDb.collection("plazaRooms").doc();
+      await roomRef.set({
+        name,
+        members: [deviceId],
+        creatorDeviceId: deviceId,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      await window.fbDb.collection("plazaRoomSecrets").doc(roomRef.id).set({ pin });
+      setCreateRoomOpen(false);
+      setNewRoomName("");
+      setNewRoomPin("");
+      enterRoom(roomRef.id, name, deviceId);
+    } catch (e) {
+      console.error("Plaza room create failed", e);
+      setPlazaError(L.plazaCreateFailed);
+    }
+  };
+
+  const attemptJoinRoom = async () => {
+    const room = joinRoomTarget;
+    if (!room) return;
+    const pin = joinPinDraft.trim();
+    setJoinError("");
+    try {
+      const secretDoc = await window.fbDb.collection("plazaRoomSecrets").doc(room.id).get();
+      const realPin = secretDoc.exists ? secretDoc.data().pin : null;
+      if (!realPin || pin !== realPin) {
+        setJoinError(L.plazaWrongPin);
+        return;
+      }
+      const members = room.members || [];
+      if (!members.includes(deviceId)) {
+        if (members.length >= 3) {
+          setJoinError(L.plazaMemberFull);
+          return;
+        }
+        await window.fbDb.collection("plazaRooms").doc(room.id).update({
+          members: firebase.firestore.FieldValue.arrayUnion(deviceId),
+        });
+      }
+      setJoinRoomTarget(null);
+      setJoinPinDraft("");
+      enterRoom(room.id, room.name, room.creatorDeviceId);
+    } catch (e) {
+      console.error("Plaza join failed", e);
+      setJoinError(L.plazaCreateFailed);
+    }
+  };
+
+  const sendPlazaMessage = async () => {
+    const text = messageDraft.trim();
+    if (!text || !activeRoomId) return;
+    setMessageDraft("");
+    try {
+      await window.fbDb.collection("plazaRooms").doc(activeRoomId).collection("messages").add({
+        type: "text",
+        text,
+        senderDeviceId: deviceId,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      loadRoomMessages(activeRoomId);
+    } catch (e) {
+      console.error("Plaza send failed", e);
+    }
+  };
+
+  const uploadPlazaFile = async (file) => {
+    if (!file || !activeRoomId || !window.fbStorage) return;
+    setUploading(true);
+    setPlazaError("");
+    try {
+      const path = `plaza/${activeRoomId}/${Date.now()}_${file.name}`;
+      const ref = window.fbStorage.ref(path);
+      await ref.put(file);
+      const url = await ref.getDownloadURL();
+      await window.fbDb.collection("plazaRooms").doc(activeRoomId).collection("messages").add({
+        type: "file",
+        fileName: file.name,
+        fileURL: url,
+        filePath: path,
+        fileSize: file.size,
+        senderDeviceId: deviceId,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      loadRoomMessages(activeRoomId);
+    } catch (e) {
+      console.error("Plaza upload failed", e);
+      setPlazaError(L.plazaUploadFailed);
+    }
+    setUploading(false);
+  };
+
+  const deletePlazaRoom = async (roomId) => {
+    try {
+      const msgsSnap = await window.fbDb.collection("plazaRooms").doc(roomId).collection("messages").get();
+      await Promise.all(msgsSnap.docs.map(async (d) => {
+        const data = d.data();
+        if (data.filePath && window.fbStorage) {
+          try { await window.fbStorage.ref(data.filePath).delete(); } catch (e) {}
+        }
+        await d.ref.delete();
+      }));
+      await window.fbDb.collection("plazaRoomSecrets").doc(roomId).delete();
+      await window.fbDb.collection("plazaRooms").doc(roomId).delete();
+      setConfirmDeleteRoomId(null);
+      if (activeRoomId === roomId) leaveRoom();
+      else loadPlazaRooms();
+    } catch (e) {
+      console.error("Plaza room delete failed", e);
+    }
+  };
+
   const saveProjects = useCallback(async (next) => {
     setProjects(next);
     try {
@@ -617,6 +893,12 @@ function App() {
     saveTasks(tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
   };
   const deleteTask = (id) => {
+    const tk = tasks.find((t) => t.id === id);
+    if (tk && tk.firestoreReminderId && window.fbDb) {
+      window.fbDb.collection("reminders").doc(tk.firestoreReminderId).delete().catch((e) => {
+        console.error("Firestore reminder delete failed", e);
+      });
+    }
     saveTasks(tasks.filter((t) => t.id !== id));
   };
   const ensureFcmToken = async () => {
@@ -1825,6 +2107,115 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
             </div>
           </div>
         )}
+
+        {tab === "plaza" && (
+          <div>
+            {!activeRoomId ? (
+              <div>
+                <button onClick={goHome} style={{ background: "none", border: "none", color: T.textMuted, fontSize: 13, cursor: "pointer", padding: 0, marginBottom: 10 }}>
+                  {"‹ "}{L.plazaHome}
+                </button>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, display: "flex", alignItems: "center" }}>
+                    {L.plaza}
+                    <InfoIcon tabKey="plaza" />
+                  </div>
+                  <button
+                    onClick={() => { setCreateRoomOpen(true); setNewRoomName(""); setNewRoomPin(""); setPlazaError(""); }}
+                    disabled={plazaRooms.length >= 5}
+                    style={{ fontSize: 12.5, padding: "7px 12px", borderRadius: 8, border: `1px solid ${T.border}`, background: plazaRooms.length >= 5 ? T.rowBorder : "#fff", color: plazaRooms.length >= 5 ? T.textMuted : T.text, cursor: plazaRooms.length >= 5 ? "default" : "pointer" }}
+                  >
+                    + {L.plazaCreateRoom}
+                  </button>
+                </div>
+
+                {plazaRooms.length === 0 && !plazaLoading && (
+                  <div style={{ textAlign: "center", color: T.textMuted, fontSize: 13, padding: "20px 0" }}>{L.plazaNoRooms}</div>
+                )}
+
+                {plazaRooms.map((room) => (
+                  <button
+                    key={room.id}
+                    onClick={() => openRoom(room)}
+                    style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", background: "#fff", border: `1px solid ${T.border}`, borderRadius: 10, padding: "13px 14px", marginBottom: 8, cursor: "pointer", textAlign: "left" }}
+                  >
+                    <span style={{ fontSize: 14, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{room.name}</span>
+                    <span style={{ fontSize: 12, color: T.textSecondary, flexShrink: 0, marginLeft: 8 }}>{L.plazaMembers((room.members || []).length, 3)}</span>
+                  </button>
+                ))}
+
+                {plazaError && <div style={{ fontSize: 12, color: "#B5504A", textAlign: "center", marginTop: 8 }}>{plazaError}</div>}
+
+                <div style={{ fontSize: 11, color: T.textMuted, textAlign: "center", marginTop: 16 }}>{L.plazaFileExpiry}</div>
+              </div>
+            ) : (
+              <div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                  <button onClick={leaveRoom} style={{ background: "none", border: "none", color: T.textMuted, fontSize: 13, cursor: "pointer", padding: 0 }}>
+                    {"‹ "}{L.plazaLeave}
+                  </button>
+                  <span style={{ fontSize: 14, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 160 }}>{activeRoomName}</span>
+                  {activeRoomCreatorId === deviceId ? (
+                    <button onClick={() => setConfirmDeleteRoomId(activeRoomId)} style={{ background: "none", border: "none", color: "#B5504A", fontSize: 12.5, cursor: "pointer", padding: 0 }}>
+                      {L.plazaDeleteRoom}
+                    </button>
+                  ) : (
+                    <span style={{ width: 1 }} />
+                  )}
+                </div>
+
+                <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, padding: 12, minHeight: 240, marginBottom: 10 }}>
+                  {roomMessages.length === 0 && (
+                    <div style={{ textAlign: "center", color: T.textMuted, fontSize: 13, padding: "20px 0" }}>{L.plazaNoMessages}</div>
+                  )}
+                  {roomMessages.map((m) => (
+                    <div key={m.id} style={{ marginBottom: 10 }}>
+                      {m.type === "text" ? (
+                        <div style={{ fontSize: 13.5, color: T.text, wordBreak: "break-word" }}>{m.text}</div>
+                      ) : (
+                        <a
+                          href={m.fileURL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: T.accent, textDecoration: "none" }}
+                        >
+                          📎 {m.fileName}
+                          <span style={{ color: T.textMuted, fontSize: 11, flexShrink: 0 }}>({Math.round((m.fileSize || 0) / 1024)}KB)</span>
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ display: "flex", gap: 6 }}>
+                  <input
+                    value={messageDraft}
+                    onChange={(e) => setMessageDraft(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") sendPlazaMessage(); }}
+                    placeholder={L.plazaMessagePlaceholder}
+                    style={{ flex: 1, minWidth: 0, height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 11px", fontSize: 13.5, outline: "none", color: T.text }}
+                  />
+                  <label style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 40, height: 40, border: `1px solid ${T.border}`, borderRadius: 8, cursor: "pointer", flexShrink: 0, boxSizing: "border-box" }}>
+                    📎
+                    <input
+                      type="file"
+                      onChange={(e) => { const f = e.target.files[0]; e.target.value = ""; if (f) uploadPlazaFile(f); }}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                  <button
+                    onClick={sendPlazaMessage}
+                    style={{ padding: "0 14px", height: 40, borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", flexShrink: 0 }}
+                  >
+                    {L.plazaSend}
+                  </button>
+                </div>
+                {uploading && <div style={{ fontSize: 11.5, color: T.textMuted, marginTop: 6 }}>{L.plazaUploading}</div>}
+                {plazaError && <div style={{ fontSize: 11.5, color: "#B5504A", marginTop: 6 }}>{plazaError}</div>}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div
@@ -2035,7 +2426,7 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
         >
           <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 14, padding: 20, boxSizing: "border-box" }}>
             <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{L[infoTab]}</div>
-            <div style={{ fontSize: 13, color: T.textSecondary, lineHeight: 1.5, marginBottom: 18 }}>{L.tabInfo[infoTab]}</div>
+            <div style={{ fontSize: 13, color: T.textSecondary, lineHeight: 1.5, marginBottom: 18, whiteSpace: "pre-line" }}>{L.tabInfo[infoTab]}</div>
             <button
               onClick={() => setInfoTab(null)}
               style={{ width: "100%", padding: "10px 0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
@@ -2060,6 +2451,108 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
             >
               {L.ok}
             </button>
+          </div>
+        </div>
+      )}
+
+      {createRoomOpen && (
+        <div
+          onClick={() => setCreateRoomOpen(false)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60, padding: 20 }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 340, borderRadius: 14, padding: 20, boxSizing: "border-box" }}>
+            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>{L.plazaCreateRoom}</div>
+            <input
+              value={newRoomName}
+              onChange={(e) => setNewRoomName(e.target.value)}
+              placeholder={L.plazaRoomNamePlaceholder}
+              style={{ width: "100%", height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 12px", fontSize: 13.5, outline: "none", color: T.text, marginBottom: 10 }}
+            />
+            <input
+              value={newRoomPin}
+              onChange={(e) => setNewRoomPin(e.target.value.replace(/\D/g, "").slice(0, 4))}
+              placeholder={L.plazaPinPlaceholder}
+              inputMode="numeric"
+              maxLength={4}
+              style={{ width: "100%", height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 12px", fontSize: 13.5, outline: "none", color: T.text, marginBottom: 10, letterSpacing: 4 }}
+            />
+            {plazaError && <div style={{ fontSize: 12, color: "#B5504A", marginBottom: 10 }}>{plazaError}</div>}
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                onClick={() => setCreateRoomOpen(false)}
+                style={{ flex: 1, height: 40, borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
+              >
+                {L.cancel}
+              </button>
+              <button
+                onClick={createPlazaRoom}
+                style={{ flex: 1, height: 40, borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+              >
+                {L.save}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {joinRoomTarget && (
+        <div
+          onClick={() => setJoinRoomTarget(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60, padding: 20 }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 14, padding: 20, boxSizing: "border-box", textAlign: "center" }}>
+            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{joinRoomTarget.name}</div>
+            <div style={{ fontSize: 12.5, color: T.textSecondary, marginBottom: 14 }}>{L.plazaEnterPinTitle}</div>
+            <input
+              value={joinPinDraft}
+              onChange={(e) => setJoinPinDraft(e.target.value.replace(/\D/g, "").slice(0, 4))}
+              onKeyDown={(e) => { if (e.key === "Enter") attemptJoinRoom(); }}
+              inputMode="numeric"
+              maxLength={4}
+              autoFocus
+              style={{ width: "100%", height: 44, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 12px", fontSize: 18, outline: "none", color: T.text, marginBottom: 10, textAlign: "center", letterSpacing: 8 }}
+            />
+            {joinError && <div style={{ fontSize: 12, color: "#B5504A", marginBottom: 10 }}>{joinError}</div>}
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                onClick={() => setJoinRoomTarget(null)}
+                style={{ flex: 1, height: 40, borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
+              >
+                {L.cancel}
+              </button>
+              <button
+                onClick={attemptJoinRoom}
+                style={{ flex: 1, height: 40, borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+              >
+                {L.plazaEnterRoom}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmDeleteRoomId && (
+        <div
+          onClick={() => setConfirmDeleteRoomId(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 65, padding: 20 }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 14, padding: 20, boxSizing: "border-box" }}>
+            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 8 }}>{L.plazaDeleteRoomTitle}</div>
+            <div style={{ fontSize: 13, color: T.textSecondary, marginBottom: 18 }}>{L.plazaDeleteRoomBody}</div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                onClick={() => setConfirmDeleteRoomId(null)}
+                style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 14, cursor: "pointer", color: T.text }}
+              >
+                {L.cancel}
+              </button>
+              <button
+                onClick={() => deletePlazaRoom(confirmDeleteRoomId)}
+                style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", background: "#B5504A", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+              >
+                {L.delete}
+              </button>
+            </div>
           </div>
         </div>
       )}

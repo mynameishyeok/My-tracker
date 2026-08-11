@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 알림 예약: 개인용 앱이라 별도 로그인 없이 단순하게 열어둡니다.
+    // (주의: Firebase 설정값 자체가 클라이언트 코드에 공개되기 때문에,
+    //  이론적으로는 이 프로젝트 설정값을 아는 사람이면 누구나 읽고 쓸 수 있습니다.
+    //  개인적으로 쓰기엔 괜찮은 수준이지만, 완전한 보안은 아니라는 점을 알아두세요.)
+    match /reminders/{reminderId} {
+      allow read, write: if true;
+    }
+
+    // 광장(공유방) 목록 - PIN은 여기 들어있지 않아서 목록만 봐서는 PIN이 새어나가지 않습니다.
+    // (역시 로그인 없는 개인/지인용 수준의 가벼운 보호입니다.)
+    match /plazaRooms/{roomId} {
+      allow read: if true;
+      allow create: if request.resource.data.members is list
+                    && request.resource.data.members.size() <= 3;
+      allow update: if request.resource.data.members is list
+                    && request.resource.data.members.size() <= 3;
+      allow delete: if true;
+
+      match /messages/{messageId} {
+        allow read, write: if true;
+      }
+    }
+
+    // 방 PIN 저장용 - 방 목록 조회에는 안 딸려오고, 입장을 시도할 때만 개별 문서로 조회합니다.
+    match /plazaRoomSecrets/{roomId} {
+      allow read, write: if true;
+    }
+  }
+}

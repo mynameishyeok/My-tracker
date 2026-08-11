@@ -57,6 +57,10 @@ exports.sendDueReminders = onSchedule(
               title: "⏰ 알림",
               body: title || "",
             },
+            // tag를 reminder 문서 id로 고정 - 반복 발송돼도 알림이 여러 개 쌓이지 않고 1개로 갱신됨
+            data: {
+              tag: doc.id,
+            },
           });
         } catch (e) {
           logger.error(`reminder ${doc.id} 발송 실패`, e);
@@ -70,5 +74,44 @@ exports.sendDueReminders = onSchedule(
     }));
 
     logger.info(`reminder ${due.length}건 발송 완료`);
+  }
+);
+
+// 파일이 스토리지에 며칠까지 남아있을 수 있는지 (공유일로부터 7일)
+const PLAZA_FILE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+
+// 매일 새벽 3시 실행되어, 광장(공유방)에 올라온 지 7일 지난 파일을 Storage와
+// Firestore 메타데이터에서 함께 정리한다. 방은 자동으로 지우지 않고 방장이 수동으로만 지운다.
+exports.cleanupExpiredPlazaFiles = onSchedule(
+  { schedule: "0 3 * * *", timeZone: "Asia/Seoul" },
+  async () => {
+    const db = admin.firestore();
+    const bucket = admin.storage().bucket();
+    const now = Date.now();
+
+    const roomsSnap = await db.collection("plazaRooms").get();
+    if (roomsSnap.empty) return;
+
+    let deletedCount = 0;
+
+    for (const roomDoc of roomsSnap.docs) {
+      const messagesSnap = await roomDoc.ref.collection("messages").where("type", "==", "file").get();
+      for (const msgDoc of messagesSnap.docs) {
+        const { createdAt, filePath } = msgDoc.data();
+        if (!createdAt || now - createdAt.toMillis() < PLAZA_FILE_MAX_AGE_MS) continue;
+
+        if (filePath) {
+          try {
+            await bucket.file(filePath).delete();
+          } catch (e) {
+            logger.error(`plaza 파일 삭제 실패: ${filePath}`, e);
+          }
+        }
+        await msgDoc.ref.delete();
+        deletedCount++;
+      }
+    }
+
+    logger.info(`plaza 만료 파일 ${deletedCount}건 정리 완료`);
   }
 );
