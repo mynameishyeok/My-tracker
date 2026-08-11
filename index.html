@@ -21,6 +21,27 @@
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+<!-- Firebase (알림 예약 저장용) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
+<script>
+  // =========================================================
+  // 이 값들은 본인 Firebase 프로젝트 설정값으로 이미 채워져 있습니다.
+  var FIREBASE_CONFIG = {
+    apiKey: "AIzaSyDRR1limycC830YxqDjjzTs9CpRjVEpYdg",
+    authDomain: "my-egg-e402b.firebaseapp.com",
+    projectId: "my-egg-e402b",
+    storageBucket: "my-egg-e402b.firebasestorage.app",
+    messagingSenderId: "338209721808",
+    appId: "1:338209721808:web:7e82095dba14f09aa5bdd5",
+  };
+  var VAPID_KEY = "BGgYKVyH5euLA_qk86LSPqvOKu5uNW-DiyTkfbq-dGZItUAn9PAk1zusdHDaw_CjLP7RRd_S0cEdK6EYHfyg74I";
+  // =========================================================
+  firebase.initializeApp(FIREBASE_CONFIG);
+  window.fbDb = firebase.firestore();
+</script>
+
 <script>
   // 진짜 브라우저 저장소(localStorage) 기반 저장소 - Claude 아티팩트의 window.storage와 동일한 인터페이스로 흉내냄
   window.storage = {
@@ -140,6 +161,16 @@ const STRINGS = {
     reminderDenied: "알림 권한이 꺼져있어요. 브라우저 설정에서 허용해주세요.",
     reminderFiredTitle: "⏰ 알림",
     ok: "확인",
+    tabInfo: {
+      dashboard: "전체 진행 상황과 최근 활동을 한눈에 볼 수 있어요.",
+      today: "오늘 할 일을 적고 체크하며 관리하세요.",
+      weekly: "프로젝트별로 이번 주 목표를 정하고, 요일별로 할 일을 계획해보세요.",
+      memos: "형식 없이 자유롭게 메모를 남기고 관리하세요.",
+      search: "할 일, 메모, 프로젝트를 한 번에 검색하세요. 초성 검색도 가능해요.",
+      archive: "완료한 할 일과 주간 요약을 모아보고, 백업 파일로 내보낼 수 있어요.",
+      projects: "프로젝트를 등록하고 카테고리별로 관리하세요.",
+      calendar: "월별 일정과 공휴일을 확인하고, 날짜별로 메모를 남기세요.",
+    },
   },
   en: {
     loading: "Loading...",
@@ -199,6 +230,16 @@ const STRINGS = {
     reminderDenied: "Notifications are turned off. Please allow them in your browser settings.",
     reminderFiredTitle: "⏰ Reminder",
     ok: "OK",
+    tabInfo: {
+      dashboard: "See your overall progress and recent activity at a glance.",
+      today: "Add and check off today's tasks.",
+      weekly: "Set this week's goal per project and plan tasks by day.",
+      memos: "Jot down and manage free-form notes.",
+      search: "Search tasks, notes, and projects at once.",
+      archive: "Review completed tasks and weekly summaries, and export a backup file.",
+      projects: "Add and manage your projects by category.",
+      calendar: "View the month's schedule and holidays, and leave notes on any date.",
+    },
   },
 };
 
@@ -358,6 +399,8 @@ function App() {
   const [reminderTaskId, setReminderTaskId] = useState(null);
   const [reminderDraft, setReminderDraft] = useState("");
   const [firedReminder, setFiredReminder] = useState(null);
+  const [infoTab, setInfoTab] = useState(null);
+  const [fcmToken, setFcmToken] = useState(null);
   const [ready, setReady] = useState(false);
 
   const [newTask, setNewTask] = useState("");
@@ -570,24 +613,67 @@ function App() {
   const deleteTask = (id) => {
     saveTasks(tasks.filter((t) => t.id !== id));
   };
+  const ensureFcmToken = async () => {
+    if (fcmToken) return fcmToken;
+    try {
+      if (typeof Notification === "undefined" || typeof firebase === "undefined" || !firebase.messaging.isSupported()) return null;
+      let perm = Notification.permission;
+      if (perm === "default") perm = await Notification.requestPermission();
+      if (perm !== "granted") return null;
+      const reg = await navigator.serviceWorker.register("./firebase-messaging-sw.js");
+      const messaging = firebase.messaging();
+      const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+      setFcmToken(token);
+      return token;
+    } catch (e) {
+      console.error("FCM setup failed", e);
+      return null;
+    }
+  };
   const openReminder = (taskId) => {
     const tk = tasks.find((t) => t.id === taskId);
     setReminderDraft(tk && tk.reminderAt ? tk.reminderAt.slice(0, 16) : "");
     setReminderTaskId(taskId);
   };
-  const saveReminder = () => {
+  const saveReminder = async () => {
     if (!reminderDraft) {
       setReminderTaskId(null);
       return;
     }
-    if (typeof Notification !== "undefined" && Notification.permission === "default") {
-      Notification.requestPermission();
+    const tk = tasks.find((t) => t.id === reminderTaskId);
+    const token = await ensureFcmToken();
+    let firestoreId = tk && tk.firestoreReminderId;
+    try {
+      if (window.fbDb) {
+        const docData = {
+          title: tk ? tk.title : "",
+          remindAt: firebase.firestore.Timestamp.fromDate(new Date(reminderDraft)),
+          fired: false,
+          fcmToken: token || null,
+        };
+        if (firestoreId) {
+          await window.fbDb.collection("reminders").doc(firestoreId).set(docData);
+        } else {
+          const ref = await window.fbDb.collection("reminders").add(docData);
+          firestoreId = ref.id;
+        }
+      }
+    } catch (e) {
+      console.error("Firestore reminder save failed", e);
     }
-    saveTasks(tasks.map((t) => (t.id === reminderTaskId ? { ...t, reminderAt: reminderDraft, reminderFired: false } : t)));
+    saveTasks(tasks.map((t) => (t.id === reminderTaskId ? { ...t, reminderAt: reminderDraft, reminderFired: false, firestoreReminderId: firestoreId || null } : t)));
     setReminderTaskId(null);
   };
-  const clearReminder = () => {
-    saveTasks(tasks.map((t) => (t.id === reminderTaskId ? { ...t, reminderAt: null, reminderFired: false } : t)));
+  const clearReminder = async () => {
+    const tk = tasks.find((t) => t.id === reminderTaskId);
+    if (tk && tk.firestoreReminderId && window.fbDb) {
+      try {
+        await window.fbDb.collection("reminders").doc(tk.firestoreReminderId).delete();
+      } catch (e) {
+        console.error("Firestore reminder delete failed", e);
+      }
+    }
+    saveTasks(tasks.map((t) => (t.id === reminderTaskId ? { ...t, reminderAt: null, reminderFired: false, firestoreReminderId: null } : t)));
     setReminderTaskId(null);
   };
   const addProject = () => {
@@ -671,6 +757,31 @@ function App() {
       </span>
     );
   };
+
+  const InfoIcon = ({ tabKey }) => (
+    <button
+      onClick={() => setInfoTab(tabKey)}
+      style={{
+        width: 20,
+        height: 20,
+        borderRadius: "50%",
+        border: `1px solid ${T.border}`,
+        background: "#fff",
+        color: T.textMuted,
+        fontSize: 12,
+        fontWeight: 700,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        marginLeft: 6,
+        flexShrink: 0,
+        padding: 0,
+      }}
+    >
+      !
+    </button>
+  );
 
   const totalTasks = tasks.length;
   const totalDone = tasks.filter((t) => t.done).length;
@@ -867,7 +978,10 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
 
         {tab === "dashboard" && (
           <div>
-            <div style={{ fontSize: 18, fontWeight: 600, margin: "2px 0 14px" }}>{L.dashboard}</div>
+            <div style={{ display: "flex", alignItems: "center", margin: "2px 0 14px" }}>
+              <div style={{ fontSize: 18, fontWeight: 600 }}>{L.dashboard}</div>
+              <InfoIcon tabKey="dashboard" />
+            </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, marginBottom: 16, border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden", background: T.rowBorder }}>
               {[
@@ -951,7 +1065,10 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
 
         {tab === "today" && (
           <div>
-            <div style={{ fontSize: 20, fontWeight: 600, marginBottom: 2 }}>{todayLabel}</div>
+            <div style={{ fontSize: 20, fontWeight: 600, marginBottom: 2, display: "flex", alignItems: "center" }}>
+              {todayLabel}
+              <InfoIcon tabKey="today" />
+            </div>
             <div style={{ fontSize: 12.5, color: T.textSecondary, marginBottom: 16 }}>
               {todaysTasks.length === 0
                 ? L.todayAddPrompt
@@ -1098,8 +1215,9 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                 "›"
               </button>
             </div>
-            <div style={{ fontSize: 11.5, color: T.textMuted, textAlign: "center", marginBottom: 16 }}>
+            <div style={{ fontSize: 11.5, color: T.textMuted, textAlign: "center", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>
               {L.weeklyHint}
+              <InfoIcon tabKey="weekly" />
             </div>
 
             {projects.length === 0 && (
@@ -1219,7 +1337,10 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
         {tab === "memos" && (
           <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <div style={{ fontSize: 18, fontWeight: 600 }}>{L.memos}</div>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ fontSize: 18, fontWeight: 600 }}>{L.memos}</div>
+                <InfoIcon tabKey="memos" />
+              </div>
               <button
                 onClick={addMemo}
                 style={{
@@ -1280,7 +1401,10 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
 
         {tab === "search" && (
           <div>
-            <div style={{ fontSize: 18, fontWeight: 600, margin: "2px 0 14px" }}>{L.search}</div>
+            <div style={{ display: "flex", alignItems: "center", margin: "2px 0 14px" }}>
+              <div style={{ fontSize: 18, fontWeight: 600 }}>{L.search}</div>
+              <InfoIcon tabKey="search" />
+            </div>
             <div style={{ position: "relative", marginBottom: 18 }}>
               <input
                 value={searchQuery}
@@ -1433,7 +1557,10 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
         {tab === "archive" && (
           <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-              <div style={{ fontSize: 18, fontWeight: 600 }}>{L.archive}</div>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ fontSize: 18, fontWeight: 600 }}>{L.archive}</div>
+                <InfoIcon tabKey="archive" />
+              </div>
               <button
                 onClick={exportData}
                 style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, padding: "7px 11px", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", color: T.text, cursor: "pointer" }}
@@ -1514,7 +1641,10 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
 
         {tab === "projects" && (
           <div>
-            <div style={{ fontSize: 18, fontWeight: 600, margin: "2px 0 14px" }}>{L.projects}</div>
+            <div style={{ display: "flex", alignItems: "center", margin: "2px 0 14px" }}>
+              <div style={{ fontSize: 18, fontWeight: 600 }}>{L.projects}</div>
+              <InfoIcon tabKey="projects" />
+            </div>
             <div style={{ background: "#fff", borderRadius: 10, padding: 14, marginBottom: 16, border: `1px solid ${T.border}` }}>
               <input
                 value={newProjName}
@@ -1683,8 +1813,9 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                 );
               })}
             </div>
-            <div style={{ fontSize: 11, color: T.textMuted, marginTop: 12, textAlign: "center" }}>
+            <div style={{ fontSize: 11, color: T.textMuted, marginTop: 12, textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center" }}>
               {L.calendarHint}
+              <InfoIcon tabKey="calendar" />
             </div>
           </div>
         )}
@@ -1854,13 +1985,13 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                 type="date"
                 value={reminderDraft ? reminderDraft.split("T")[0] : ""}
                 onChange={(e) => setReminderDraft(e.target.value + "T" + (reminderDraft && reminderDraft.split("T")[1] ? reminderDraft.split("T")[1] : "09:00"))}
-                style={{ flex: 1, minWidth: 0, width: 0, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 6px", fontSize: 12.5, outline: "none", color: T.text }}
+                style={{ flex: 1, minWidth: 0, width: 0, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 6px", fontSize: 12.5, outline: "none", color: T.text, background: "#fff", WebkitAppearance: "none", appearance: "none" }}
               />
               <input
                 type="time"
                 value={reminderDraft && reminderDraft.split("T")[1] ? reminderDraft.split("T")[1] : ""}
                 onChange={(e) => setReminderDraft((reminderDraft && reminderDraft.split("T")[0] ? reminderDraft.split("T")[0] : todayStr) + "T" + e.target.value)}
-                style={{ flex: 1, minWidth: 0, width: 0, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 6px", fontSize: 12.5, outline: "none", color: T.text }}
+                style={{ flex: 1, minWidth: 0, width: 0, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 6px", fontSize: 12.5, outline: "none", color: T.text, background: "#fff", WebkitAppearance: "none", appearance: "none" }}
               />
             </div>
             <div style={{ display: "flex", gap: 8 }}>
@@ -1877,6 +2008,24 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                 {L.save}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {infoTab && (
+        <div
+          onClick={() => setInfoTab(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 65, padding: 20 }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 14, padding: 20, boxSizing: "border-box" }}>
+            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{L[infoTab]}</div>
+            <div style={{ fontSize: 13, color: T.textSecondary, lineHeight: 1.5, marginBottom: 18 }}>{L.tabInfo[infoTab]}</div>
+            <button
+              onClick={() => setInfoTab(null)}
+              style={{ width: "100%", padding: "10px 0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+            >
+              {L.ok}
+            </button>
           </div>
         </div>
       )}
