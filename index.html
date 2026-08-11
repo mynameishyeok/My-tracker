@@ -302,6 +302,9 @@ function pad(n) {
 function toDateStr(d) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
+function toTimeStr(d) {
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 function addDays(d, n) {
   const r = new Date(d);
   r.setDate(r.getDate() + n);
@@ -1997,26 +2000,26 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
               <input
                 type="date"
                 value={reminderDraft ? reminderDraft.split("T")[0] : ""}
-                onChange={(e) => setReminderDraft(e.target.value + "T" + (reminderDraft && reminderDraft.split("T")[1] ? reminderDraft.split("T")[1] : "09:00"))}
-                style={{ flex: 1, minWidth: 0, width: 0, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 6px", fontSize: 12.5, outline: "none", color: T.text, background: "#fff", WebkitAppearance: "none", appearance: "none" }}
+                onChange={(e) => setReminderDraft(e.target.value + "T" + (reminderDraft && reminderDraft.split("T")[1] ? reminderDraft.split("T")[1] : toTimeStr(new Date())))}
+                style={{ flex: 1, minWidth: 0, width: 0, height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 6px", fontSize: 12.5, outline: "none", color: T.text, background: "#fff", WebkitAppearance: "none", appearance: "none" }}
               />
               <input
                 type="time"
                 value={reminderDraft && reminderDraft.split("T")[1] ? reminderDraft.split("T")[1] : ""}
                 onChange={(e) => setReminderDraft((reminderDraft && reminderDraft.split("T")[0] ? reminderDraft.split("T")[0] : todayStr) + "T" + e.target.value)}
-                style={{ flex: 1, minWidth: 0, width: 0, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 6px", fontSize: 12.5, outline: "none", color: T.text, background: "#fff", WebkitAppearance: "none", appearance: "none" }}
+                style={{ flex: 1, minWidth: 0, width: 0, height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 6px", fontSize: 12.5, outline: "none", color: T.text, background: "#fff", WebkitAppearance: "none", appearance: "none" }}
               />
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 onClick={clearReminder}
-                style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
+                style={{ flex: 1, height: 40, padding: "0", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
               >
                 {L.reminderClear}
               </button>
               <button
                 onClick={saveReminder}
-                style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                style={{ flex: 1, height: 40, padding: "0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
               >
                 {L.save}
               </button>
