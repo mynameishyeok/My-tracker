@@ -945,7 +945,6 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
         flexDirection: "column",
         borderRadius: 14,
         overflow: "hidden",
-        border: `1px solid ${T.border}`,
       }}
     >
       <div style={{ flex: 1, overflowY: "auto", overscrollBehavior: "none", padding: "22px 16px 18px", minHeight: 560 }}>
@@ -1829,8 +1828,8 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: 2,
-                  padding: "14px 0 10px",
+                  gap: 4,
+                  padding: "18px 0 14px",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
@@ -1842,22 +1841,34 @@ Write a plain, natural 3-4 sentence summary in English of what was accomplished 
             );
           })}
         </div>
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 5, paddingBottom: 7 }}>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", paddingBottom: 10 }}>
           {NAV_PAGES.map((_, i) => (
             <button
               key={i}
               onClick={() => setNavPageIndex(i)}
               style={{
-                width: i === navPageIndex ? 14 : 5,
-                height: 5,
-                borderRadius: 3,
-                background: i === navPageIndex ? T.accent : T.border,
+                width: 36,
+                height: 30,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "none",
                 border: "none",
                 padding: 0,
                 cursor: "pointer",
-                transition: "width 0.15s",
               }}
-            />
+            >
+              <span
+                style={{
+                  display: "block",
+                  width: i === navPageIndex ? 14 : 5,
+                  height: 5,
+                  borderRadius: 3,
+                  background: i === navPageIndex ? T.accent : T.border,
+                  transition: "width 0.15s",
+                }}
+              />
+            </button>
           ))}
         </div>
       </div>
