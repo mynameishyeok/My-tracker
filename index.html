@@ -10,6 +10,17 @@
 <link rel="icon" type="image/svg+xml" href="./icons/favicon.svg">
 <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<!-- iOS 홈화면 실행 시 잠깐 뜨는 스플래시 화면 (기기별 정확한 픽셀 크기가 필요함) -->
+<link rel="apple-touch-startup-image" href="./icons/splash-750x1334.png" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash-1242x2208.png" media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash-1125x2436.png" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash-828x1792.png" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash-1242x2688.png" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash-1080x2340.png" media="screen and (device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash-1170x2532.png" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash-1284x2778.png" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash-1179x2556.png" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash-1290x2796.png" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
 <title>my egg.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -118,7 +129,7 @@ const CATEGORY_STYLES = {
 const CATEGORIES = Object.keys(CATEGORY_STYLES);
 const CATEGORY_LABELS = {
   ko: { 본업: "본업", 부업: "부업", 자기계발: "자기계발", 기타: "기타" },
-  en: { 본업: "Main Job", 부업: "Side Job", 자기계발: "Self-Growth", 기타: "Other" },
+  en: { 본업: "Main", 부업: "Side", 자기계발: "Growth", 기타: "Other" },
 };
 
 const STRINGS = {
@@ -1310,15 +1321,18 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
       }}
     >
       <div style={{ flex: 1, overflowY: "auto", overscrollBehavior: "none", padding: "22px 16px 18px", minHeight: 560 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-          <button
-            onClick={goHome}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 30, height: 30, border: "none", borderRadius: 12, background: T.accentLight, color: T.accentStrong, cursor: "pointer", padding: 0 }}
-          >
-            <TabIcon name="home" size={16} />
-          </button>
-          <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 15 }}>
-            <span style={{ color: T.accentStrong }}>my</span> <span style={{ color: T.accent }}>egg.</span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, position: "relative" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button
+              onClick={goHome}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 30, height: 30, border: "none", borderRadius: 12, background: T.accentLight, color: T.accentStrong, cursor: "pointer", padding: 0, flexShrink: 0 }}
+            >
+              <TabIcon name="home" size={16} />
+            </button>
+            <InfoIcon tabKey={tab} />
+          </div>
+          <span style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 17 }}>
+            <span style={{ color: T.accentStrong }}>me</span><span style={{ color: T.accent }}>.</span>
           </span>
           <button
             onClick={toggleLanguage}
@@ -1350,7 +1364,6 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           <div>
             <div style={{ display: "flex", alignItems: "center", margin: "2px 0 14px" }}>
               <div style={{ fontSize: 18, fontWeight: 600 }}>{L.dashboard}</div>
-              <InfoIcon tabKey="dashboard" />
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, marginBottom: 16, border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden", background: T.rowBorder }}>
@@ -1437,7 +1450,6 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           <div>
             <div style={{ fontSize: 20, fontWeight: 600, marginBottom: 2, display: "flex", alignItems: "center" }}>
               {todayLabel}
-              <InfoIcon tabKey="today" />
             </div>
             <div style={{ fontSize: 12.5, color: T.textSecondary, marginBottom: 16 }}>
               {todaysTasks.length === 0
@@ -1494,7 +1506,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   color: "#fff",
                 }}
               >
-                "+"
+                +
               </button>
             </div>
 
@@ -1553,13 +1565,13 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                       onClick={() => openReminder(t.id)}
                       style={{ background: "none", border: "none", color: t.reminderAt && !t.reminderFired ? T.accentStrong : T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0, fontSize: 17, opacity: t.reminderAt && !t.reminderFired ? 1 : 0.4 }}
                     >
-                      "🔔"
+                      🔔
                     </button>
                     <button
                       onClick={() => deleteTask(t.id)}
                       style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0 , fontSize: 16 }}
                     >
-                      "✕"
+                      ✕
                     </button>
                   </div>
                 ))}
@@ -1573,7 +1585,6 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <div style={{ fontSize: 18, fontWeight: 600 }}>{L.memos}</div>
-                <InfoIcon tabKey="memos" />
               </div>
               <button
                 onClick={addMemo}
@@ -1591,7 +1602,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   color: "#fff",
                 }}
               >
-                "+"
+                +
               </button>
             </div>
 
@@ -1625,7 +1636,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     {fmtDate(new Date(m.createdAt), { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                   </span>
                   <button onClick={() => deleteMemo(m.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 2 , fontSize: 16 }}>
-                    "✕"
+                    ✕
                   </button>
                 </div>
               </div>
@@ -1637,7 +1648,6 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           <div>
             <div style={{ display: "flex", alignItems: "center", margin: "2px 0 14px" }}>
               <div style={{ fontSize: 18, fontWeight: 600 }}>{L.search}</div>
-              <InfoIcon tabKey="search" />
             </div>
             <div style={{ position: "relative", marginBottom: 18 }}>
               <input
@@ -1710,7 +1720,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                                 </div>
                               </div>
                               <button onClick={() => deleteTask(t.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0 , fontSize: 16 }}>
-                                "✕"
+                                ✕
                               </button>
                             </div>
                           );
@@ -1788,7 +1798,6 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           <div>
             <div style={{ display: "flex", alignItems: "center", margin: "2px 0 14px" }}>
               <div style={{ fontSize: 18, fontWeight: 600 }}>{L.archive}</div>
-              <InfoIcon tabKey="archive" />
             </div>
 
             <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>{L.weeklySummaryHistory}</div>
@@ -1798,14 +1807,14 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 onClick={() => goWeek(-1)}
                 style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 16 }}
               >
-                "‹"
+                ‹
               </button>
               <span style={{ fontSize: 12.5, fontWeight: 600 }}>{language === "ko" ? `${viewWeekStart.getFullYear()}년 ${weekLabel}` : `${weekLabel}, ${viewWeekStart.getFullYear()}`}</span>
               <button
                 onClick={() => goWeek(1)}
                 style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 16 }}
               >
-                "›"
+                ›
               </button>
             </div>
             <button
@@ -1872,7 +1881,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                           <ProjectTag projectId={t.projectId} />
                         </div>
                         <button onClick={() => deleteTask(t.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0 , fontSize: 16 }}>
-                          "✕"
+                          ✕
                         </button>
                       </div>
                     ))}
@@ -1887,7 +1896,6 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           <div>
             <div style={{ display: "flex", alignItems: "center", margin: "2px 0 14px" }}>
               <div style={{ fontSize: 18, fontWeight: 600 }}>{L.projects}</div>
-              <InfoIcon tabKey="projects" />
             </div>
             <div style={{ background: "#fff", borderRadius: 16, padding: 14, marginBottom: 16, border: `1px solid ${T.border}` }}>
               <input
@@ -1957,7 +1965,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                           </span>
                         </div>
                         <button onClick={() => deleteProject(p.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", flexShrink: 0 , fontSize: 16 }}>
-                          "✕"
+                          ✕
                         </button>
                       </div>
                       <div style={{ fontSize: 12, color: T.textSecondary, marginBottom: 6 }}>
@@ -1981,7 +1989,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 onClick={() => goMonth(-1)}
                 style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
               >
-                "‹"
+                ‹
               </button>
               <div style={{ fontSize: 15, fontWeight: 600 }}>
                 {language === "ko" ? `${viewYear}년 ${viewMonth}월` : fmtDate(new Date(viewYear, viewMonth - 1, 1), { month: "long", year: "numeric" })}
@@ -1990,7 +1998,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 onClick={() => goMonth(1)}
                 style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
               >
-                "›"
+                ›
               </button>
             </div>
 
@@ -2048,7 +2056,14 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                       {d.getDate()}
                     </span>
                     {holiday && inMonth && (
-                      <span style={{ fontSize: 8, color: T.holidayText, marginTop: 1, lineHeight: 1.1, textAlign: "center" }}>{holiday}</span>
+                      <span style={{ fontSize: 8, color: T.holidayText, marginTop: 1, lineHeight: 1.1, textAlign: "center" }}>
+                        {holiday.indexOf("(") === -1 ? holiday : (
+                          <React.Fragment>
+                            <span style={{ whiteSpace: "nowrap" }}>{holiday.slice(0, holiday.indexOf("("))}</span>
+                            <span style={{ whiteSpace: "nowrap" }}>{holiday.slice(holiday.indexOf("("))}</span>
+                          </React.Fragment>
+                        )}
+                      </span>
                     )}
                     {hasNote && (
                       <span style={{ position: "absolute", bottom: 4, width: 4, height: 4, borderRadius: "50%", background: T.accent }} />
@@ -2057,9 +2072,8 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 );
               })}
             </div>
-            <div style={{ fontSize: 11, color: T.textMuted, marginTop: 12, textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ fontSize: 11, color: T.textMuted, marginTop: 12, textAlign: "center" }}>
               {L.calendarHint}
-              <InfoIcon tabKey="calendar" />
             </div>
           </div>
         )}
@@ -2071,7 +2085,6 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
                   <div style={{ fontSize: 15, fontWeight: 600, display: "flex", alignItems: "center" }}>
                     {L.plaza}
-                    <InfoIcon tabKey="plaza" />
                   </div>
                   <button
                     onClick={() => { setCreateRoomOpen(true); setNewRoomName(""); setNewRoomPin(""); setPlazaError(""); }}
@@ -2257,7 +2270,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
               <div style={{ fontSize: 15, fontWeight: 600 }}>{L.noteFor(selectedDate)}</div>
               <button onClick={() => setSelectedDate(null)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer" , fontSize: 16 }}>
-                "✕"
+                ✕
               </button>
             </div>
             <textarea
@@ -2421,7 +2434,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
               <div style={{ fontSize: 15, fontWeight: 700, wordBreak: "break-word" }}>{summaryItemTitle(openSummaryKey)}</div>
               <button onClick={() => setOpenSummaryKey(null)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", flexShrink: 0, fontSize: 16 }}>
-                "✕"
+                ✕
               </button>
             </div>
             <div style={{ fontSize: 11, color: T.textMuted, marginBottom: 14 }}>{formatWeekRangeLabel(openSummaryKey)}</div>
