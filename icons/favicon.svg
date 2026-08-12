@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="144" viewBox="0 0 30 36">
+  <defs>
+    <radialGradient id="eggShade" cx="38%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+      <stop offset="55%" stop-color="#fbfaf8"></stop>
+      <stop offset="100%" stop-color="#e7e4dd"></stop>
+    </radialGradient>
+  </defs>
+  <path d="M 15 1 C 22 1 27.5 13 27.5 22.5 C 27.5 30.5 21.8 35 15 35 C 8.2 35 2.5 30.5 2.5 22.5 C 2.5 13 8 1 15 1 Z" fill="url(#eggShade)" stroke="#dcdbd6" stroke-width="1"></path>
+  <ellipse cx="11" cy="10.5" rx="3.4" ry="4.6" fill="#ffffff" opacity="0.75"></ellipse>
+</svg>

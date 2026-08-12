@@ -5,8 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="나의 트래커">
-<title>나의 프로젝트 트래커</title>
+<meta name="apple-mobile-web-app-title" content="my egg.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" type="image/svg+xml" href="./icons/favicon.svg">
+<link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<title>my egg.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
   html, body { margin:0; padding:0; height:100%; overflow:hidden; overscroll-behavior:none; background:#FFFFFF; font-family:'Helvetica Neue',Arial,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif; }
@@ -84,26 +91,29 @@ const GEMINI_MODEL = "gemini-3.5-flash";
 
 // ---- Notion 스타일 테마 토큰 ----
 const T = {
-  text: "#1B1A17",
-  textSecondary: "#9B9A97",
-  textMuted: "#B7B4AD",
-  accent: "#1B1A17",
-  border: "#E9E9E7",
-  rowBorder: "#F1F0EE",
-  chipBg: "#F1F0EE",
-  chipText: "#6B6A66",
-  track: "#EDECEA",
-  holidayBg: "#F7ECEA",
-  holidayText: "#B5504A",
-  sun: "#B5504A",
-  sat: "#4A6FA5",
+  text: "#15140E",
+  textSecondary: "#6B6961",
+  textMuted: "#94928B",
+  accent: "#9F8400",
+  accentStrong: "#655406",
+  accentLight: "#F4EFD8",
+  border: "#DCDBD6",
+  rowBorder: "#E8E8E5",
+  chipBg: "#F4EFD8",
+  chipText: "#655406",
+  track: "#E2E1DD",
+  warn: "#B36139",
+  holidayBg: "#F7EDE7",
+  holidayText: "#B36139",
+  sun: "#B36139",
+  sat: "#2E6A8A",
 };
 
 const CATEGORY_STYLES = {
-  본업: { dot: "#3B5BA9" },
-  부업: { dot: "#D97706" },
-  자기계발: { dot: "#3F9142" },
-  기타: { dot: "#8A8578" },
+  본업: { dot: "#9F8400" },
+  부업: { dot: "#537E54" },
+  자기계발: { dot: "#2E6A8A" },
+  기타: { dot: "#7C7A74" },
 };
 const CATEGORIES = Object.keys(CATEGORY_STYLES);
 const CATEGORY_LABELS = {
@@ -324,6 +334,75 @@ const WEEKDAYS_BY_LANG = {
   en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
 };
 
+// 하단 탭 아이콘 (My Egg 디자인 제공분). currentColor로 그려서 활성/비활성 색을 CSS color로 제어.
+const NAV_ICONS = {
+  dashboard: (
+    <React.Fragment>
+      <rect x="2" y="12" width="4" height="8" rx="1" fill="currentColor" />
+      <rect x="8" y="6" width="4" height="14" rx="1" fill="currentColor" />
+      <rect x="14" y="9" width="4" height="11" rx="1" fill="currentColor" />
+      <rect x="20" y="3" width="4" height="17" rx="1" fill="#9F8400" />
+    </React.Fragment>
+  ),
+  today: (
+    <React.Fragment>
+      <path d="M12 3 C16 3 19 9 19 13.5 C19 18 15.8 21 12 21 C8.2 21 5 18 5 13.5 C5 9 8 3 12 3 Z" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <polyline points="9,13.2 11,15.5 15.3,10.2" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+    </React.Fragment>
+  ),
+  projects: (
+    <React.Fragment>
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="1.3" fill="#9F8400" />
+    </React.Fragment>
+  ),
+  calendar: (
+    <React.Fragment>
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <line x1="3.5" y1="9.2" x2="20.5" y2="9.2" stroke="currentColor" strokeWidth="1.6" />
+      <text x="12" y="14.6" textAnchor="middle" dominantBaseline="central" fontSize="9" fontWeight="700" fill="currentColor">2</text>
+    </React.Fragment>
+  ),
+  memos: (
+    <React.Fragment>
+      <path d="M15.2 4.3 L19.7 8.8 L8.6 19.9 L4.1 21.4 L5.6 16.9 Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round" />
+      <line x1="12.8" y1="6.7" x2="17.3" y2="11.2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </React.Fragment>
+  ),
+  search: (
+    <React.Fragment>
+      <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="15.3" y1="15.3" x2="20" y2="20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </React.Fragment>
+  ),
+  archive: (
+    <React.Fragment>
+      <path d="M3 5.8 C6.3 4.8 9.4 5.4 12 7 C14.6 5.4 17.7 4.8 21 5.8 L21 18.2 C17.7 17.2 14.6 17.8 12 19.4 C9.4 17.8 6.3 17.2 3 18.2 Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <line x1="12" y1="7" x2="12" y2="19.4" stroke="currentColor" strokeWidth="1.5" />
+    </React.Fragment>
+  ),
+  plaza: (
+    <React.Fragment>
+      <path d="M4 8.3 L12 3.6 L20 8.3 Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <line x1="3.2" y1="8.3" x2="20.8" y2="8.3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="7" y1="9.3" x2="7" y2="18" stroke="currentColor" strokeWidth="1.6" />
+      <line x1="12" y1="9.3" x2="12" y2="18" stroke="currentColor" strokeWidth="1.6" />
+      <line x1="17" y1="9.3" x2="17" y2="18" stroke="currentColor" strokeWidth="1.6" />
+      <line x1="3" y1="18.6" x2="21" y2="18.6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="2.3" y1="20.6" x2="21.7" y2="20.6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </React.Fragment>
+  ),
+  home: <path d="M4 11.8 L12 5 L20 11.8 L18 11.8 L18 20 L6 20 L6 11.8 Z" fill="currentColor" />,
+};
+function TabIcon({ name, size }) {
+  return (
+    <svg width={size || 20} height={size || 20} viewBox="0 0 24 24">
+      {NAV_ICONS[name]}
+    </svg>
+  );
+}
+
 function pad(n) {
   return n < 10 ? "0" + n : "" + n;
 }
@@ -403,12 +482,13 @@ function matchesSearch(target, query) {
 function chipStyle(selected) {
   return {
     padding: "6px 12px",
-    borderRadius: 6,
+    borderRadius: 10,
     fontSize: 12.5,
     whiteSpace: "nowrap",
     border: selected ? `1px solid ${T.accent}` : `1px solid ${T.border}`,
-    background: selected ? T.accent : "#fff",
-    color: selected ? "#fff" : T.chipText,
+    background: selected ? T.accentLight : "#fff",
+    color: selected ? T.accentStrong : T.chipText,
+    fontWeight: selected ? 600 : 400,
     cursor: "pointer",
     flexShrink: 0,
     display: "inline-flex",
@@ -426,8 +506,8 @@ function Checkbox({ done, onClick }) {
       style={{
         width: 16,
         height: 16,
-        borderRadius: 4,
-        border: done ? "none" : "1.5px solid #D3D1CB",
+        borderRadius: 6,
+        border: done ? "none" : `1.5px solid ${T.border}`,
         background: done ? T.accent : "transparent",
         display: "flex",
         alignItems: "center",
@@ -973,14 +1053,14 @@ function App() {
     if (proj) {
       const cs = CATEGORY_STYLES[proj.category];
       return (
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 4, fontSize: 11, color: T.chipText, background: T.chipBg, borderRadius: 4, padding: "2px 7px" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 4, fontSize: 11, color: T.chipText, background: T.chipBg, borderRadius: 8, padding: "2px 7px" }}>
           <Dot color={cs.dot} />
           {proj.name}
         </span>
       );
     }
     return (
-      <span style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 4, fontSize: 11, color: T.textMuted, background: T.rowBorder, borderRadius: 4, padding: "2px 7px", fontStyle: "italic" }}>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 4, fontSize: 11, color: T.textMuted, background: T.rowBorder, borderRadius: 8, padding: "2px 7px", fontStyle: "italic" }}>
         {L.unassigned}
       </span>
     );
@@ -1233,10 +1313,13 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
           <button
             onClick={goHome}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 28, height: 28, border: `1px solid ${T.border}`, borderRadius: "50%", background: "#fff", fontSize: 13, cursor: "pointer", padding: 0 }}
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 30, height: 30, border: "none", borderRadius: 12, background: T.accentLight, color: T.accentStrong, cursor: "pointer", padding: 0 }}
           >
-            🏠
+            <TabIcon name="home" size={16} />
           </button>
+          <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 15 }}>
+            <span style={{ color: T.accentStrong }}>my</span> <span style={{ color: T.accent }}>egg.</span>
+          </span>
           <button
             onClick={toggleLanguage}
             style={{
@@ -1254,10 +1337,10 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               lineHeight: "normal",
             }}
           >
-            <span style={{ display: "inline-block", width: 54, textAlign: "center", padding: "6px 0", borderRadius: "20px 0 0 20px", background: language === "ko" ? T.accent : "transparent", color: language === "ko" ? "#fff" : T.textMuted, fontWeight: language === "ko" ? 600 : 400 }}>
+            <span style={{ display: "inline-block", width: 54, textAlign: "center", padding: "6px 0", borderRadius: "20px 0 0 20px", background: language === "ko" ? T.accentLight : "transparent", color: language === "ko" ? T.accentStrong : T.textMuted, fontWeight: language === "ko" ? 600 : 400 }}>
               한국어
             </span>
-            <span style={{ display: "inline-block", width: 54, textAlign: "center", padding: "6px 0", borderRadius: "0 20px 20px 0", background: language === "en" ? T.accent : "transparent", color: language === "en" ? "#fff" : T.textMuted, fontWeight: language === "en" ? 600 : 400 }}>
+            <span style={{ display: "inline-block", width: 54, textAlign: "center", padding: "6px 0", borderRadius: "0 20px 20px 0", background: language === "en" ? T.accentLight : "transparent", color: language === "en" ? T.accentStrong : T.textMuted, fontWeight: language === "en" ? 600 : 400 }}>
               Eng
             </span>
           </button>
@@ -1270,7 +1353,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               <InfoIcon tabKey="dashboard" />
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, marginBottom: 16, border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden", background: T.rowBorder }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, marginBottom: 16, border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden", background: T.rowBorder }}>
               {[
                 { label: L.statProjects, value: projects.length },
                 { label: L.statTasks, value: totalTasks },
@@ -1284,7 +1367,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               ))}
             </div>
 
-            <div style={{ background: "#fff", borderRadius: 10, padding: 16, marginBottom: 16, border: `1px solid ${T.border}` }}>
+            <div style={{ background: "#fff", borderRadius: 16, padding: 16, marginBottom: 16, border: `1px solid ${T.border}` }}>
               <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>{L.overallProgress}</div>
               <div style={{ height: 6, background: T.track, borderRadius: 3, overflow: "hidden", marginBottom: 8 }}>
                 <div style={{ height: "100%", width: `${overallPct}%`, background: T.accent, borderRadius: 3 }} />
@@ -1294,7 +1377,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               </div>
             </div>
 
-            <div style={{ background: "#fff", borderRadius: 10, padding: 16, marginBottom: 16, border: `1px solid ${T.border}` }}>
+            <div style={{ background: "#fff", borderRadius: 16, padding: 16, marginBottom: 16, border: `1px solid ${T.border}` }}>
               <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>{L.last7Days}</div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", height: 70 }}>
                 {last7Stats.map((s) => {
@@ -1324,7 +1407,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               </div>
             )}
             {projects.length > 0 && (
-              <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden" }}>
+              <div style={{ border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden" }}>
                 {projects.map((p, idx) => {
                   const pt = tasks.filter((t) => t.projectId === p.id);
                   const done = pt.filter((t) => t.done).length;
@@ -1385,7 +1468,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 style={{
                   flex: 1,
                   border: `1px solid ${T.border}`,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   padding: "11px 14px",
                   fontSize: 14,
                   outline: "none",
@@ -1399,7 +1482,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 style={{
                   width: 42,
                   height: 42,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   background: T.accent,
                   border: "none",
                   display: "flex",
@@ -1426,7 +1509,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     onClick={() => setNewTaskProj(p.id)}
                     style={chipStyle(newTaskProj === p.id)}
                   >
-                    <Dot color={newTaskProj === p.id ? "#fff" : CATEGORY_STYLES[p.category].dot} />
+                    <Dot color={CATEGORY_STYLES[p.category].dot} />
                     {p.name}
                   </button>
                 ))}
@@ -1439,7 +1522,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               </div>
             )}
             {todaysTasks.length > 0 && (
-              <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden" }}>
+              <div style={{ border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden" }}>
                 {todaysTasks.map((t, idx) => (
                   <div
                     key={t.id}
@@ -1468,7 +1551,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     </div>
                     <button
                       onClick={() => openReminder(t.id)}
-                      style={{ background: "none", border: "none", color: t.reminderAt && !t.reminderFired ? T.accent : T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0, fontSize: 17, opacity: t.reminderAt && !t.reminderFired ? 1 : 0.4 }}
+                      style={{ background: "none", border: "none", color: t.reminderAt && !t.reminderFired ? T.accentStrong : T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0, fontSize: 17, opacity: t.reminderAt && !t.reminderFired ? 1 : 0.4 }}
                     >
                       "🔔"
                     </button>
@@ -1497,7 +1580,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 style={{
                   width: 34,
                   height: 34,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   background: T.accent,
                   border: "none",
                   display: "flex",
@@ -1519,7 +1602,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             )}
 
             {memos.map((m) => (
-              <div key={m.id} style={{ border: `1px solid ${T.border}`, borderRadius: 10, padding: 12, marginBottom: 10, background: "#fff" }}>
+              <div key={m.id} style={{ border: `1px solid ${T.border}`, borderRadius: 16, padding: 12, marginBottom: 10, background: "#fff" }}>
                 <textarea
                   value={m.text}
                   onChange={(e) => updateMemo(m.id, e.target.value)}
@@ -1565,7 +1648,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 style={{
                   width: "100%",
                   border: `1px solid ${T.border}`,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   padding: "11px 14px",
                   fontSize: 14,
                   outline: "none",
@@ -1598,7 +1681,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   {matchedTasks.length > 0 && (
                     <div style={{ marginBottom: 18 }}>
                       <div style={{ fontSize: 11.5, fontWeight: 600, color: T.textSecondary, marginBottom: 6 }}>{L.resultsTasks} ({matchedTasks.length})</div>
-                      <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden" }}>
+                      <div style={{ border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden" }}>
                         {matchedTasks.map((t, idx) => {
                           const proj = t.projectId ? projectMap[t.projectId] : null;
                           const cs = proj ? CATEGORY_STYLES[proj.category] : null;
@@ -1614,12 +1697,12 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                                 </div>
                                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
                                   {proj ? (
-                                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, color: T.chipText, background: T.chipBg, borderRadius: 4, padding: "2px 7px" }}>
+                                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, color: T.chipText, background: T.chipBg, borderRadius: 8, padding: "2px 7px" }}>
                                       <Dot color={cs.dot} />
                                       {proj.name}
                                     </span>
                                   ) : t.projectId ? (
-                                    <span style={{ display: "inline-flex", alignItems: "center", fontSize: 11, color: T.textMuted, background: T.rowBorder, borderRadius: 4, padding: "2px 7px", fontStyle: "italic" }}>
+                                    <span style={{ display: "inline-flex", alignItems: "center", fontSize: 11, color: T.textMuted, background: T.rowBorder, borderRadius: 8, padding: "2px 7px", fontStyle: "italic" }}>
                                       {L.unassigned}
                                     </span>
                                   ) : null}
@@ -1643,7 +1726,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                         <button
                           key={m.id}
                           onClick={() => setTab("memos")}
-                          style={{ display: "block", width: "100%", textAlign: "left", border: `1px solid ${T.border}`, borderRadius: 10, padding: 12, marginBottom: 8, background: "#fff", cursor: "pointer" }}
+                          style={{ display: "block", width: "100%", textAlign: "left", border: `1px solid ${T.border}`, borderRadius: 16, padding: 12, marginBottom: 8, background: "#fff", cursor: "pointer" }}
                         >
                           <div style={{ fontSize: 13, color: T.text, whiteSpace: "pre-wrap", wordBreak: "break-word", maxHeight: 60, overflow: "hidden" }}>
                             {m.text || L.emptyMemo}
@@ -1659,7 +1742,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   {matchedProjects.length > 0 && (
                     <div style={{ marginBottom: 18 }}>
                       <div style={{ fontSize: 11.5, fontWeight: 600, color: T.textSecondary, marginBottom: 6 }}>{L.resultsProjects} ({matchedProjects.length})</div>
-                      <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden" }}>
+                      <div style={{ border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden" }}>
                         {matchedProjects.map((p, idx) => {
                           const cs = CATEGORY_STYLES[p.category] || CATEGORY_STYLES["본업"];
                           return (
@@ -1684,7 +1767,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                         <button
                           key={s.key}
                           onClick={() => { setTab("archive"); setOpenSummaryKey(s.key); }}
-                          style={{ display: "block", width: "100%", textAlign: "left", border: `1px solid ${T.border}`, borderRadius: 10, padding: 12, marginBottom: 8, background: "#fff", cursor: "pointer" }}
+                          style={{ display: "block", width: "100%", textAlign: "left", border: `1px solid ${T.border}`, borderRadius: 16, padding: 12, marginBottom: 8, background: "#fff", cursor: "pointer" }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
                             <span style={{ fontSize: 12.5, fontWeight: 600 }}>{summaryItemTitle(s.weekStart)}</span>
@@ -1713,14 +1796,14 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
               <button
                 onClick={() => goWeek(-1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 16 }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 16 }}
               >
                 "‹"
               </button>
               <span style={{ fontSize: 12.5, fontWeight: 600 }}>{language === "ko" ? `${viewWeekStart.getFullYear()}년 ${weekLabel}` : `${weekLabel}, ${viewWeekStart.getFullYear()}`}</span>
               <button
                 onClick={() => goWeek(1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 16 }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 16 }}
               >
                 "›"
               </button>
@@ -1728,7 +1811,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             <button
               onClick={generateWeeklySummary}
               disabled={summaryLoading}
-              style={{ width: "100%", padding: "9px 0", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 12.5, fontWeight: 600, color: T.text, cursor: summaryLoading ? "default" : "pointer", marginBottom: 12 }}
+              style={{ width: "100%", padding: "9px 0", borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 12.5, fontWeight: 600, color: T.text, cursor: summaryLoading ? "default" : "pointer", marginBottom: 12 }}
             >
               {summaryLoading ? L.generating : weeklySummaries[weekKeyStr] ? L.regenerate : L.generateSummary}
             </button>
@@ -1743,7 +1826,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   <button
                     key={s.key}
                     onClick={() => setOpenSummaryKey(s.key)}
-                    style={{ display: "block", width: "100%", textAlign: "left", border: `1px solid ${T.border}`, borderRadius: 10, padding: 12, marginBottom: 8, background: "#fff", cursor: "pointer" }}
+                    style={{ display: "block", width: "100%", textAlign: "left", border: `1px solid ${T.border}`, borderRadius: 16, padding: 12, marginBottom: 8, background: "#fff", cursor: "pointer" }}
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
                       <span style={{ fontSize: 12.5, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{summaryItemTitle(s.weekStart)}</span>
@@ -1759,7 +1842,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               <div style={{ fontSize: 13, fontWeight: 600 }}>{L.completedTasks}</div>
               <button
                 onClick={() => setArchiveUnassignedOnly((v) => !v)}
-                style={{ fontSize: 10.5, padding: "4px 9px", borderRadius: 20, border: `1px solid ${archiveUnassignedOnly ? T.accent : T.border}`, background: archiveUnassignedOnly ? T.accent : "#fff", color: archiveUnassignedOnly ? "#fff" : T.textMuted, cursor: "pointer" }}
+                style={{ fontSize: 10.5, padding: "4px 9px", borderRadius: 20, border: `1px solid ${archiveUnassignedOnly ? T.accent : T.border}`, background: archiveUnassignedOnly ? T.accentLight : "#fff", color: archiveUnassignedOnly ? T.accentStrong : T.textMuted, cursor: "pointer" }}
               >
                 {archiveUnassignedOnly ? L.showAll : L.showUnassignedOnly}
               </button>
@@ -1777,7 +1860,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               return (
                 <div key={bucket.date} style={{ marginBottom: 12 }}>
                   <div style={{ fontSize: 11.5, fontWeight: 600, color: T.textSecondary, marginBottom: 5 }}>{bucket.date}</div>
-                  <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden" }}>
+                  <div style={{ border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden" }}>
                     {items.map((t, idx) => (
                       <div
                         key={t.id}
@@ -1806,7 +1889,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               <div style={{ fontSize: 18, fontWeight: 600 }}>{L.projects}</div>
               <InfoIcon tabKey="projects" />
             </div>
-            <div style={{ background: "#fff", borderRadius: 10, padding: 14, marginBottom: 16, border: `1px solid ${T.border}` }}>
+            <div style={{ background: "#fff", borderRadius: 16, padding: 14, marginBottom: 16, border: `1px solid ${T.border}` }}>
               <input
                 value={newProjName}
                 onChange={(e) => setNewProjName(e.target.value)}
@@ -1814,7 +1897,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 style={{
                   width: "100%",
                   border: `1px solid ${T.border}`,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   padding: "10px 12px",
                   fontSize: 14,
                   marginBottom: 10,
@@ -1826,7 +1909,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
                 {CATEGORIES.map((c) => (
                   <button key={c} onClick={() => setNewProjCat(c)} style={chipStyle(newProjCat === c)}>
-                    <Dot color={newProjCat === c ? "#fff" : CATEGORY_STYLES[c].dot} />
+                    <Dot color={CATEGORY_STYLES[c].dot} />
                     {catLabel(c)}
                   </button>
                 ))}
@@ -1838,7 +1921,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   background: T.accent,
                   color: "#fff",
                   border: "none",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   padding: "10px 0",
                   fontSize: 14,
                   fontWeight: 600,
@@ -1855,7 +1938,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               </div>
             )}
             {projects.length > 0 && (
-              <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, overflow: "hidden" }}>
+              <div style={{ border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden" }}>
                 {projects.map((p, idx) => {
                   const pt = tasks.filter((tk) => tk.projectId === p.id);
                   const done = pt.filter((tk) => tk.done).length;
@@ -1865,7 +1948,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     <div key={p.id} style={{ background: "#fff", padding: 14, borderBottom: idx < projects.length - 1 ? `1px solid ${T.rowBorder}` : "none" }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, padding: "2px 8px", borderRadius: 4, background: T.chipBg, color: T.chipText, flexShrink: 0 }}>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, padding: "2px 8px", borderRadius: 8, background: T.chipBg, color: T.chipText, flexShrink: 0 }}>
                             <Dot color={cs.dot} />
                             {catLabel(p.category)}
                           </span>
@@ -1896,7 +1979,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
               <button
                 onClick={() => goMonth(-1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
               >
                 "‹"
               </button>
@@ -1905,7 +1988,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               </div>
               <button
                 onClick={() => goMonth(1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
               >
                 "›"
               </button>
@@ -1993,7 +2076,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   <button
                     onClick={() => { setCreateRoomOpen(true); setNewRoomName(""); setNewRoomPin(""); setPlazaError(""); }}
                     disabled={plazaRooms.length >= 5}
-                    style={{ fontSize: 12.5, padding: "7px 12px", borderRadius: 8, border: `1px solid ${T.border}`, background: plazaRooms.length >= 5 ? T.rowBorder : "#fff", color: plazaRooms.length >= 5 ? T.textMuted : T.text, cursor: plazaRooms.length >= 5 ? "default" : "pointer" }}
+                    style={{ fontSize: 12.5, padding: "7px 12px", borderRadius: 12, border: `1px solid ${T.border}`, background: plazaRooms.length >= 5 ? T.rowBorder : "#fff", color: plazaRooms.length >= 5 ? T.textMuted : T.text, cursor: plazaRooms.length >= 5 ? "default" : "pointer" }}
                   >
                     + {L.plazaCreateRoom}
                   </button>
@@ -2007,14 +2090,14 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   <button
                     key={room.id}
                     onClick={() => openRoom(room)}
-                    style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", background: "#fff", border: `1px solid ${T.border}`, borderRadius: 10, padding: "13px 14px", marginBottom: 8, cursor: "pointer", textAlign: "left" }}
+                    style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", background: "#fff", border: `1px solid ${T.border}`, borderRadius: 16, padding: "13px 14px", marginBottom: 8, cursor: "pointer", textAlign: "left" }}
                   >
                     <span style={{ fontSize: 14, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{room.name}</span>
                     <span style={{ fontSize: 12, color: T.textSecondary, flexShrink: 0, marginLeft: 8 }}>{L.plazaMembers((room.members || []).length, 3)}</span>
                   </button>
                 ))}
 
-                {plazaError && <div style={{ fontSize: 12, color: "#B5504A", textAlign: "center", marginTop: 8 }}>{plazaError}</div>}
+                {plazaError && <div style={{ fontSize: 12, color: T.warn, textAlign: "center", marginTop: 8 }}>{plazaError}</div>}
 
                 <div style={{ fontSize: 11, color: T.textMuted, textAlign: "center", marginTop: 16 }}>{L.plazaFileExpiry}</div>
               </div>
@@ -2025,12 +2108,12 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     {"‹ "}{L.plazaLeave}
                   </button>
                   <span style={{ fontSize: 14, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 160 }}>{activeRoomName}</span>
-                  <button onClick={() => setConfirmDeleteRoomId(activeRoomId)} style={{ background: "none", border: "none", color: "#B5504A", fontSize: 12.5, cursor: "pointer", padding: 0, flexShrink: 0 }}>
+                  <button onClick={() => setConfirmDeleteRoomId(activeRoomId)} style={{ background: "none", border: "none", color: T.warn, fontSize: 12.5, cursor: "pointer", padding: 0, flexShrink: 0 }}>
                     {L.plazaDeleteRoom}
                   </button>
                 </div>
 
-                <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, padding: 12, minHeight: 240, marginBottom: 10 }}>
+                <div style={{ border: `1px solid ${T.border}`, borderRadius: 16, padding: 12, minHeight: 240, marginBottom: 10 }}>
                   {roomMessages.length === 0 && (
                     <div style={{ textAlign: "center", color: T.textMuted, fontSize: 13, padding: "20px 0" }}>{L.plazaNoMessages}</div>
                   )}
@@ -2059,9 +2142,9 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     onChange={(e) => setMessageDraft(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter") sendPlazaMessage(); }}
                     placeholder={L.plazaMessagePlaceholder}
-                    style={{ flex: 1, minWidth: 0, height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 11px", fontSize: 13.5, outline: "none", color: T.text }}
+                    style={{ flex: 1, minWidth: 0, height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: "0 11px", fontSize: 13.5, outline: "none", color: T.text }}
                   />
-                  <label style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 40, height: 40, border: `1px solid ${T.border}`, borderRadius: 8, cursor: "pointer", flexShrink: 0, boxSizing: "border-box" }}>
+                  <label style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 40, height: 40, border: `1px solid ${T.border}`, borderRadius: 12, cursor: "pointer", flexShrink: 0, boxSizing: "border-box" }}>
                     📎
                     <input
                       type="file"
@@ -2071,13 +2154,13 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   </label>
                   <button
                     onClick={sendPlazaMessage}
-                    style={{ padding: "0 14px", height: 40, borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", flexShrink: 0 }}
+                    style={{ padding: "0 14px", height: 40, borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", flexShrink: 0 }}
                   >
                     {L.plazaSend}
                   </button>
                 </div>
                 {uploading && <div style={{ fontSize: 11.5, color: T.textMuted, marginTop: 6 }}>{L.plazaUploading}</div>}
-                {plazaError && <div style={{ fontSize: 11.5, color: "#B5504A", marginTop: 6 }}>{plazaError}</div>}
+                {plazaError && <div style={{ fontSize: 11.5, color: T.warn, marginTop: 6 }}>{plazaError}</div>}
               </div>
             )}
           </div>
@@ -2096,17 +2179,28 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 style={{
                   flex: 1,
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 4,
-                  padding: "18px 0 14px",
+                  justifyContent: "center",
+                  padding: "10px 0 12px",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  color: tab === key ? T.accent : T.textMuted,
+                  color: tab === key ? T.accentStrong : T.textMuted,
                 }}
               >
-                <span style={{ fontSize: 14, fontWeight: tab === key ? 700 : 500 }}>{L[key]}</span>
+                <span
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 3,
+                    padding: "6px 10px",
+                    borderRadius: 12,
+                    background: tab === key ? T.accentLight : "transparent",
+                  }}
+                >
+                  <TabIcon name={key} size={20} />
+                  <span style={{ fontSize: 10.5, fontWeight: tab === key ? 700 : 500 }}>{L[key]}</span>
+                </span>
               </button>
             );
           })}
@@ -2158,7 +2252,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ background: "#fff", width: "100%", maxWidth: 420, borderRadius: "16px 16px 0 0", padding: 20, boxSizing: "border-box" , fontSize: 16 }}
+            style={{ background: "#fff", width: "100%", maxWidth: 420, borderRadius: "22px 22px 0 0", padding: 20, boxSizing: "border-box" , fontSize: 16 }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
               <div style={{ fontSize: 15, fontWeight: 600 }}>{L.noteFor(selectedDate)}</div>
@@ -2174,7 +2268,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               style={{
                 width: "100%",
                 border: `1px solid ${T.border}`,
-                borderRadius: 8,
+                borderRadius: 12,
                 padding: 10,
                 fontSize: 14,
                 outline: "none",
@@ -2187,7 +2281,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
               <button
                 onClick={() => setSelectedDate(null)}
-                style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
               >
                 {L.close}
               </button>
@@ -2215,7 +2309,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              style={{ background: "#fff", width: "100%", maxWidth: 340, borderRadius: 14, padding: 20, boxSizing: "border-box" }}
+              style={{ background: "#fff", width: "100%", maxWidth: 340, borderRadius: 20, padding: 20, boxSizing: "border-box" }}
             >
               <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 8 }}>{L.deleteProjectTitle}</div>
               <div style={{ fontSize: 12.5, color: T.textSecondary, lineHeight: 1.5, marginBottom: 18 }}>
@@ -2224,13 +2318,13 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               <div style={{ display: "flex", gap: 8 }}>
                 <button
                   onClick={() => setConfirmDeleteProjectId(null)}
-                  style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 14, cursor: "pointer", color: T.text }}
+                  style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 14, cursor: "pointer", color: T.text }}
                 >
                   {L.cancel}
                 </button>
                 <button
                   onClick={confirmDeleteProject}
-                  style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", background: "#B5504A", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                  style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: "none", background: T.warn, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
                 >
                   {L.delete}
                 </button>
@@ -2245,32 +2339,32 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           onClick={() => setReminderTaskId(null)}
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60, padding: 20 }}
         >
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 380, borderRadius: 14, padding: 20, boxSizing: "border-box" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 380, borderRadius: 20, padding: 20, boxSizing: "border-box" }}>
             <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>{L.reminderTitle}</div>
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <input
                 type="date"
                 value={reminderDraft ? reminderDraft.split("T")[0] : ""}
                 onChange={(e) => setReminderDraft(e.target.value + "T" + (reminderDraft && reminderDraft.split("T")[1] ? reminderDraft.split("T")[1] : toTimeStr(new Date())))}
-                style={{ flex: 1, minWidth: 0, width: 0, height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 6px", fontSize: 12.5, outline: "none", color: T.text, background: "#fff", WebkitAppearance: "none", appearance: "none" }}
+                style={{ flex: 1, minWidth: 0, width: 0, height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: "0 6px", fontSize: 12.5, outline: "none", color: T.text, background: "#fff", WebkitAppearance: "none", appearance: "none" }}
               />
               <input
                 type="time"
                 value={reminderDraft && reminderDraft.split("T")[1] ? reminderDraft.split("T")[1] : ""}
                 onChange={(e) => setReminderDraft((reminderDraft && reminderDraft.split("T")[0] ? reminderDraft.split("T")[0] : todayStr) + "T" + e.target.value)}
-                style={{ flex: 1, minWidth: 0, width: 0, height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 6px", fontSize: 12.5, outline: "none", color: T.text, background: "#fff", WebkitAppearance: "none", appearance: "none" }}
+                style={{ flex: 1, minWidth: 0, width: 0, height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: "0 6px", fontSize: 12.5, outline: "none", color: T.text, background: "#fff", WebkitAppearance: "none", appearance: "none" }}
               />
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 onClick={clearReminder}
-                style={{ flex: 1, height: 40, padding: "0", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
+                style={{ flex: 1, height: 40, padding: "0", borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
               >
                 {L.reminderClear}
               </button>
               <button
                 onClick={saveReminder}
-                style={{ flex: 1, height: 40, padding: "0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                style={{ flex: 1, height: 40, padding: "0", borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
               >
                 {L.save}
               </button>
@@ -2284,12 +2378,12 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           onClick={() => setInfoTab(null)}
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 65, padding: 20 }}
         >
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 14, padding: 20, boxSizing: "border-box" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 20, padding: 20, boxSizing: "border-box" }}>
             <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{L[infoTab]}</div>
             <div style={{ fontSize: 13, color: T.textSecondary, lineHeight: 1.5, marginBottom: 18, whiteSpace: "pre-line" }}>{L.tabInfo[infoTab]}</div>
             <button
               onClick={() => setInfoTab(null)}
-              style={{ width: "100%", padding: "10px 0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+              style={{ width: "100%", padding: "10px 0", borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
             >
               {L.ok}
             </button>
@@ -2302,12 +2396,12 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           onClick={dismissFiredReminder}
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 70, padding: 20 }}
         >
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 14, padding: 22, boxSizing: "border-box", textAlign: "center" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 20, padding: 22, boxSizing: "border-box", textAlign: "center" }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: T.accent, marginBottom: 10 }}>{L.reminderFiredTitle}</div>
             <div style={{ fontSize: 15, color: T.text, marginBottom: 20, wordBreak: "break-word" }}>{firedReminder.title}</div>
             <button
               onClick={dismissFiredReminder}
-              style={{ width: "100%", padding: "11px 0", borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+              style={{ width: "100%", padding: "11px 0", borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
             >
               {L.ok}
             </button>
@@ -2322,7 +2416,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ background: "#fff", width: "100%", maxWidth: 380, maxHeight: "80vh", overflowY: "auto", borderRadius: 14, padding: 20, boxSizing: "border-box" }}
+            style={{ background: "#fff", width: "100%", maxWidth: 380, maxHeight: "80vh", overflowY: "auto", borderRadius: 20, padding: 20, boxSizing: "border-box" }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
               <div style={{ fontSize: 15, fontWeight: 700, wordBreak: "break-word" }}>{summaryItemTitle(openSummaryKey)}</div>
@@ -2341,13 +2435,13 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           onClick={() => setCreateRoomOpen(false)}
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60, padding: 20 }}
         >
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 340, borderRadius: 14, padding: 20, boxSizing: "border-box" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 340, borderRadius: 20, padding: 20, boxSizing: "border-box" }}>
             <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>{L.plazaCreateRoom}</div>
             <input
               value={newRoomName}
               onChange={(e) => setNewRoomName(e.target.value)}
               placeholder={L.plazaRoomNamePlaceholder}
-              style={{ width: "100%", height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 12px", fontSize: 13.5, outline: "none", color: T.text, marginBottom: 10 }}
+              style={{ width: "100%", height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: "0 12px", fontSize: 13.5, outline: "none", color: T.text, marginBottom: 10 }}
             />
             <input
               value={newRoomPin}
@@ -2355,19 +2449,19 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               placeholder={L.plazaPinPlaceholder}
               inputMode="numeric"
               maxLength={4}
-              style={{ width: "100%", height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 12px", fontSize: 13.5, outline: "none", color: T.text, marginBottom: 10, letterSpacing: 4 }}
+              style={{ width: "100%", height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: "0 12px", fontSize: 13.5, outline: "none", color: T.text, marginBottom: 10, letterSpacing: 4 }}
             />
-            {plazaError && <div style={{ fontSize: 12, color: "#B5504A", marginBottom: 10 }}>{plazaError}</div>}
+            {plazaError && <div style={{ fontSize: 12, color: T.warn, marginBottom: 10 }}>{plazaError}</div>}
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 onClick={() => setCreateRoomOpen(false)}
-                style={{ flex: 1, height: 40, borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
+                style={{ flex: 1, height: 40, borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
               >
                 {L.cancel}
               </button>
               <button
                 onClick={createPlazaRoom}
-                style={{ flex: 1, height: 40, borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                style={{ flex: 1, height: 40, borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
               >
                 {L.save}
               </button>
@@ -2381,7 +2475,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           onClick={() => setJoinRoomTarget(null)}
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60, padding: 20 }}
         >
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 14, padding: 20, boxSizing: "border-box", textAlign: "center" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 20, padding: 20, boxSizing: "border-box", textAlign: "center" }}>
             <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{joinRoomTarget.name}</div>
             <div style={{ fontSize: 12.5, color: T.textSecondary, marginBottom: 14 }}>{L.plazaEnterPinTitle}</div>
             <input
@@ -2391,19 +2485,19 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               inputMode="numeric"
               maxLength={4}
               autoFocus
-              style={{ width: "100%", height: 44, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0 12px", fontSize: 18, outline: "none", color: T.text, marginBottom: 10, textAlign: "center", letterSpacing: 8 }}
+              style={{ width: "100%", height: 44, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: "0 12px", fontSize: 18, outline: "none", color: T.text, marginBottom: 10, textAlign: "center", letterSpacing: 8 }}
             />
-            {joinError && <div style={{ fontSize: 12, color: "#B5504A", marginBottom: 10 }}>{joinError}</div>}
+            {joinError && <div style={{ fontSize: 12, color: T.warn, marginBottom: 10 }}>{joinError}</div>}
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 onClick={() => setJoinRoomTarget(null)}
-                style={{ flex: 1, height: 40, borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
+                style={{ flex: 1, height: 40, borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
               >
                 {L.cancel}
               </button>
               <button
                 onClick={attemptJoinRoom}
-                style={{ flex: 1, height: 40, borderRadius: 8, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                style={{ flex: 1, height: 40, borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
               >
                 {L.plazaEnterRoom}
               </button>
@@ -2417,19 +2511,19 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           onClick={() => setConfirmDeleteRoomId(null)}
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 65, padding: 20 }}
         >
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 14, padding: 20, boxSizing: "border-box" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 20, padding: 20, boxSizing: "border-box" }}>
             <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 8 }}>{L.plazaDeleteRoomTitle}</div>
             <div style={{ fontSize: 13, color: T.textSecondary, marginBottom: 18 }}>{L.plazaDeleteRoomBody}</div>
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 onClick={() => setConfirmDeleteRoomId(null)}
-                style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", fontSize: 14, cursor: "pointer", color: T.text }}
+                style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 14, cursor: "pointer", color: T.text }}
               >
                 {L.cancel}
               </button>
               <button
                 onClick={() => deletePlazaRoom(confirmDeleteRoomId)}
-                style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", background: "#B5504A", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: "none", background: T.warn, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
               >
                 {L.delete}
               </button>
