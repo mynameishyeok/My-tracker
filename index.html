@@ -78,7 +78,7 @@ const { useState, useEffect, useCallback } = React;
 
 // =========================================================
 // 여기에 구글 Gemini API 키를 붙여넣으세요 (aistudio.google.com/apikey 에서 발급)
-const GEMINI_API_KEY = "여기에_발급받은_API_키를_붙여넣으세요";
+const GEMINI_API_KEY = "AQ.Ab8RN6L3i87u4W4-2fX9kzfiz_jMuaxaqPQr3MBPpYMp9GDgOA";
 const GEMINI_MODEL = "gemini-3.5-flash";
 // =========================================================
 
@@ -137,9 +137,6 @@ const STRINGS = {
     noResults: "일치하는 결과가 없어요.",
     resultsTasks: "할 일", resultsMemos: "메모", resultsProjects: "프로젝트", resultsSummaries: "주간 요약",
     emptyMemo: "(빈 메모)",
-    export: "내보내기",
-    lastBackup: (date) => `마지막 백업: ${date}`,
-    noBackupYet: "아직 백업한 적이 없어요 — 내보내기를 눌러 백업 파일을 만들어두세요.",
     weeklySummaryHistory: "주간 요약 기록",
     noSummariesArchive: "아직 만들어진 주간 요약이 없어요.",
     completedTasks: "완료한 할 일",
@@ -190,7 +187,7 @@ const STRINGS = {
       today: "오늘 할 일을 적고 체크하며 관리하세요.",
       memos: "형식 없이 자유롭게 메모를 남기고 관리하세요.",
       search: "할 일, 메모, 프로젝트를 한 번에 검색하세요. 초성 검색도 가능해요.",
-      archive: "완료한 할 일을 모아보고, 오늘 탭 내용을 월요일~일요일 기준 한 주 단위로 요약한 기록도 만들어볼 수 있어요. 백업 파일로 내보내는 것도 여기서 해요.",
+      archive: "완료한 할 일을 모아보고, 오늘 탭 내용을 월요일~일요일 기준 한 주 단위로 요약한 기록도 만들어볼 수 있어요.",
       projects: "프로젝트를 등록하고 카테고리별로 관리하세요.",
       calendar: "월별 일정과 공휴일을 확인하고, 날짜별로 메모를 남기세요.",
       plaza: "누구나 방을 만들어 다른 사람과 텍스트와 파일을 나눌 수 있는 공간이에요.\n\n· 방을 만든 사람이 4자리 PIN을 직접 정해요. 입장하려면 그 PIN을 알아야 해요.\n· 방 하나에 최대 3명까지 들어올 수 있어요.\n· 광장에는 방을 최대 5개까지만 만들 수 있어요. 방은 자동으로 없어지지 않고, 방을 만든 사람만 삭제할 수 있어요. 5개가 다 찼다면 방장에게 정리를 부탁하세요.\n· 공유한 파일은 올린 날로부터 7일 후 자동으로 삭제돼요 (대화 내용은 남아있어요).\n· 로그인이 없는 앱이라 PIN은 화면에서만 확인하는 가벼운 수준의 보호예요. 완전한 보안이 아니니 민감한 파일은 올리지 마세요.",
@@ -221,9 +218,6 @@ const STRINGS = {
     noResults: "No matches found.",
     resultsTasks: "Tasks", resultsMemos: "Notes", resultsProjects: "Projects", resultsSummaries: "Weekly Summaries",
     emptyMemo: "(Empty note)",
-    export: "Export",
-    lastBackup: (date) => `Last backup: ${date}`,
-    noBackupYet: "You haven't backed up yet — tap Export to create a backup file.",
     weeklySummaryHistory: "Weekly Summary History",
     noSummariesArchive: "No weekly summaries yet.",
     completedTasks: "Completed Tasks",
@@ -274,7 +268,7 @@ const STRINGS = {
       today: "Add and check off today's tasks.",
       memos: "Jot down and manage free-form notes.",
       search: "Search tasks, notes, and projects at once.",
-      archive: "Review completed tasks, and build weekly summaries of your Today tab from Monday to Sunday. Export a backup file here too.",
+      archive: "Review completed tasks, and build weekly summaries of your Today tab from Monday to Sunday.",
       projects: "Add and manage your projects by category.",
       calendar: "View the month's schedule and holidays, and leave notes on any date.",
       plaza: "A space where anyone can create a room to share text and files with others.\n\n· Whoever creates a room picks its 4-digit PIN. You need that PIN to enter.\n· Each room holds up to 3 people.\n· Up to 5 rooms can exist in the Plaza at once. Rooms don't expire on their own — only the creator can delete one. If all 5 are taken, ask a room's creator to clear it out.\n· Shared files are automatically deleted 7 days after upload (the conversation itself stays).\n· This app has no login, so the PIN is just a light, on-screen check — not real security. Don't share anything sensitive.",
@@ -283,8 +277,8 @@ const STRINGS = {
 };
 
 const NAV_PAGES = [
-  ["dashboard", "today", "projects"],
-  ["calendar", "memos", "search", "archive", "plaza"],
+  ["dashboard", "today", "projects", "calendar"],
+  ["memos", "search", "archive", "plaza"],
 ];
 
 const FIXED_HOLIDAYS = [
@@ -339,13 +333,26 @@ function toDateStr(d) {
 function toTimeStr(d) {
   return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+  return match ? decodeURIComponent(match[1]) : null;
+}
+function setCookie(name, value) {
+  try {
+    const twoYears = 60 * 60 * 24 * 365 * 2;
+    document.cookie = `${name}=${encodeURIComponent(value)}; max-age=${twoYears}; path=/; SameSite=Lax`;
+  } catch (e) {}
+}
+// localStorage만 쓰면 iOS Safari 등에서 저장 공간이 정리될 때 기기 ID가 사라져
+// 같은 사람이 매번 새 사람으로 인식되는 문제가 있어서, 쿠키에도 같이 백업해둔다.
 function getDeviceId() {
   try {
-    let id = localStorage.getItem("tracker-device-id");
+    let id = localStorage.getItem("tracker-device-id") || getCookie("tracker-device-id");
     if (!id) {
       id = "d-" + Date.now() + "-" + Math.random().toString(36).slice(2, 10);
-      localStorage.setItem("tracker-device-id", id);
     }
+    localStorage.setItem("tracker-device-id", id);
+    setCookie("tracker-device-id", id);
     return id;
   } catch (e) {
     return "d-" + Date.now();
@@ -444,7 +451,6 @@ function App() {
   const [weeklySummaries, setWeeklySummaries] = useState({});
   const [memos, setMemos] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [lastExportAt, setLastExportAt] = useState(null);
   const [confirmDeleteProjectId, setConfirmDeleteProjectId] = useState(null);
   const [language, setLanguage] = useState("ko");
   const [archiveUnassignedOnly, setArchiveUnassignedOnly] = useState(false);
@@ -461,7 +467,6 @@ function App() {
   const [plazaError, setPlazaError] = useState("");
   const [activeRoomId, setActiveRoomId] = useState(null);
   const [activeRoomName, setActiveRoomName] = useState("");
-  const [activeRoomCreatorId, setActiveRoomCreatorId] = useState(null);
   const [roomMessages, setRoomMessages] = useState([]);
   const [createRoomOpen, setCreateRoomOpen] = useState(false);
   const [newRoomName, setNewRoomName] = useState("");
@@ -520,11 +525,6 @@ function App() {
         const r = await window.storage.get("tracker-memos");
         if (r && r.value) mm = JSON.parse(r.value);
       } catch (e) {}
-      let lastExport = null;
-      try {
-        const r = await window.storage.get("tracker-last-export");
-        if (r && r.value) lastExport = r.value;
-      } catch (e) {}
       let lang = "ko";
       try {
         const r = await window.storage.get("tracker-language");
@@ -536,7 +536,6 @@ function App() {
         setNotes(nt);
         setWeeklySummaries(ws);
         setMemos(mm);
-        setLastExportAt(lastExport);
         setLanguage(lang);
         setReady(true);
       }
@@ -630,10 +629,9 @@ function App() {
     return () => clearInterval(id);
   }, [activeRoomId, loadRoomMessages]);
 
-  const enterRoom = (roomId, name, creatorDeviceId) => {
+  const enterRoom = (roomId, name) => {
     setActiveRoomId(roomId);
     setActiveRoomName(name);
-    setActiveRoomCreatorId(creatorDeviceId || null);
     setRoomMessages([]);
     loadRoomMessages(roomId);
   };
@@ -645,7 +643,6 @@ function App() {
     }
     setActiveRoomId(null);
     setActiveRoomName("");
-    setActiveRoomCreatorId(null);
     setRoomMessages([]);
     loadPlazaRooms();
   };
@@ -658,7 +655,7 @@ function App() {
   const openRoom = (room) => {
     const grace = plazaVerified[room.id];
     if (grace && grace > Date.now()) {
-      enterRoom(room.id, room.name, room.creatorDeviceId);
+      enterRoom(room.id, room.name);
       return;
     }
     setJoinRoomTarget(room);
@@ -690,7 +687,7 @@ function App() {
       setCreateRoomOpen(false);
       setNewRoomName("");
       setNewRoomPin("");
-      enterRoom(roomRef.id, name, deviceId);
+      enterRoom(roomRef.id, name);
     } catch (e) {
       console.error("Plaza room create failed", e);
       setPlazaError(L.plazaCreateFailed);
@@ -721,7 +718,7 @@ function App() {
       }
       setJoinRoomTarget(null);
       setJoinPinDraft("");
-      enterRoom(room.id, room.name, room.creatorDeviceId);
+      enterRoom(room.id, room.name);
     } catch (e) {
       console.error("Plaza join failed", e);
       setJoinError(L.plazaCreateFailed);
@@ -963,31 +960,6 @@ function App() {
       window.storage.set("tracker-language", next);
     } catch (e) {}
   };
-  const exportData = () => {
-    const payload = {
-      exportedAt: new Date().toISOString(),
-      projects,
-      tasks,
-      memos,
-      notes,
-      weeklySummaries,
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `tracker-backup-${toDateStr(new Date())}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    const now = new Date().toISOString();
-    setLastExportAt(now);
-    try {
-      window.storage.set("tracker-last-export", now);
-    } catch (e) {}
-  };
-
   const todaysTasks = tasks.filter((t) => t.date === todayStr);
   const doneCount = todaysTasks.filter((t) => t.done).length;
   const projectMap = Object.fromEntries(projects.map((p) => [p.id, p]));
@@ -1282,11 +1254,11 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               lineHeight: "normal",
             }}
           >
-            <span style={{ display: "inline-block", padding: "6px 10px", borderRadius: "20px 0 0 20px", background: language === "ko" ? T.accent : "transparent", color: language === "ko" ? "#fff" : T.textMuted, fontWeight: language === "ko" ? 600 : 400 }}>
+            <span style={{ display: "inline-block", width: 54, textAlign: "center", padding: "6px 0", borderRadius: "20px 0 0 20px", background: language === "ko" ? T.accent : "transparent", color: language === "ko" ? "#fff" : T.textMuted, fontWeight: language === "ko" ? 600 : 400 }}>
               한국어
             </span>
-            <span style={{ display: "inline-block", padding: "6px 10px", borderRadius: "0 20px 20px 0", background: language === "en" ? T.accent : "transparent", color: language === "en" ? "#fff" : T.textMuted, fontWeight: language === "en" ? 600 : 400 }}>
-              English
+            <span style={{ display: "inline-block", width: 54, textAlign: "center", padding: "6px 0", borderRadius: "0 20px 20px 0", background: language === "en" ? T.accent : "transparent", color: language === "en" ? "#fff" : T.textMuted, fontWeight: language === "en" ? 600 : 400 }}>
+              Eng
             </span>
           </button>
         </div>
@@ -1731,22 +1703,9 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
 
         {tab === "archive" && (
           <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <div style={{ fontSize: 18, fontWeight: 600 }}>{L.archive}</div>
-                <InfoIcon tabKey="archive" />
-              </div>
-              <button
-                onClick={exportData}
-                style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, padding: "7px 11px", borderRadius: 8, border: `1px solid ${T.border}`, background: "#fff", color: T.text, cursor: "pointer" }}
-              >
-                "⬇" {L.export}
-              </button>
-            </div>
-            <div style={{ fontSize: 11, color: T.textMuted, marginBottom: 16 }}>
-              {lastExportAt
-                ? L.lastBackup(fmtDate(new Date(lastExportAt), { year: "numeric", month: "long", day: "numeric" }))
-                : L.noBackupYet}
+            <div style={{ display: "flex", alignItems: "center", margin: "2px 0 14px" }}>
+              <div style={{ fontSize: 18, fontWeight: 600 }}>{L.archive}</div>
+              <InfoIcon tabKey="archive" />
             </div>
 
             <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>{L.weeklySummaryHistory}</div>
@@ -2066,13 +2025,9 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     {"‹ "}{L.plazaLeave}
                   </button>
                   <span style={{ fontSize: 14, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 160 }}>{activeRoomName}</span>
-                  {activeRoomCreatorId === deviceId ? (
-                    <button onClick={() => setConfirmDeleteRoomId(activeRoomId)} style={{ background: "none", border: "none", color: "#B5504A", fontSize: 12.5, cursor: "pointer", padding: 0 }}>
-                      {L.plazaDeleteRoom}
-                    </button>
-                  ) : (
-                    <span style={{ width: 1 }} />
-                  )}
+                  <button onClick={() => setConfirmDeleteRoomId(activeRoomId)} style={{ background: "none", border: "none", color: "#B5504A", fontSize: 12.5, cursor: "pointer", padding: 0, flexShrink: 0 }}>
+                    {L.plazaDeleteRoom}
+                  </button>
                 </div>
 
                 <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, padding: 12, minHeight: 240, marginBottom: 10 }}>
