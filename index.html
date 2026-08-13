@@ -174,11 +174,22 @@
     // 실제로 눈에 보이는 뷰포트 높이를 계속 다시 재서 --app-vh 로 반영.
     // iOS PWA는 백그라운드→포그라운드를 반복하면 100dvh를 다시 계산하지 않고
     // 예전 값을 그대로 쓰는 경우가 있어서, 화면을 다시 볼 때마다 강제로 재계산함.
-    function syncAppVh() {
+    function measure() {
       var h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
       document.documentElement.style.setProperty('--app-vh', h + 'px');
+      // 화면 크기뿐 아니라, iOS 바운스/스크롤 잔여값 때문에 body 전체가
+      // 살짝 밀려 보이는 경우도 있어서 스크롤 위치 자체도 항상 맨 위로 고정함.
+      if (window.scrollY !== 0 || document.documentElement.scrollTop !== 0) {
+        window.scrollTo(0, 0);
+      }
+    }
+    // 리사이즈/이벤트가 발생한 바로 그 프레임에는 아직 iOS가 레이아웃을
+    // 다 안정시키지 못했을 수 있어서, 다음 프레임에 실제로 측정함.
+    function syncAppVh() {
+      requestAnimationFrame(measure);
     }
     syncAppVh();
+    window.addEventListener('load', syncAppVh);
     window.addEventListener('resize', syncAppVh);
     window.addEventListener('orientationchange', syncAppVh);
     window.addEventListener('pageshow', syncAppVh);
@@ -188,6 +199,12 @@
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', syncAppVh);
     }
+    // 앱을 처음 켰을 때(콜드 스타트) iOS가 상태바/홈 인디케이터 등
+    // 자기 UI를 완전히 안정시키기까지 약간의 시간차가 있을 수 있어서,
+    // 첫 2초 동안 몇 번 더 재측정해서 최종적으로 맞는 값에 수렴하게 함.
+    [50, 150, 300, 600, 1000, 1500, 2000].forEach(function (ms) {
+      setTimeout(syncAppVh, ms);
+    });
   })();
 
   (function () {
