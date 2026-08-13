@@ -10,8 +10,6 @@
 <link rel="icon" type="image/svg+xml" href="./icons/favicon.svg">
 <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
-<!-- iOS의 apple-touch-startup-image는 기기에 한 번 캐시되면 파일을 바꿔도 잘 안 갱신되고,
-     이전(작은 로고) 버전이 계속 나오는 문제가 있어서 아예 빼고 #app-splash 오버레이 하나로만 처리함 -->
 <title>my egg.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,26 +26,6 @@
     overflow: hidden;
     padding-top: env(safe-area-inset-top);
   }
-  #app-splash {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: #FFFFFF;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.4s ease;
-  }
-  #app-splash.hide {
-    opacity: 0;
-    pointer-events: none;
-  }
-  #app-splash .splash-egg { width: 92px; height: auto; margin-bottom: 18px; }
-  #app-splash .splash-word { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 30px; }
-  #app-splash .splash-word .my { color: #655406; }
-  #app-splash .splash-word .egg { color: #9F8400; }
-  #app-splash .splash-sub { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 4px; color: #94928B; margin-top: 8px; }
 
   /* 사용법 튜토리얼 미니 애니메이션 - 실제 UI를 흉내낸 아주 작은 데모를 반복 재생함 */
   .tut-tap {
@@ -154,43 +132,6 @@
 </head>
 <body>
 <div id="root"></div>
-
-<div id="app-splash">
-  <svg class="splash-egg" viewBox="0 0 30 36" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <radialGradient id="splashEggShade" cx="38%" cy="30%" r="75%">
-        <stop offset="0%" stop-color="#ffffff"></stop>
-        <stop offset="55%" stop-color="#fbfaf8"></stop>
-        <stop offset="100%" stop-color="#e7e4dd"></stop>
-      </radialGradient>
-    </defs>
-    <path d="M 15 1 C 22 1 27.5 13 27.5 22.5 C 27.5 30.5 21.8 35 15 35 C 8.2 35 2.5 30.5 2.5 22.5 C 2.5 13 8 1 15 1 Z" fill="url(#splashEggShade)" stroke="#dcdbd6" stroke-width="1"></path>
-    <ellipse cx="11" cy="10.5" rx="3.4" ry="4.6" fill="#ffffff" opacity="0.75"></ellipse>
-  </svg>
-  <div class="splash-word"><span class="my">my</span> <span class="egg">egg.</span></div>
-  <div class="splash-sub">TASK ASSISTANT</div>
-</div>
-<script>
-  (function () {
-    var el = document.getElementById('app-splash');
-    if (!el) return;
-    var hidden = false;
-    function hideSplash() {
-      if (hidden) return;
-      hidden = true;
-      el.classList.add('hide');
-      setTimeout(function () {
-        el.style.display = 'none';
-        // iOS가 앱을 홈화면에서 막 실행했을 때 100dvh 값을 늦게 갱신하는 경우가 있어,
-        // 스플래시가 사라진 직후 한 번 더 리사이즈를 흉내내어 레이아웃을 다시 계산하게 함
-        try { window.dispatchEvent(new Event('resize')); } catch (e) {}
-      }, 450);
-    }
-    // 타이머가 어떤 이유로든 실패해도 화면을 탭하면 바로 넘어갈 수 있게 안전장치를 둠
-    el.addEventListener('click', hideSplash);
-    setTimeout(hideSplash, 2000);
-  })();
-</script>
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -379,8 +320,9 @@ const STRINGS = {
         { demo: "autoReveal", title: "② 주간 요약은 자동으로", body: "월요일~일요일이 다 지난 주는 자동으로 요약이 만들어져요. 이번 주처럼 아직 진행 중인 주만 '요약 만들기'를 직접 눌러주세요." },
       ],
       projects: [
-        { demo: "addRow", title: "① 프로젝트 만들기", body: "이름을 적고 카테고리를 선택한 뒤 추가하면 카테고리별로 관리할 수 있어요." },
-        { demo: "holdEdit", title: "② 이름을 꾹 눌러서 수정", body: "오타가 났다면 프로젝트 이름을 꾹 누르세요. 바로 수정할 수 있어요." },
+        { demo: "addRow", title: "① 프로젝트 만들기", body: "이름을 적고 카테고리(본업 · 부업 · 자기계발 · 기타) 중 하나를 골라 추가하세요." },
+        { demo: "projectLink", title: "② 오늘 탭에 자동으로 연결돼요", body: "오늘 탭에서 할 일을 추가할 때 이 프로젝트를 선택하면, 고른 카테고리 색상 태그가 그 할 일에 그대로 붙어요. 어떤 일이 본업인지 부업인지 자기계발인지 한눈에 구분할 수 있어요." },
+        { demo: "holdEdit", title: "③ 이름을 꾹 눌러서 수정", body: "오타가 났다면 프로젝트 이름을 꾹 누르세요. 바로 수정할 수 있어요." },
       ],
       calendar: [
         { demo: "pressArrow", title: "① 월 넘기기", body: "위쪽 화살표로 이전/다음 달로 이동하고, 공휴일은 자동으로 표시돼요." },
@@ -499,8 +441,9 @@ const STRINGS = {
         { demo: "autoReveal", title: "② Weekly summaries build themselves", body: "Once a Monday-Sunday week has fully passed, its summary generates automatically. Only the current, still-open week needs a manual tap on 'Generate Summary.'" },
       ],
       projects: [
-        { demo: "addRow", title: "① Create a project", body: "Enter a name, pick a category, and add it — now you can track it by category." },
-        { demo: "holdEdit", title: "② Long-press the name to edit", body: "Made a typo? Long-press a project's name to fix it right away." },
+        { demo: "addRow", title: "① Create a project", body: "Enter a name, pick one category (Main · Side · Growth · Other), and add it." },
+        { demo: "projectLink", title: "② It links straight to Today", body: "Pick this project when adding a task on the Today tab, and that task gets tagged with its category color — so you can tell at a glance whether it's Main, Side, or Growth work." },
+        { demo: "holdEdit", title: "③ Long-press the name to edit", body: "Made a typo? Long-press a project's name to fix it right away." },
       ],
       calendar: [
         { demo: "pressArrow", title: "① Flip through months", body: "Use the arrows at the top to move between months. Holidays show up automatically." },
@@ -693,6 +636,26 @@ function TutorialDemo({ kind, label }) {
         </div>
         <div className="tut-new-row" style={{ marginTop: 8, height: 20, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
         <span className="tut-tap" style={{ right: 16, top: 16 }} />
+      </div>
+    );
+  }
+  if (kind === "projectLink") {
+    return (
+      <div style={box}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 10.5, padding: "3px 8px", borderRadius: 8, background: T.chipBg, color: T.chipText, fontWeight: 600 }}>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: T.accent, display: "inline-block", flexShrink: 0 }} />
+          {label}
+        </span>
+        <div
+          className="tut-new-row"
+          style={{ display: "flex", alignItems: "center", gap: 8, height: 26, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}`, padding: "0 8px", marginTop: 10 }}
+        >
+          <div style={{ flex: 1, height: 6, borderRadius: 3, background: T.track }} />
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 9, padding: "1px 6px", borderRadius: 6, background: T.chipBg, color: T.chipText, flexShrink: 0 }}>
+            <span style={{ width: 5, height: 5, borderRadius: "50%", background: T.accent, display: "inline-block" }} />
+            {label}
+          </span>
+        </div>
       </div>
     );
   }
@@ -2943,6 +2906,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           step && step.demo === "progress" ? L.overallProgress :
           step && step.demo === "holdEdit" ? L.renameTitle :
           step && step.demo === "pressArrow" ? (language === "ko" ? `${viewMonth}월` : fmtDate(new Date(viewYear, viewMonth - 1, 1), { month: "long" })) :
+          step && step.demo === "projectLink" ? catLabel("본업") :
           undefined;
         return (
           <div
