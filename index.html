@@ -1097,6 +1097,14 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
 
+  // .app-shell 자체를 filter로 반전시켜 다크모드를 만드는데, border-radius +
+  // overflow:hidden 조합에서 가장자리에 원래 흰 배경이 아주 살짝 비치는 경우가 있어서,
+  // body/html 배경 자체도 같이 검게 바꿔 어떤 미세한 틈이 있어도 안 보이게 함.
+  useEffect(() => {
+    document.body.style.background = darkMode ? "#000000" : "#FFFFFF";
+    document.documentElement.style.background = darkMode ? "#000000" : "#FFFFFF";
+  }, [darkMode]);
+
   const syncCodeRef = useRef("");
   useEffect(() => {
     syncCodeRef.current = syncCode;
