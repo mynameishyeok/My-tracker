@@ -149,6 +149,10 @@
     50% { width: 78%; }
     100% { width: 15%; }
   }
+  .app-shell.dark-mode {
+    filter: invert(1) hue-rotate(180deg);
+    transition: filter 0.25s ease;
+  }
 </style>
 </head>
 <body>
@@ -391,6 +395,19 @@ const STRINGS = {
     plazaUploading: "업로드 중...",
     plazaNoMessages: "아직 메시지가 없어요.",
     plazaFileExpiry: "공유된 파일은 7일 후 자동으로 삭제돼요.",
+    syncSectionTitle: "동기화 코드",
+    syncCodeHint: "이 코드를 적어두거나 기억해두세요. 기기 저장공간이 지워져도 이 코드로 데이터를 복원할 수 있어요.",
+    syncCopyBtn: "복사",
+    syncCopied: "복사됐어요",
+    syncBackupNow: "방금 백업됨",
+    restoreSectionTitle: "다른 코드로 복원하기",
+    restoreCodePlaceholder: "6자리 코드 입력",
+    restoreBtn: "복원",
+    restoreConfirmTitle: "이 코드로 복원할까요?",
+    restoreConfirmBody: "지금 이 기기에 있는 할 일 · 프로젝트 · 메모 · 요약 기록이 코드에 저장된 내용으로 모두 덮어씌워져요. 되돌릴 수 없으니 신중하게 확인해주세요.",
+    restoreNotFound: "해당 코드로 백업된 데이터를 찾을 수 없어요.",
+    restoreSuccess: "복원됐어요.",
+    restoreFailed: "복원에 실패했어요. 다시 시도해주세요.",
     tutorialTitle: "사용법",
     tutorialNext: "다음",
     tutorialPrev: "이전",
@@ -512,6 +529,19 @@ const STRINGS = {
     plazaUploading: "Uploading...",
     plazaNoMessages: "No messages yet.",
     plazaFileExpiry: "Shared files are automatically deleted after 7 days.",
+    syncSectionTitle: "Sync Code",
+    syncCodeHint: "Write this code down or remember it. If this device's storage ever gets wiped, you can restore your data with this code.",
+    syncCopyBtn: "Copy",
+    syncCopied: "Copied",
+    syncBackupNow: "Backed up just now",
+    restoreSectionTitle: "Restore from a code",
+    restoreCodePlaceholder: "Enter 6-digit code",
+    restoreBtn: "Restore",
+    restoreConfirmTitle: "Restore from this code?",
+    restoreConfirmBody: "All tasks, projects, notes, and summaries on this device will be overwritten with what's saved under that code. This can't be undone, so please double-check.",
+    restoreNotFound: "No backup found for that code.",
+    restoreSuccess: "Restored.",
+    restoreFailed: "Restore failed. Please try again.",
     tutorialTitle: "How to use",
     tutorialNext: "Next",
     tutorialPrev: "Back",
@@ -1058,6 +1088,49 @@ function App() {
   const [renameTarget, setRenameTarget] = useState(null);
   const [renameDraft, setRenameDraft] = useState("");
   const [tutorialStep, setTutorialStep] = useState(0);
+  const [syncCode, setSyncCode] = useState("");
+  const [restoreCodeDraft, setRestoreCodeDraft] = useState("");
+  const [restoreStatus, setRestoreStatus] = useState("");
+  const [restoring, setRestoring] = useState(false);
+  const [backupSavedAt, setBackupSavedAt] = useState(null);
+  const [confirmRestoreCode, setConfirmRestoreCode] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
+
+  const syncCodeRef = useRef("");
+  useEffect(() => {
+    syncCodeRef.current = syncCode;
+  }, [syncCode]);
+  const cloudDataRef = useRef({ tasks: [], projects: [], notes: {}, memos: [], weeklySummaries: {} });
+  useEffect(() => { cloudDataRef.current.tasks = tasks; }, [tasks]);
+  useEffect(() => { cloudDataRef.current.projects = projects; }, [projects]);
+  useEffect(() => { cloudDataRef.current.notes = notes; }, [notes]);
+  useEffect(() => { cloudDataRef.current.memos = memos; }, [memos]);
+  useEffect(() => { cloudDataRef.current.weeklySummaries = weeklySummaries; }, [weeklySummaries]);
+  const cloudSyncTimerRef = useRef(null);
+  // 로컬 저장은 즉시 하되, 클라우드 백업은 3초 동안 추가 변경이 없을 때 한 번만 보냄
+  // (메모 타이핑처럼 짧은 시간에 여러 번 저장되는 경우 매번 보내지 않기 위함)
+  const scheduleCloudSync = useCallback(() => {
+    if (!window.fbDb) return;
+    if (cloudSyncTimerRef.current) clearTimeout(cloudSyncTimerRef.current);
+    cloudSyncTimerRef.current = setTimeout(async () => {
+      const code = syncCodeRef.current;
+      if (!code) return;
+      try {
+        await window.fbDb.collection("userBackups").doc(code).set({
+          tasks: cloudDataRef.current.tasks || [],
+          projects: cloudDataRef.current.projects || [],
+          notes: cloudDataRef.current.notes || {},
+          memos: cloudDataRef.current.memos || [],
+          weeklySummaries: cloudDataRef.current.weeklySummaries || {},
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        setBackupSavedAt(new Date());
+      } catch (e) {
+        console.error("Cloud backup failed", e);
+      }
+    }, 3000);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -1092,6 +1165,27 @@ function App() {
         const r = await window.storage.get("tracker-language");
         if (r && r.value) lang = r.value;
       } catch (e) {}
+      // 동기화 코드 - iOS가 저장공간을 지워도(홈화면 재설치 등) 이 코드만 기억해두면
+      // 클라우드에 백업된 내 데이터를 그대로 복원할 수 있음. 쿠키에도 같이 백업해서
+      // localStorage만 지워지는 경우에는 자동으로 복구되게 해둠.
+      let code = "";
+      try {
+        const r = await window.storage.get("tracker-sync-code");
+        if (r && r.value) code = r.value;
+      } catch (e) {}
+      if (!code) code = getCookie("tracker-sync-code") || "";
+      if (!code) {
+        code = String(Math.floor(100000 + Math.random() * 900000));
+      }
+      try {
+        await window.storage.set("tracker-sync-code", code);
+        setCookie("tracker-sync-code", code);
+      } catch (e) {}
+      let dark = false;
+      try {
+        const r = await window.storage.get("tracker-dark-mode");
+        if (r && r.value === "1") dark = true;
+      } catch (e) {}
       if (!cancelled) {
         setProjects(proj || []);
         setTasks(tsk);
@@ -1099,6 +1193,8 @@ function App() {
         setWeeklySummaries(ws);
         setMemos(mm);
         setLanguage(lang);
+        setSyncCode(code);
+        setDarkMode(dark);
         setReady(true);
       }
     }
@@ -1378,31 +1474,83 @@ function App() {
     try {
       await window.storage.set("tracker-projects", JSON.stringify(next));
     } catch (e) {}
-  }, []);
+    scheduleCloudSync();
+  }, [scheduleCloudSync]);
   const saveTasks = useCallback(async (next) => {
     setTasks(next);
     try {
       await window.storage.set("tracker-tasks", JSON.stringify(next));
     } catch (e) {}
-  }, []);
+    scheduleCloudSync();
+  }, [scheduleCloudSync]);
   const saveNotes = useCallback(async (next) => {
     setNotes(next);
     try {
       await window.storage.set("tracker-notes", JSON.stringify(next));
     } catch (e) {}
-  }, []);
+    scheduleCloudSync();
+  }, [scheduleCloudSync]);
   const saveWeeklySummaries = useCallback(async (next) => {
     setWeeklySummaries(next);
     try {
       await window.storage.set("tracker-weekly-summaries", JSON.stringify(next));
     } catch (e) {}
-  }, []);
+    scheduleCloudSync();
+  }, [scheduleCloudSync]);
   const saveMemos = useCallback(async (next) => {
     setMemos(next);
     try {
       await window.storage.set("tracker-memos", JSON.stringify(next));
     } catch (e) {}
-  }, []);
+    scheduleCloudSync();
+  }, [scheduleCloudSync]);
+
+  const requestRestore = () => {
+    const code = restoreCodeDraft.trim();
+    if (!code) return;
+    setConfirmRestoreCode(code);
+  };
+  const confirmRestore = async () => {
+    const code = confirmRestoreCode;
+    if (!code || !window.fbDb) return;
+    setRestoring(true);
+    setRestoreStatus("");
+    try {
+      const doc = await window.fbDb.collection("userBackups").doc(code).get();
+      if (!doc.exists) {
+        setRestoreStatus(L.restoreNotFound);
+        setRestoring(false);
+        setConfirmRestoreCode(null);
+        return;
+      }
+      const data = doc.data();
+      const nextTasks = data.tasks || [];
+      const nextProjects = data.projects || [];
+      const nextNotes = data.notes || {};
+      const nextMemos = data.memos || [];
+      const nextWs = data.weeklySummaries || {};
+      setTasks(nextTasks);
+      setProjects(nextProjects);
+      setNotes(nextNotes);
+      setMemos(nextMemos);
+      setWeeklySummaries(nextWs);
+      setSyncCode(code);
+      await window.storage.set("tracker-tasks", JSON.stringify(nextTasks));
+      await window.storage.set("tracker-projects", JSON.stringify(nextProjects));
+      await window.storage.set("tracker-notes", JSON.stringify(nextNotes));
+      await window.storage.set("tracker-memos", JSON.stringify(nextMemos));
+      await window.storage.set("tracker-weekly-summaries", JSON.stringify(nextWs));
+      await window.storage.set("tracker-sync-code", code);
+      setCookie("tracker-sync-code", code);
+      setRestoreStatus(L.restoreSuccess);
+      setRestoreCodeDraft("");
+    } catch (e) {
+      console.error("Restore failed", e);
+      setRestoreStatus(L.restoreFailed);
+    }
+    setRestoring(false);
+    setConfirmRestoreCode(null);
+  };
 
   // 완전히 지난 (월~일이 다 끝난) 주는 사용자가 누르지 않아도 자동으로 요약을 만들어줌.
   // 아직 진행 중인 이번 주는 기존 수동 버튼으로만 생성/재생성함.
@@ -1597,6 +1745,20 @@ function App() {
     setLanguage(next);
     try {
       window.storage.set("tracker-language", next);
+    } catch (e) {}
+  };
+  const copySyncCode = async () => {
+    try {
+      await navigator.clipboard.writeText(syncCode);
+      setCodeCopied(true);
+      setTimeout(() => setCodeCopied(false), 1500);
+    } catch (e) {}
+  };
+  const toggleDarkMode = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    try {
+      window.storage.set("tracker-dark-mode", next ? "1" : "0");
     } catch (e) {}
   };
   const todaysTasks = tasks.filter((t) => t.date === todayStr);
@@ -1863,7 +2025,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
 
   return (
     <div
-      className="app-shell"
+      className={"app-shell" + (darkMode ? " dark-mode" : "")}
       style={{
         maxWidth: 420,
         margin: "0 auto",
@@ -1887,7 +2049,10 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             </button>
             <InfoIcon tabKey={tab} />
           </div>
-          <span style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 17 }}>
+          <span
+            onClick={toggleDarkMode}
+            style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 17, padding: "10px 16px" }}
+          >
             <span style={{ color: T.accentStrong }}>me</span><span style={{ color: T.accent }}>.</span>
           </span>
           <button
@@ -1999,6 +2164,45 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 })}
               </div>
             )}
+
+            <div style={{ height: 1, background: T.rowBorder, margin: "20px 0 16px" }} />
+
+            <div style={{ background: "#fff", borderRadius: 16, padding: 16, marginBottom: 12, border: `1px solid ${T.border}` }}>
+              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 6 }}>{L.syncSectionTitle}</div>
+              <div style={{ fontSize: 11.5, color: T.textSecondary, lineHeight: 1.5, marginBottom: 10 }}>{L.syncCodeHint}</div>
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <div style={{ flex: 1, fontSize: 18, fontWeight: 700, letterSpacing: 3, color: T.accentStrong, background: T.accentLight, borderRadius: 10, padding: "8px 12px", textAlign: "center" }}>
+                  {syncCode || "------"}
+                </div>
+                <button
+                  onClick={copySyncCode}
+                  style={{ height: 38, padding: "0 14px", borderRadius: 10, border: `1px solid ${T.border}`, background: "#fff", fontSize: 12.5, cursor: "pointer", color: T.text, flexShrink: 0 }}
+                >
+                  {codeCopied ? L.syncCopied : L.syncCopyBtn}
+                </button>
+              </div>
+            </div>
+
+            <div style={{ background: "#fff", borderRadius: 16, padding: 16, marginBottom: 16, border: `1px solid ${T.border}` }}>
+              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>{L.restoreSectionTitle}</div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input
+                  value={restoreCodeDraft}
+                  onChange={(e) => setRestoreCodeDraft(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  placeholder={L.restoreCodePlaceholder}
+                  inputMode="numeric"
+                  style={{ flex: 1, minWidth: 0, height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: "0 12px", fontSize: 13.5, outline: "none", color: T.text, letterSpacing: 2 }}
+                />
+                <button
+                  onClick={requestRestore}
+                  disabled={restoring || restoreCodeDraft.trim().length !== 6}
+                  style={{ height: 40, padding: "0 16px", borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 13, fontWeight: 600, cursor: restoring ? "default" : "pointer", flexShrink: 0, opacity: restoreCodeDraft.trim().length === 6 ? 1 : 0.5 }}
+                >
+                  {L.restoreBtn}
+                </button>
+              </div>
+              {restoreStatus && <div style={{ fontSize: 11.5, color: T.textSecondary, marginTop: 8 }}>{restoreStatus}</div>}
+            </div>
           </div>
         )}
 
@@ -2919,6 +3123,39 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           </div>
         );
       })()}
+
+      {confirmRestoreCode && (
+        <div
+          onClick={() => setConfirmRestoreCode(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60, padding: 20 }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: "#fff", width: "100%", maxWidth: 340, borderRadius: 20, padding: 20, boxSizing: "border-box" }}
+          >
+            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 8 }}>{L.restoreConfirmTitle}</div>
+            <div style={{ fontSize: 12.5, color: T.textSecondary, lineHeight: 1.5, marginBottom: 18 }}>
+              {L.restoreConfirmBody}
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                onClick={() => setConfirmRestoreCode(null)}
+                disabled={restoring}
+                style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 14, cursor: "pointer", color: T.text }}
+              >
+                {L.cancel}
+              </button>
+              <button
+                onClick={confirmRestore}
+                disabled={restoring}
+                style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: "none", background: T.warn, color: "#fff", fontSize: 14, fontWeight: 600, cursor: restoring ? "default" : "pointer" }}
+              >
+                {L.restoreBtn}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {reminderTaskId && (
         <div

@@ -29,5 +29,12 @@ service cloud.firestore {
     match /plazaRoomSecrets/{roomId} {
       allow read, write: if true;
     }
+
+    // 개인 데이터 클라우드 백업 - 기기 저장공간이 지워져도 동기화 코드로 복원할 수 있게 함.
+    // 문서 ID가 곧 동기화 코드라서, 코드를 아는 사람만 사실상 그 데이터를 읽고 쓸 수 있습니다.
+    // (역시 로그인 없는 개인용 앱 수준의 가벼운 보호입니다.)
+    match /userBackups/{code} {
+      allow read, write: if true;
+    }
   }
 }
