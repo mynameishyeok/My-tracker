@@ -23,9 +23,30 @@
   .app-shell {
     height: 100vh;
     height: 100dvh;
+    height: var(--app-vh, 100dvh);
     overflow: hidden;
     padding-top: env(safe-area-inset-top);
   }
+  #app-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease;
+  }
+  #app-splash.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
+  #app-splash .splash-egg { width: 92px; height: auto; margin-bottom: 18px; }
+  #app-splash .splash-word { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 30px; }
+  #app-splash .splash-word .my { color: #655406; }
+  #app-splash .splash-word .egg { color: #9F8400; }
+  #app-splash .splash-sub { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 4px; color: #94928B; margin-top: 8px; }
 
   /* 사용법 튜토리얼 미니 애니메이션 - 실제 UI를 흉내낸 아주 작은 데모를 반복 재생함 */
   .tut-tap {
@@ -132,6 +153,62 @@
 </head>
 <body>
 <div id="root"></div>
+
+<div id="app-splash">
+  <svg class="splash-egg" viewBox="0 0 30 36" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="splashEggShade" cx="38%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#ffffff"></stop>
+        <stop offset="55%" stop-color="#fbfaf8"></stop>
+        <stop offset="100%" stop-color="#e7e4dd"></stop>
+      </radialGradient>
+    </defs>
+    <path d="M 15 1 C 22 1 27.5 13 27.5 22.5 C 27.5 30.5 21.8 35 15 35 C 8.2 35 2.5 30.5 2.5 22.5 C 2.5 13 8 1 15 1 Z" fill="url(#splashEggShade)" stroke="#dcdbd6" stroke-width="1"></path>
+    <ellipse cx="11" cy="10.5" rx="3.4" ry="4.6" fill="#ffffff" opacity="0.75"></ellipse>
+  </svg>
+  <div class="splash-word"><span class="my">my</span> <span class="egg">egg.</span></div>
+  <div class="splash-sub">TASK ASSISTANT</div>
+</div>
+<script>
+  (function () {
+    // 실제로 눈에 보이는 뷰포트 높이를 계속 다시 재서 --app-vh 로 반영.
+    // iOS PWA는 백그라운드→포그라운드를 반복하면 100dvh를 다시 계산하지 않고
+    // 예전 값을 그대로 쓰는 경우가 있어서, 화면을 다시 볼 때마다 강제로 재계산함.
+    function syncAppVh() {
+      var h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+      document.documentElement.style.setProperty('--app-vh', h + 'px');
+    }
+    syncAppVh();
+    window.addEventListener('resize', syncAppVh);
+    window.addEventListener('orientationchange', syncAppVh);
+    window.addEventListener('pageshow', syncAppVh);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) syncAppVh();
+    });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', syncAppVh);
+    }
+  })();
+
+  (function () {
+    // 대문 로고 배너 - 앱을 완전히 종료했다가 다시 켤 때(콜드 스타트)만 보임.
+    // 앱 내부 탭 이동은 페이지 새로고침이 아니라서 다시 뜨지 않고,
+    // 잠깐 홈으로 나갔다 들어오는 정도(백그라운드→포그라운드)로도 다시 뜨지 않음 -
+    // 그 경우는 페이지 자체가 새로 로드되지 않기 때문.
+    var el = document.getElementById('app-splash');
+    if (!el) return;
+    var hidden = false;
+    function hideSplash() {
+      if (hidden) return;
+      hidden = true;
+      el.classList.add('hide');
+      setTimeout(function () { el.style.display = 'none'; }, 450);
+    }
+    // 타이머가 어떤 이유로든 실패해도 화면을 탭하면 바로 넘어갈 수 있게 안전장치를 둠
+    el.addEventListener('click', hideSplash);
+    setTimeout(hideSplash, 2000);
+  })();
+</script>
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
