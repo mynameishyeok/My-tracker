@@ -2189,6 +2189,9 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   {codeCopied ? L.syncCopied : L.syncCopyBtn}
                 </button>
               </div>
+              {backupSavedAt && (
+                <div style={{ fontSize: 10.5, color: T.textMuted, marginTop: 8 }}>{L.syncBackupNow}</div>
+              )}
             </div>
 
             <div style={{ background: "#fff", borderRadius: 16, padding: 16, marginBottom: 16, border: `1px solid ${T.border}` }}>
@@ -3172,6 +3175,9 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
         >
           <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 380, borderRadius: 20, padding: 20, boxSizing: "border-box" }}>
             <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>{L.reminderTitle}</div>
+            {typeof Notification !== "undefined" && Notification.permission === "denied" && (
+              <div style={{ fontSize: 11.5, color: T.warn, lineHeight: 1.5, marginBottom: 12 }}>{L.reminderDenied}</div>
+            )}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <input
                 type="date"
