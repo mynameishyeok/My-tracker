@@ -175,7 +175,12 @@
     // iOS PWA는 백그라운드→포그라운드를 반복하면 100dvh를 다시 계산하지 않고
     // 예전 값을 그대로 쓰는 경우가 있어서, 화면을 다시 볼 때마다 강제로 재계산함.
     function measure() {
-      var h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+      // visualViewport.height는 키보드가 열리면 그만큼 줄어드는 값이라
+      // 여기 쓰면 검색창 등에 포커스가 갈 때마다 앱 전체가 찌그러지고,
+      // 키보드가 닫힐 때 타이밍이 어긋나면 계속 찌그러진 채로 남는 문제가 있었음.
+      // window.innerHeight는 iOS에서 키보드와 무관하게 항상 레이아웃 뷰포트
+      // 크기 그대로라서 이 용도(백그라운드↔포그라운드 재계산)에 더 안전함.
+      var h = window.innerHeight;
       document.documentElement.style.setProperty('--app-vh', h + 'px');
       // 화면 크기뿐 아니라, iOS 바운스/스크롤 잔여값 때문에 body 전체가
       // 살짝 밀려 보이는 경우도 있어서 스크롤 위치 자체도 항상 맨 위로 고정함.
@@ -190,15 +195,11 @@
     }
     syncAppVh();
     window.addEventListener('load', syncAppVh);
-    window.addEventListener('resize', syncAppVh);
     window.addEventListener('orientationchange', syncAppVh);
     window.addEventListener('pageshow', syncAppVh);
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden) syncAppVh();
     });
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', syncAppVh);
-    }
     // 앱을 처음 켰을 때(콜드 스타트) iOS가 상태바/홈 인디케이터 등
     // 자기 UI를 완전히 안정시키기까지 약간의 시간차가 있을 수 있어서,
     // 첫 2초 동안 몇 번 더 재측정해서 최종적으로 맞는 값에 수렴하게 함.
