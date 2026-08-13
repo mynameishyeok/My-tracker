@@ -37,10 +37,137 @@
     overflow: hidden;
     padding-top: env(safe-area-inset-top);
   }
+  #app-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease;
+  }
+  #app-splash.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
+  #app-splash .splash-egg { width: 92px; height: auto; margin-bottom: 18px; }
+  #app-splash .splash-word { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 30px; }
+  #app-splash .splash-word .my { color: #655406; }
+  #app-splash .splash-word .egg { color: #9F8400; }
+  #app-splash .splash-sub { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 4px; color: #94928B; margin-top: 8px; }
+
+  /* 사용법 튜토리얼 미니 애니메이션 - 실제 UI를 흉내낸 아주 작은 데모를 반복 재생함 */
+  .tut-tap {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(159, 132, 0, 0.55);
+    transform: scale(0.5);
+    opacity: 0;
+    animation: tutTap 2.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes tutTap {
+    0% { opacity: 0; transform: scale(0.5); }
+    10% { opacity: 1; transform: scale(1); }
+    26% { opacity: 1; transform: scale(1); }
+    38% { opacity: 0; transform: scale(1.6); }
+    100% { opacity: 0; transform: scale(0.5); }
+  }
+  .tut-plus { animation: tutPress 2.4s ease-in-out infinite; }
+  @keyframes tutPress {
+    0%, 8% { transform: scale(1); }
+    16% { transform: scale(0.85); }
+    24%, 100% { transform: scale(1); }
+  }
+  .tut-new-row { animation: tutReveal 2.4s ease-in-out infinite; opacity: 0; }
+  @keyframes tutReveal {
+    0%, 24% { opacity: 0; transform: translateY(-4px); }
+    36% { opacity: 1; transform: translateY(0); }
+    88% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(0); }
+  }
+  .tut-checkbox { animation: tutFill 2.4s ease-in-out infinite; }
+  @keyframes tutFill {
+    0%, 24% { background: #fff; border-color: #DCDBD6; }
+    36%, 88% { background: #9F8400; border-color: #9F8400; }
+    100% { background: #fff; border-color: #DCDBD6; }
+  }
+  .tut-check {
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    animation: tutDraw 2.4s ease-in-out infinite;
+  }
+  @keyframes tutDraw {
+    0%, 30% { stroke-dashoffset: 24; }
+    46%, 88% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: 24; }
+  }
+  .tut-strike::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 1.5px;
+    width: 0;
+    background: #94928B;
+    animation: tutStrike 2.4s ease-in-out infinite;
+  }
+  @keyframes tutStrike {
+    0%, 36% { width: 0; }
+    52%, 88% { width: 100%; }
+    100% { width: 100%; opacity: 0; }
+  }
+  .tut-hold {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(159, 132, 0, 0.6);
+    transform: scale(0.5);
+    opacity: 0;
+    animation: tutHold 2.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes tutHold {
+    0% { opacity: 0; transform: scale(0.5); }
+    10% { opacity: 1; transform: scale(0.5); }
+    30% { opacity: 1; transform: scale(1.3); }
+    38% { opacity: 0; transform: scale(1.3); }
+    100% { opacity: 0; transform: scale(0.5); }
+  }
+  .tut-edit-modal { animation: tutReveal 2.4s ease-in-out infinite; opacity: 0; }
 </style>
 </head>
 <body>
 <div id="root"></div>
+
+<div id="app-splash">
+  <svg class="splash-egg" viewBox="0 0 30 36" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="splashEggShade" cx="38%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#ffffff"></stop>
+        <stop offset="55%" stop-color="#fbfaf8"></stop>
+        <stop offset="100%" stop-color="#e7e4dd"></stop>
+      </radialGradient>
+    </defs>
+    <path d="M 15 1 C 22 1 27.5 13 27.5 22.5 C 27.5 30.5 21.8 35 15 35 C 8.2 35 2.5 30.5 2.5 22.5 C 2.5 13 8 1 15 1 Z" fill="url(#splashEggShade)" stroke="#dcdbd6" stroke-width="1"></path>
+    <ellipse cx="11" cy="10.5" rx="3.4" ry="4.6" fill="#ffffff" opacity="0.75"></ellipse>
+  </svg>
+  <div class="splash-word"><span class="my">my</span> <span class="egg">egg.</span></div>
+  <div class="splash-sub">TASK ASSISTANT</div>
+</div>
+<script>
+  setTimeout(function () {
+    var el = document.getElementById('app-splash');
+    if (!el) return;
+    el.classList.add('hide');
+    setTimeout(function () { el.style.display = 'none'; }, 450);
+  }, 2000);
+</script>
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -92,7 +219,7 @@
 </script>
 
 <script type="text/babel" data-type="module">
-const { useState, useEffect, useCallback } = React;
+const { useState, useEffect, useCallback, useRef } = React;
 
 // =========================================================
 // 여기에 구글 Gemini API 키를 붙여넣으세요 (aistudio.google.com/apikey 에서 발급)
@@ -175,6 +302,7 @@ const STRINGS = {
     unassigned: "미분류",
     showUnassignedOnly: "미분류만 보기",
     showAll: "전체 보기",
+    renameTitle: "이름 수정",
     reminderTitle: "알림 시간 설정",
     reminderClear: "알림 해제",
     reminderNotSupported: "이 브라우저에서는 알림을 지원하지 않아요.",
@@ -182,8 +310,9 @@ const STRINGS = {
     reminderFiredTitle: "⏰ 알림",
     ok: "확인",
     plazaCreateRoom: "방 만들기",
-    plazaRoomNamePlaceholder: "방 이름 (예: 자료 공유방)",
-    plazaPinPlaceholder: "4자리 PIN",
+    plazaRoomNamePlaceholder: "방 제목",
+    plazaPinPlaceholder: "○○○○",
+    plazaPinOptionalHint: "PIN (선택사항 · 비워두면 누구나 바로 입장할 수 있어요)",
     plazaEnterPinTitle: "PIN을 입력하세요",
     plazaEnterRoom: "입장",
     plazaMembers: (n, max) => `${n}/${max}명`,
@@ -191,7 +320,7 @@ const STRINGS = {
     plazaRoomsFull: "방이 가득 찼어요 (최대 5개). 새 방을 만들려면 기존 방을 정리해주세요.",
     plazaMemberFull: "이 방은 인원이 가득 찼어요 (최대 3명).",
     plazaWrongPin: "PIN이 올바르지 않아요.",
-    plazaInvalidCreate: "방 이름과 4자리 PIN을 모두 입력해주세요.",
+    plazaInvalidCreate: "방 제목을 입력해주세요. PIN을 설정하려면 4자리를 모두 입력해야 해요.",
     plazaCreateFailed: "처리 중 문제가 생겼어요. 다시 시도해주세요.",
     plazaUploadFailed: "파일 업로드에 실패했어요. 다시 시도해주세요.",
     plazaLeave: "나가기",
@@ -203,6 +332,16 @@ const STRINGS = {
     plazaUploading: "업로드 중...",
     plazaNoMessages: "아직 메시지가 없어요.",
     plazaFileExpiry: "공유된 파일은 7일 후 자동으로 삭제돼요.",
+    tutorialCta: "앱 사용법 보기",
+    tutorialTitle: "사용법",
+    tutorialNext: "다음",
+    tutorialPrev: "이전",
+    tutorialStart: "시작하기",
+    tutorialSteps: [
+      { title: "① 오늘 할 일 추가하기", body: "입력창에 할 일을 적고 + 버튼을 누르면 오늘 목록에 바로 추가돼요." },
+      { title: "② 완료 체크하기", body: "체크박스를 누르면 완료 표시가 되고 기록에 남아요." },
+      { title: "③ 꾹 눌러서 수정하기", body: "오타가 났다면 항목을 꾹 누르세요. 지우고 다시 만들 필요 없이 바로 고칠 수 있어요." },
+    ],
     tabInfo: {
       dashboard: "전체 진행 상황과 최근 활동을 한눈에 볼 수 있어요.",
       today: "오늘 할 일을 적고 체크하며 관리하세요.",
@@ -211,7 +350,7 @@ const STRINGS = {
       archive: "완료한 할 일을 모아보고, 오늘 탭 내용을 월요일~일요일 기준 한 주 단위로 요약한 기록도 만들어볼 수 있어요.",
       projects: "프로젝트를 등록하고 카테고리별로 관리하세요.",
       calendar: "월별 일정과 공휴일을 확인하고, 날짜별로 메모를 남기세요.",
-      plaza: "누구나 방을 만들어 다른 사람과 텍스트와 파일을 나눌 수 있는 공간이에요.\n\n· 방을 만든 사람이 4자리 PIN을 직접 정해요. 입장하려면 그 PIN을 알아야 해요.\n· 방 하나에 최대 3명까지 들어올 수 있어요.\n· 광장에는 방을 최대 5개까지만 만들 수 있어요. 방은 자동으로 없어지지 않고, 방을 만든 사람만 삭제할 수 있어요. 5개가 다 찼다면 방장에게 정리를 부탁하세요.\n· 공유한 파일은 올린 날로부터 7일 후 자동으로 삭제돼요 (대화 내용은 남아있어요).\n· 로그인이 없는 앱이라 PIN은 화면에서만 확인하는 가벼운 수준의 보호예요. 완전한 보안이 아니니 민감한 파일은 올리지 마세요.",
+      plaza: "누구나 방을 만들어 다른 사람과 텍스트와 파일을 나눌 수 있는 공간이에요.\n\n· 방을 만들 때 4자리 PIN을 설정할 수 있어요 (선택사항). PIN을 설정하면 입장할 때 그 PIN이 필요하고, 비워두면 누구나 바로 입장할 수 있어요.\n· 방 하나에 최대 3명까지 들어올 수 있어요.\n· 광장에는 방을 최대 5개까지만 만들 수 있어요. 방은 자동으로 없어지지 않고, 방을 만든 사람만 삭제할 수 있어요. 5개가 다 찼다면 방장에게 정리를 부탁하세요.\n· 공유한 파일은 올린 날로부터 7일 후 자동으로 삭제돼요 (대화 내용은 남아있어요).\n· 로그인이 없는 앱이라 PIN은 화면에서만 확인하는 가벼운 수준의 보호예요. 완전한 보안이 아니니 민감한 파일은 올리지 마세요.",
     },
   },
   en: {
@@ -256,6 +395,7 @@ const STRINGS = {
     unassigned: "Unassigned",
     showUnassignedOnly: "Unassigned only",
     showAll: "Show all",
+    renameTitle: "Edit name",
     reminderTitle: "Set Reminder",
     reminderClear: "Clear Reminder",
     reminderNotSupported: "This browser doesn't support notifications.",
@@ -263,8 +403,9 @@ const STRINGS = {
     reminderFiredTitle: "⏰ Reminder",
     ok: "OK",
     plazaCreateRoom: "Create Room",
-    plazaRoomNamePlaceholder: "Room name (e.g. File sharing)",
-    plazaPinPlaceholder: "4-digit PIN",
+    plazaRoomNamePlaceholder: "Room title",
+    plazaPinPlaceholder: "○○○○",
+    plazaPinOptionalHint: "PIN (optional · leave blank and anyone can join instantly)",
     plazaEnterPinTitle: "Enter the PIN",
     plazaEnterRoom: "Enter",
     plazaMembers: (n, max) => `${n}/${max}`,
@@ -272,7 +413,7 @@ const STRINGS = {
     plazaRoomsFull: "Rooms are full (max 5). Delete an old room to make space.",
     plazaMemberFull: "This room is full (max 3 members).",
     plazaWrongPin: "Incorrect PIN.",
-    plazaInvalidCreate: "Please enter a room name and a 4-digit PIN.",
+    plazaInvalidCreate: "Please enter a room title. If you set a PIN, it needs all 4 digits.",
     plazaCreateFailed: "Something went wrong. Please try again.",
     plazaUploadFailed: "File upload failed. Please try again.",
     plazaLeave: "Leave",
@@ -284,6 +425,16 @@ const STRINGS = {
     plazaUploading: "Uploading...",
     plazaNoMessages: "No messages yet.",
     plazaFileExpiry: "Shared files are automatically deleted after 7 days.",
+    tutorialCta: "View tutorial",
+    tutorialTitle: "How to use",
+    tutorialNext: "Next",
+    tutorialPrev: "Back",
+    tutorialStart: "Get started",
+    tutorialSteps: [
+      { title: "① Add a task", body: "Type a task in the input and tap + — it's added to today's list right away." },
+      { title: "② Check it off", body: "Tap the checkbox to mark it done. It's saved to your record." },
+      { title: "③ Long-press to edit", body: "Made a typo? Long-press the item to fix it instantly — no need to delete and redo it." },
+    ],
     tabInfo: {
       dashboard: "See your overall progress and recent activity at a glance.",
       today: "Add and check off today's tasks.",
@@ -292,7 +443,7 @@ const STRINGS = {
       archive: "Review completed tasks, and build weekly summaries of your Today tab from Monday to Sunday.",
       projects: "Add and manage your projects by category.",
       calendar: "View the month's schedule and holidays, and leave notes on any date.",
-      plaza: "A space where anyone can create a room to share text and files with others.\n\n· Whoever creates a room picks its 4-digit PIN. You need that PIN to enter.\n· Each room holds up to 3 people.\n· Up to 5 rooms can exist in the Plaza at once. Rooms don't expire on their own — only the creator can delete one. If all 5 are taken, ask a room's creator to clear it out.\n· Shared files are automatically deleted 7 days after upload (the conversation itself stays).\n· This app has no login, so the PIN is just a light, on-screen check — not real security. Don't share anything sensitive.",
+      plaza: "A space where anyone can create a room to share text and files with others.\n\n· When creating a room, you can optionally set a 4-digit PIN. If you set one, that PIN is needed to enter; leave it blank and anyone can join instantly.\n· Each room holds up to 3 people.\n· Up to 5 rooms can exist in the Plaza at once. Rooms don't expire on their own — only the creator can delete one. If all 5 are taken, ask a room's creator to clear it out.\n· Shared files are automatically deleted 7 days after upload (the conversation itself stays).\n· This app has no login, so the PIN is just a light, on-screen check — not real security. Don't share anything sensitive.",
     },
   },
 };
@@ -413,6 +564,29 @@ function TabIcon({ name, size }) {
     </svg>
   );
 }
+function BellIcon({ size }) {
+  return (
+    <svg width={size || 15} height={size || 15} viewBox="0 0 24 24">
+      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="currentColor" />
+    </svg>
+  );
+}
+function PlusIcon({ size }) {
+  return (
+    <svg width={size || 18} height={size || 18} viewBox="0 0 24 24" style={{ display: "block" }}>
+      <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+function ChevronIcon({ dir, size }) {
+  const points = dir === "left" ? "15,4 7,12 15,20" : "9,4 17,12 9,20";
+  return (
+    <svg width={size || 16} height={size || 16} viewBox="0 0 24 24" style={{ display: "block" }}>
+      <polyline points={points} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 function pad(n) {
   return n < 10 ? "0" + n : "" + n;
@@ -460,6 +634,31 @@ function getMonday(d) {
   date.setDate(date.getDate() + diff);
   date.setHours(0, 0, 0, 0);
   return date;
+}
+
+// 꾹 누르면(long-press) 수정 모달을 여는 제스처 - 오탈자 나면 지웠다 새로 만들 필요 없이 바로 고칠 수 있게 함
+function longPressHandlers(onLongPress) {
+  let timer = null;
+  const start = () => {
+    timer = setTimeout(onLongPress, 500);
+  };
+  const cancel = () => {
+    if (timer) clearTimeout(timer);
+    timer = null;
+  };
+  return {
+    onTouchStart: start,
+    onTouchMove: cancel,
+    onTouchEnd: cancel,
+    onMouseDown: start,
+    onMouseUp: cancel,
+    onMouseLeave: cancel,
+    onContextMenu: (e) => {
+      e.preventDefault();
+      cancel();
+      onLongPress();
+    },
+  };
 }
 
 // ---- 한글 초성 검색 지원 ----
@@ -520,12 +719,15 @@ function Checkbox({ done, onClick }) {
         borderRadius: 6,
         border: done ? "none" : `1.5px solid ${T.border}`,
         background: done ? T.accent : "transparent",
+        color: "#fff",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         flexShrink: 0,
         cursor: "pointer",
         padding: 0,
+        fontSize: 11,
+        lineHeight: 1,
       }}
     >
       {done && "✓"}
@@ -540,6 +742,11 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [notes, setNotes] = useState({});
   const [weeklySummaries, setWeeklySummaries] = useState({});
+  const weeklySummariesRef = useRef({});
+  useEffect(() => {
+    weeklySummariesRef.current = weeklySummaries;
+  }, [weeklySummaries]);
+  const autoSummaryRanRef = useRef(false);
   const [memos, setMemos] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [confirmDeleteProjectId, setConfirmDeleteProjectId] = useState(null);
@@ -587,6 +794,10 @@ function App() {
   const [viewWeekStart, setViewWeekStart] = useState(getMonday(today));
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [openSummaryKey, setOpenSummaryKey] = useState(null);
+  const [renameTarget, setRenameTarget] = useState(null);
+  const [renameDraft, setRenameDraft] = useState("");
+  const [tutorialOpen, setTutorialOpen] = useState(false);
+  const [tutorialStep, setTutorialStep] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -743,10 +954,30 @@ function App() {
     setNavPageIndex(0);
   };
 
-  const openRoom = (room) => {
+  const openRoom = async (room) => {
     const grace = plazaVerified[room.id];
     if (grace && grace > Date.now()) {
       enterRoom(room.id, room.name);
+      return;
+    }
+    if (!room.hasPin) {
+      setPlazaError("");
+      try {
+        const members = room.members || [];
+        if (!members.includes(deviceId)) {
+          if (members.length >= 3) {
+            setPlazaError(L.plazaMemberFull);
+            return;
+          }
+          await window.fbDb.collection("plazaRooms").doc(room.id).update({
+            members: firebase.firestore.FieldValue.arrayUnion(deviceId),
+          });
+        }
+        enterRoom(room.id, room.name);
+      } catch (e) {
+        console.error("Plaza join failed", e);
+        setPlazaError(L.plazaCreateFailed);
+      }
       return;
     }
     setJoinRoomTarget(room);
@@ -758,7 +989,7 @@ function App() {
     const name = newRoomName.trim();
     const pin = newRoomPin.trim();
     setPlazaError("");
-    if (!name || !/^\d{4}$/.test(pin)) {
+    if (!name || (pin.length > 0 && pin.length !== 4)) {
       setPlazaError(L.plazaInvalidCreate);
       return;
     }
@@ -772,9 +1003,12 @@ function App() {
         name,
         members: [deviceId],
         creatorDeviceId: deviceId,
+        hasPin: pin.length === 4,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
-      await window.fbDb.collection("plazaRoomSecrets").doc(roomRef.id).set({ pin });
+      if (pin.length === 4) {
+        await window.fbDb.collection("plazaRoomSecrets").doc(roomRef.id).set({ pin });
+      }
       setCreateRoomOpen(false);
       setNewRoomName("");
       setNewRoomPin("");
@@ -910,6 +1144,35 @@ function App() {
     } catch (e) {}
   }, []);
 
+  // 완전히 지난 (월~일이 다 끝난) 주는 사용자가 누르지 않아도 자동으로 요약을 만들어줌.
+  // 아직 진행 중인 이번 주는 기존 수동 버튼으로만 생성/재생성함.
+  useEffect(() => {
+    if (!ready || autoSummaryRanRef.current) return;
+    autoSummaryRanRef.current = true;
+    (async () => {
+      const currentMonday = toDateStr(getMonday(today));
+      const closedWeeks = new Set();
+      tasks.forEach((t) => {
+        if (!t.date) return;
+        const wkStart = toDateStr(getMonday(new Date(t.date + "T00:00:00")));
+        if (wkStart < currentMonday) closedWeeks.add(wkStart);
+      });
+      const missing = Array.from(closedWeeks)
+        .filter((k) => !weeklySummariesRef.current[k])
+        .sort()
+        .slice(-8);
+      let merged = {};
+      for (const wk of missing) {
+        const result = await generateSummaryForWeek(new Date(wk + "T00:00:00"));
+        merged = { ...merged, ...result };
+      }
+      if (Object.keys(merged).length > 0) {
+        saveWeeklySummaries({ ...weeklySummariesRef.current, ...merged });
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, tasks]);
+
   if (!ready) {
     return (
       <div
@@ -1033,6 +1296,31 @@ function App() {
   const confirmDeleteProject = () => {
     saveProjects(projects.filter((p) => p.id !== confirmDeleteProjectId));
     setConfirmDeleteProjectId(null);
+  };
+  const openRename = (type, id, value) => {
+    setRenameTarget({ type, id });
+    setRenameDraft(value);
+  };
+  const saveRename = async () => {
+    if (!renameTarget) return;
+    const value = renameDraft.trim();
+    if (!value) {
+      setRenameTarget(null);
+      return;
+    }
+    if (renameTarget.type === "task") {
+      saveTasks(tasks.map((t) => (t.id === renameTarget.id ? { ...t, title: value } : t)));
+    } else if (renameTarget.type === "project") {
+      saveProjects(projects.map((p) => (p.id === renameTarget.id ? { ...p, name: value } : p)));
+    } else if (renameTarget.type === "room") {
+      try {
+        await window.fbDb.collection("plazaRooms").doc(renameTarget.id).update({ name: value });
+        setActiveRoomName(value);
+      } catch (e) {
+        console.error("Plaza room rename failed", e);
+      }
+    }
+    setRenameTarget(null);
   };
   const addMemo = () => {
     const m = { id: "m-" + Date.now(), text: "", createdAt: new Date().toISOString() };
@@ -1213,8 +1501,13 @@ function App() {
     return diff >= 3 ? "veryLate" : "open";
   }
 
-  const generateWeeklySummary = async () => {
-    const weekTasks = tasks.filter((t) => weekDates.some((d) => toDateStr(d) === t.date));
+  const generateSummaryForWeek = async (weekStartDate) => {
+    const wDates = Array.from({ length: 7 }, (_, i) => addDays(weekStartDate, i));
+    const wKeyStr = toDateStr(weekStartDate);
+    const wLabel = language === "ko"
+      ? `${weekStartDate.getMonth() + 1}/${weekStartDate.getDate()} - ${wDates[6].getMonth() + 1}/${wDates[6].getDate()}`
+      : `${fmtDate(weekStartDate, { month: "short", day: "numeric" })} – ${fmtDate(wDates[6], { month: "short", day: "numeric" })}`;
+    const weekTasks = tasks.filter((t) => wDates.some((d) => toDateStr(d) === t.date));
     const refDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const nameFor = (t) => {
       const proj = t.projectId ? projectMap[t.projectId] : null;
@@ -1231,7 +1524,7 @@ function App() {
     const fmt = (list, none) => (list.length ? list.map((s) => "- " + s).join("\n") : none);
 
     const prompt = language === "ko"
-      ? `다음은 ${weekLabel} (월요일~일요일) 한 주간의 할 일 기록이야. 평가 기준은 이래:
+      ? `다음은 ${wLabel} (월요일~일요일) 한 주간의 할 일 기록이야. 평가 기준은 이래:
 - 마감일 당일에 완료: 잘한 점
 - 마감일보다 1~2일 늦게 완료: 미흡
 - 마감일보다 3일 이상 늦게 완료됐거나, 3일 이상 지나도록 아직 완료 못 함: 많이 부족
@@ -1250,7 +1543,7 @@ ${fmt(veryLate, "(없음)")}
 ${fmt(stillOpen, "(없음)")}
 
 이 내용을 바탕으로 이번 주에 잘한 점과 부족했던 점을 구분해서 4~6줄로 담백하게 한국어로 요약해줘. 위 분류를 자연스럽게 반영해서 쓰고, 불릿 없이 짧은 문단으로 써줘.`
-      : `Here is this week's (Monday-Sunday, ${weekLabel}) task log. The grading rule is:
+      : `Here is this week's (Monday-Sunday, ${wLabel}) task log. The grading rule is:
 - Completed on its due date: did well
 - Completed 1-2 days after the due date: lacking
 - Completed 3+ days late, or still not done 3+ days past the due date: seriously lacking
@@ -1270,14 +1563,10 @@ ${fmt(stillOpen, "(none)")}
 
 Write a plain, natural 4-6 sentence summary in English distinguishing what went well from what fell short this week, reflecting the categories above. Short paragraph, no bullet points.`;
 
-    setSummaryLoading(true);
     if (!GEMINI_API_KEY || GEMINI_API_KEY.indexOf("여기에") !== -1) {
-      saveWeeklySummaries({
-        ...weeklySummaries,
-        [weekKeyStr]: { text: language === "ko" ? "먼저 코드 상단의 GEMINI_API_KEY 자리에 발급받은 키를 넣어주세요." : "Please add your Gemini API key to GEMINI_API_KEY near the top of the code first.", generatedAt: new Date().toISOString() },
-      });
-      setSummaryLoading(false);
-      return;
+      return {
+        [wKeyStr]: { text: language === "ko" ? "먼저 코드 상단의 GEMINI_API_KEY 자리에 발급받은 키를 넣어주세요." : "Please add your Gemini API key to GEMINI_API_KEY near the top of the code first.", generatedAt: new Date().toISOString() },
+      };
     }
     try {
       const response = await fetch(
@@ -1291,15 +1580,19 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
       const data = await response.json();
       const parts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
       const text = parts.map((p) => p.text || "").join("\n").trim();
-      saveWeeklySummaries({
-        ...weeklySummaries,
-        [weekKeyStr]: { text: text || L.noSummaryYet, generatedAt: new Date().toISOString() },
-      });
+      return { [wKeyStr]: { text: text || L.noSummaryYet, generatedAt: new Date().toISOString() } };
     } catch (e) {
-      saveWeeklySummaries({
-        ...weeklySummaries,
-        [weekKeyStr]: { text: language === "ko" ? "요약 생성에 실패했어요. 다시 시도해주세요." : "Couldn't generate a summary. Please try again.", generatedAt: new Date().toISOString() },
-      });
+      return {
+        [wKeyStr]: { text: language === "ko" ? "요약 생성에 실패했어요. 다시 시도해주세요." : "Couldn't generate a summary. Please try again.", generatedAt: new Date().toISOString() },
+      };
+    }
+  };
+
+  const generateWeeklySummary = async () => {
+    setSummaryLoading(true);
+    try {
+      const result = await generateSummaryForWeek(viewWeekStart);
+      saveWeeklySummaries({ ...weeklySummariesRef.current, ...result });
     } finally {
       setSummaryLoading(false);
     }
@@ -1502,11 +1795,10 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   justifyContent: "center",
                   cursor: "pointer",
                   flexShrink: 0,
-                  fontSize: 20,
                   color: "#fff",
                 }}
               >
-                +
+                <PlusIcon size={18} />
               </button>
             </div>
 
@@ -1550,11 +1842,14 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     <Checkbox done={t.done} onClick={() => toggleTask(t.id)} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div
+                        {...longPressHandlers(() => openRename("task", t.id, t.title))}
                         style={{
                           fontSize: 14,
                           color: t.done ? T.textMuted : T.text,
                           textDecoration: t.done ? "line-through" : "none",
                           wordBreak: "break-word",
+                          userSelect: "none",
+                          WebkitTouchCallout: "none",
                         }}
                       >
                         {t.title}
@@ -1563,9 +1858,9 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     </div>
                     <button
                       onClick={() => openReminder(t.id)}
-                      style={{ background: "none", border: "none", color: t.reminderAt && !t.reminderFired ? T.accentStrong : T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0, fontSize: 17, opacity: t.reminderAt && !t.reminderFired ? 1 : 0.4 }}
+                      style={{ background: "none", border: "none", color: t.reminderAt && !t.reminderFired ? T.accentStrong : T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0, display: "flex", opacity: t.reminderAt && !t.reminderFired ? 1 : 0.4 }}
                     >
-                      🔔
+                      <BellIcon size={16} />
                     </button>
                     <button
                       onClick={() => deleteTask(t.id)}
@@ -1598,11 +1893,10 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
-                  fontSize: 18,
                   color: "#fff",
                 }}
               >
-                +
+                <PlusIcon size={16} />
               </button>
             </div>
 
@@ -1805,16 +2099,16 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
               <button
                 onClick={() => goWeek(-1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 16 }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text }}
               >
-                ‹
+                <ChevronIcon dir="left" size={15} />
               </button>
               <span style={{ fontSize: 12.5, fontWeight: 600 }}>{language === "ko" ? `${viewWeekStart.getFullYear()}년 ${weekLabel}` : `${weekLabel}, ${viewWeekStart.getFullYear()}`}</span>
               <button
                 onClick={() => goWeek(1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text, fontSize: 16 }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text }}
               >
-                ›
+                <ChevronIcon dir="right" size={15} />
               </button>
             </div>
             <button
@@ -1960,7 +2254,10 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                             <Dot color={cs.dot} />
                             {catLabel(p.category)}
                           </span>
-                          <span style={{ fontSize: 14.5, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          <span
+                            {...longPressHandlers(() => openRename("project", p.id, p.name))}
+                            style={{ fontSize: 14.5, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", userSelect: "none", WebkitTouchCallout: "none" }}
+                          >
                             {p.name}
                           </span>
                         </div>
@@ -1987,18 +2284,18 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
               <button
                 onClick={() => goMonth(-1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text }}
               >
-                ‹
+                <ChevronIcon dir="left" size={16} />
               </button>
               <div style={{ fontSize: 15, fontWeight: 600 }}>
                 {language === "ko" ? `${viewYear}년 ${viewMonth}월` : fmtDate(new Date(viewYear, viewMonth - 1, 1), { month: "long", year: "numeric" })}
               </div>
               <button
                 onClick={() => goMonth(1)}
-                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text , fontSize: 18 }}
+                style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 12, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.text }}
               >
-                ›
+                <ChevronIcon dir="right" size={16} />
               </button>
             </div>
 
@@ -2105,7 +2402,15 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     onClick={() => openRoom(room)}
                     style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", background: "#fff", border: `1px solid ${T.border}`, borderRadius: 16, padding: "13px 14px", marginBottom: 8, cursor: "pointer", textAlign: "left" }}
                   >
-                    <span style={{ fontSize: 14, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{room.name}</span>
+                    <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
+                      {room.hasPin && (
+                        <svg width="11" height="11" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
+                          <rect x="5" y="10.5" width="14" height="9.5" rx="2.4" fill="none" stroke={T.textMuted} strokeWidth="1.6" />
+                          <path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7" fill="none" stroke={T.textMuted} strokeWidth="1.6" />
+                        </svg>
+                      )}
+                      <span style={{ fontSize: 14, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{room.name}</span>
+                    </span>
                     <span style={{ fontSize: 12, color: T.textSecondary, flexShrink: 0, marginLeft: 8 }}>{L.plazaMembers((room.members || []).length, 3)}</span>
                   </button>
                 ))}
@@ -2120,7 +2425,12 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                   <button onClick={leaveRoom} style={{ background: "none", border: "none", color: T.textMuted, fontSize: 13, cursor: "pointer", padding: 0 }}>
                     {"‹ "}{L.plazaLeave}
                   </button>
-                  <span style={{ fontSize: 14, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 160 }}>{activeRoomName}</span>
+                  <span
+                    {...longPressHandlers(() => openRename("room", activeRoomId, activeRoomName))}
+                    style={{ fontSize: 14, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 160, userSelect: "none", WebkitTouchCallout: "none" }}
+                  >
+                    {activeRoomName}
+                  </span>
                   <button onClick={() => setConfirmDeleteRoomId(activeRoomId)} style={{ background: "none", border: "none", color: T.warn, fontSize: 12.5, cursor: "pointer", padding: 0, flexShrink: 0 }}>
                     {L.plazaDeleteRoom}
                   </button>
@@ -2386,6 +2696,40 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
         </div>
       )}
 
+      {renameTarget && (
+        <div
+          onClick={() => setRenameTarget(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60, padding: 20 }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 340, borderRadius: 20, padding: 20, boxSizing: "border-box" }}>
+            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>{L.renameTitle}</div>
+            <input
+              value={renameDraft}
+              onChange={(e) => setRenameDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") saveRename();
+              }}
+              autoFocus
+              style={{ width: "100%", height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: "0 12px", fontSize: 13.5, outline: "none", color: T.text, marginBottom: 14 }}
+            />
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                onClick={() => setRenameTarget(null)}
+                style={{ flex: 1, height: 40, borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
+              >
+                {L.cancel}
+              </button>
+              <button
+                onClick={saveRename}
+                style={{ flex: 1, height: 40, borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+              >
+                {L.save}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {infoTab && (
         <div
           onClick={() => setInfoTab(null)}
@@ -2395,11 +2739,99 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
             <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{L[infoTab]}</div>
             <div style={{ fontSize: 13, color: T.textSecondary, lineHeight: 1.5, marginBottom: 18, whiteSpace: "pre-line" }}>{L.tabInfo[infoTab]}</div>
             <button
+              onClick={() => {
+                setInfoTab(null);
+                setTutorialStep(0);
+                setTutorialOpen(true);
+              }}
+              style={{ width: "100%", padding: "10px 0", borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", color: T.text, fontSize: 13, fontWeight: 600, cursor: "pointer", marginBottom: 8 }}
+            >
+              {L.tutorialCta}
+            </button>
+            <button
               onClick={() => setInfoTab(null)}
               style={{ width: "100%", padding: "10px 0", borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
             >
               {L.ok}
             </button>
+          </div>
+        </div>
+      )}
+
+      {tutorialOpen && (
+        <div
+          onClick={() => setTutorialOpen(false)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 68, padding: 20 }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 20, padding: 20, boxSizing: "border-box" }}>
+            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>{L.tutorialTitle}</div>
+
+            {tutorialStep === 0 && (
+              <div style={{ position: "relative", height: 76, background: T.accentLight, borderRadius: 14, padding: 12, marginBottom: 14 }}>
+                <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                  <div style={{ flex: 1, height: 26, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
+                  <div className="tut-plus" style={{ width: 26, height: 26, borderRadius: 8, background: T.accent, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <PlusIcon size={13} />
+                  </div>
+                </div>
+                <div className="tut-new-row" style={{ marginTop: 8, height: 20, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
+                <span className="tut-tap" style={{ right: 16, top: 16 }} />
+              </div>
+            )}
+
+            {tutorialStep === 1 && (
+              <div style={{ position: "relative", height: 76, background: T.accentLight, borderRadius: 14, padding: 12, display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                <div className="tut-checkbox" style={{ width: 20, height: 20, borderRadius: 6, border: "1.5px solid #DCDBD6", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24">
+                    <polyline className="tut-check" points="4,13 9,18 20,6" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <div className="tut-strike" style={{ position: "relative", flex: 1, height: 12, borderRadius: 6, background: T.border }} />
+                <span className="tut-tap" style={{ left: 20, top: "50%", marginTop: -8 }} />
+              </div>
+            )}
+
+            {tutorialStep === 2 && (
+              <div style={{ position: "relative", height: 76, background: T.accentLight, borderRadius: 14, padding: 12, overflow: "hidden", marginBottom: 14 }}>
+                <div style={{ height: 20, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
+                <div className="tut-edit-modal" style={{ marginTop: 8, height: 34, borderRadius: 10, background: "#fff", border: `1px solid ${T.accent}`, display: "flex", alignItems: "center", padding: "0 10px", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+                  <span style={{ fontSize: 10.5, color: T.accentStrong, fontWeight: 600 }}>{L.renameTitle}</span>
+                </div>
+                <span className="tut-hold" style={{ left: 30, top: 12 }} />
+              </div>
+            )}
+
+            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>{L.tutorialSteps[tutorialStep].title}</div>
+            <div style={{ fontSize: 12.5, color: T.textSecondary, lineHeight: 1.5, marginBottom: 16 }}>{L.tutorialSteps[tutorialStep].body}</div>
+
+            <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 16 }}>
+              {L.tutorialSteps.map((_, i) => (
+                <span
+                  key={i}
+                  style={{ width: 6, height: 6, borderRadius: "50%", background: i === tutorialStep ? T.accent : T.track }}
+                />
+              ))}
+            </div>
+
+            <div style={{ display: "flex", gap: 8 }}>
+              {tutorialStep > 0 && (
+                <button
+                  onClick={() => setTutorialStep((s) => s - 1)}
+                  style={{ flex: 1, height: 40, borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
+                >
+                  {L.tutorialPrev}
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  if (tutorialStep < L.tutorialSteps.length - 1) setTutorialStep((s) => s + 1);
+                  else setTutorialOpen(false);
+                }}
+                style={{ flex: 1, height: 40, borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+              >
+                {tutorialStep < L.tutorialSteps.length - 1 ? L.tutorialNext : L.tutorialStart}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -2456,6 +2888,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               placeholder={L.plazaRoomNamePlaceholder}
               style={{ width: "100%", height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: "0 12px", fontSize: 13.5, outline: "none", color: T.text, marginBottom: 10 }}
             />
+            <div style={{ fontSize: 11, color: T.textMuted, marginBottom: 6 }}>{L.plazaPinOptionalHint}</div>
             <input
               value={newRoomPin}
               onChange={(e) => setNewRoomPin(e.target.value.replace(/\D/g, "").slice(0, 4))}
