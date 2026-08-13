@@ -10,17 +10,8 @@
 <link rel="icon" type="image/svg+xml" href="./icons/favicon.svg">
 <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
-<!-- iOS 홈화면 실행 시 잠깐 뜨는 스플래시 화면 (기기별 정확한 픽셀 크기가 필요함) -->
-<link rel="apple-touch-startup-image" href="./icons/splash-750x1334.png" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="./icons/splash-1242x2208.png" media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="./icons/splash-1125x2436.png" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="./icons/splash-828x1792.png" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="./icons/splash-1242x2688.png" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="./icons/splash-1080x2340.png" media="screen and (device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="./icons/splash-1170x2532.png" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="./icons/splash-1284x2778.png" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="./icons/splash-1179x2556.png" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-<link rel="apple-touch-startup-image" href="./icons/splash-1290x2796.png" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<!-- iOS의 apple-touch-startup-image는 기기에 한 번 캐시되면 파일을 바꿔도 잘 안 갱신되고,
+     이전(작은 로고) 버전이 계속 나오는 문제가 있어서 아예 빼고 #app-splash 오버레이 하나로만 처리함 -->
 <title>my egg.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -140,6 +131,25 @@
     100% { opacity: 0; transform: scale(0.5); }
   }
   .tut-edit-modal { animation: tutReveal 2.4s ease-in-out infinite; opacity: 0; }
+  .tut-new-row2 { animation: tutReveal2 2.4s ease-in-out infinite; opacity: 0; }
+  @keyframes tutReveal2 {
+    0%, 32% { opacity: 0; transform: translateY(-4px); }
+    44% { opacity: 1; transform: translateY(0); }
+    88% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(0); }
+  }
+  .tut-delete-row { animation: tutDeleteRow 2.4s ease-in-out infinite; }
+  @keyframes tutDeleteRow {
+    0%, 40% { opacity: 1; }
+    55%, 90% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  .tut-bar-fill { animation: tutBarFill 2.4s ease-in-out infinite; }
+  @keyframes tutBarFill {
+    0% { width: 15%; }
+    50% { width: 78%; }
+    100% { width: 15%; }
+  }
 </style>
 </head>
 <body>
@@ -348,11 +358,40 @@ const STRINGS = {
     tutorialTitle: "사용법",
     tutorialNext: "다음",
     tutorialPrev: "이전",
-    tutorialSteps: [
-      { title: "① 오늘 할 일 추가하기", body: "입력창에 할 일을 적고 + 버튼을 누르면 오늘 목록에 바로 추가돼요." },
-      { title: "② 완료 체크하기", body: "체크박스를 누르면 완료 표시가 되고 기록에 남아요." },
-      { title: "③ 꾹 눌러서 수정하기", body: "오타가 났다면 항목을 꾹 누르세요. 지우고 다시 만들 필요 없이 바로 고칠 수 있어요." },
-    ],
+    tutorialSteps: {
+      dashboard: [
+        { demo: "progress", title: "① 진행 상황 한눈에 보기", body: "프로젝트 수, 할 일 완료율, 최근 7일간의 활동을 이 화면에서 바로 확인할 수 있어요." },
+      ],
+      today: [
+        { demo: "addRow", title: "① 오늘 할 일 추가하기", body: "입력창에 할 일을 적고 + 버튼을 누르면 오늘 목록에 바로 추가돼요." },
+        { demo: "checkOff", title: "② 완료 체크하기", body: "체크박스를 누르면 완료 표시가 되고 기록에 남아요." },
+        { demo: "holdEdit", title: "③ 꾹 눌러서 수정하기", body: "오타가 났다면 항목을 꾹 누르세요. 지우고 다시 만들 필요 없이 바로 고칠 수 있어요." },
+      ],
+      memos: [
+        { demo: "addRow", title: "① 메모 추가하기", body: "오른쪽 위 + 버튼을 누르면 새 메모 칸이 생겨요." },
+        { demo: "deleteRow", title: "② 자유롭게 적고 지우기", body: "입력하는 즉시 자동으로 저장되고, ✕를 누르면 그 메모가 삭제돼요." },
+      ],
+      search: [
+        { demo: "typeSearch", title: "① 한 번에 검색하기", body: "할 일, 메모, 프로젝트, 요약 기록을 한 번에 찾을 수 있어요. 초성만 입력해도 찾아져요 (예: 'ㅎㅇ'로 '회의' 검색)." },
+      ],
+      archive: [
+        { demo: "checkOff", title: "① 완료한 할 일 모아보기", body: "체크 완료한 할 일들이 날짜별로 모여서 쌓여요." },
+        { demo: "autoReveal", title: "② 주간 요약은 자동으로", body: "월요일~일요일이 다 지난 주는 자동으로 요약이 만들어져요. 이번 주처럼 아직 진행 중인 주만 '요약 만들기'를 직접 눌러주세요." },
+      ],
+      projects: [
+        { demo: "addRow", title: "① 프로젝트 만들기", body: "이름을 적고 카테고리를 선택한 뒤 추가하면 카테고리별로 관리할 수 있어요." },
+        { demo: "holdEdit", title: "② 이름을 꾹 눌러서 수정", body: "오타가 났다면 프로젝트 이름을 꾹 누르세요. 바로 수정할 수 있어요." },
+      ],
+      calendar: [
+        { demo: "pressArrow", title: "① 월 넘기기", body: "위쪽 화살표로 이전/다음 달로 이동하고, 공휴일은 자동으로 표시돼요." },
+        { demo: "tapDay", title: "② 날짜에 메모 남기기", body: "날짜를 누르면 그날의 메모를 적고 저장할 수 있어요." },
+      ],
+      plaza: [
+        { demo: "addRow", title: "① 방 만들기", body: "방 제목을 적고, 필요하면 4자리 PIN을 설정해요. PIN은 선택사항이에요." },
+        { demo: "tapLock", title: "② 방 입장하기", body: "자물쇠 표시가 있는 방은 PIN을 입력해야 입장할 수 있고, 없는 방은 바로 들어갈 수 있어요." },
+        { demo: "holdEdit", title: "③ 제목 수정 · 파일은 7일 후 삭제", body: "방 제목도 꾹 누르면 바로 수정할 수 있고, 공유한 파일은 7일 후 자동으로 사라져요." },
+      ],
+    },
     tabInfo: {
       dashboard: "전체 진행 상황과 최근 활동을 한눈에 볼 수 있어요.",
       today: "오늘 할 일을 적고 체크하며 관리하세요.",
@@ -439,11 +478,40 @@ const STRINGS = {
     tutorialTitle: "How to use",
     tutorialNext: "Next",
     tutorialPrev: "Back",
-    tutorialSteps: [
-      { title: "① Add a task", body: "Type a task in the input and tap + — it's added to today's list right away." },
-      { title: "② Check it off", body: "Tap the checkbox to mark it done. It's saved to your record." },
-      { title: "③ Long-press to edit", body: "Made a typo? Long-press the item to fix it instantly — no need to delete and redo it." },
-    ],
+    tutorialSteps: {
+      dashboard: [
+        { demo: "progress", title: "① Your progress at a glance", body: "See your project count, task completion rate, and the last 7 days of activity right on this screen." },
+      ],
+      today: [
+        { demo: "addRow", title: "① Add a task", body: "Type a task in the input and tap + — it's added to today's list right away." },
+        { demo: "checkOff", title: "② Check it off", body: "Tap the checkbox to mark it done. It's saved to your record." },
+        { demo: "holdEdit", title: "③ Long-press to edit", body: "Made a typo? Long-press the item to fix it instantly — no need to delete and redo it." },
+      ],
+      memos: [
+        { demo: "addRow", title: "① Add a note", body: "Tap the + in the top right to create a new note card." },
+        { demo: "deleteRow", title: "② Write freely, delete anytime", body: "Notes save automatically as you type. Tap ✕ to delete one." },
+      ],
+      search: [
+        { demo: "typeSearch", title: "① Search everything at once", body: "Find tasks, notes, projects, and summaries in one place. Choseong-only search works too for Korean text." },
+      ],
+      archive: [
+        { demo: "checkOff", title: "① Completed tasks, all in one place", body: "Tasks you've checked off pile up here by date." },
+        { demo: "autoReveal", title: "② Weekly summaries build themselves", body: "Once a Monday-Sunday week has fully passed, its summary generates automatically. Only the current, still-open week needs a manual tap on 'Generate Summary.'" },
+      ],
+      projects: [
+        { demo: "addRow", title: "① Create a project", body: "Enter a name, pick a category, and add it — now you can track it by category." },
+        { demo: "holdEdit", title: "② Long-press the name to edit", body: "Made a typo? Long-press a project's name to fix it right away." },
+      ],
+      calendar: [
+        { demo: "pressArrow", title: "① Flip through months", body: "Use the arrows at the top to move between months. Holidays show up automatically." },
+        { demo: "tapDay", title: "② Leave a note on any date", body: "Tap a date to write and save a note for that day." },
+      ],
+      plaza: [
+        { demo: "addRow", title: "① Create a room", body: "Enter a title, and set a 4-digit PIN if you want — it's optional." },
+        { demo: "tapLock", title: "② Join a room", body: "Rooms with a lock icon need their PIN to enter; rooms without one let you in instantly." },
+        { demo: "holdEdit", title: "③ Rename it, files auto-expire", body: "Long-press a room's title to rename it. Shared files disappear automatically after 7 days." },
+      ],
+    },
     tabInfo: {
       dashboard: "See your overall progress and recent activity at a glance.",
       today: "Add and check off today's tasks.",
@@ -595,6 +663,132 @@ function ChevronIcon({ dir, size }) {
       <polyline points={points} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
+}
+
+// 탭별 사용법 튜토리얼에 쓰이는 작은 미니 데모 일러스트 - 실제 화면을 흉내낸 반복 애니메이션
+function TutorialDemo({ kind, label }) {
+  const box = { position: "relative", height: 76, background: T.accentLight, borderRadius: 14, padding: 12, marginBottom: 14 };
+  if (kind === "progress") {
+    return (
+      <div style={box}>
+        <div style={{ fontSize: 10.5, color: T.textSecondary, marginBottom: 8 }}>{label}</div>
+        <div style={{ height: 8, background: T.track, borderRadius: 4, overflow: "hidden" }}>
+          <div className="tut-bar-fill" style={{ height: "100%", background: T.accent, borderRadius: 4 }} />
+        </div>
+        <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
+          <div style={{ flex: 1, height: 20, borderRadius: 6, background: "#fff", border: `1px solid ${T.border}` }} />
+          <div style={{ flex: 1, height: 20, borderRadius: 6, background: "#fff", border: `1px solid ${T.border}` }} />
+        </div>
+      </div>
+    );
+  }
+  if (kind === "addRow") {
+    return (
+      <div style={box}>
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <div style={{ flex: 1, height: 26, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
+          <div className="tut-plus" style={{ width: 26, height: 26, borderRadius: 8, background: T.accent, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <PlusIcon size={13} />
+          </div>
+        </div>
+        <div className="tut-new-row" style={{ marginTop: 8, height: 20, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
+        <span className="tut-tap" style={{ right: 16, top: 16 }} />
+      </div>
+    );
+  }
+  if (kind === "checkOff") {
+    return (
+      <div style={{ ...box, display: "flex", alignItems: "center", gap: 10 }}>
+        <div className="tut-checkbox" style={{ width: 20, height: 20, borderRadius: 6, border: "1.5px solid #DCDBD6", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <svg width="13" height="13" viewBox="0 0 24 24">
+            <polyline className="tut-check" points="4,13 9,18 20,6" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <div className="tut-strike" style={{ position: "relative", flex: 1, height: 12, borderRadius: 6, background: T.border }} />
+        <span className="tut-tap" style={{ left: 20, top: "50%", marginTop: -8 }} />
+      </div>
+    );
+  }
+  if (kind === "holdEdit") {
+    return (
+      <div style={{ ...box, overflow: "hidden" }}>
+        <div style={{ height: 20, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
+        <div className="tut-edit-modal" style={{ marginTop: 8, height: 34, borderRadius: 10, background: "#fff", border: `1px solid ${T.accent}`, display: "flex", alignItems: "center", padding: "0 10px", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+          <span style={{ fontSize: 10.5, color: T.accentStrong, fontWeight: 600 }}>{label}</span>
+        </div>
+        <span className="tut-hold" style={{ left: 30, top: 12 }} />
+      </div>
+    );
+  }
+  if (kind === "deleteRow") {
+    return (
+      <div style={box}>
+        <div className="tut-delete-row" style={{ display: "flex", alignItems: "center", gap: 8, height: 40, borderRadius: 10, background: "#fff", border: `1px solid ${T.border}`, padding: "0 10px" }}>
+          <div style={{ flex: 1, height: 8, borderRadius: 4, background: T.track }} />
+          <span style={{ fontSize: 13, color: T.textMuted }}>✕</span>
+        </div>
+        <span className="tut-tap" style={{ right: 18, top: 30 }} />
+      </div>
+    );
+  }
+  if (kind === "typeSearch") {
+    return (
+      <div style={box}>
+        <div style={{ height: 22, borderRadius: 8, background: "#fff", border: `1px solid ${T.accent}` }} />
+        <div className="tut-new-row" style={{ marginTop: 7, height: 14, borderRadius: 6, background: "#fff", border: `1px solid ${T.border}` }} />
+        <div className="tut-new-row2" style={{ marginTop: 6, height: 14, borderRadius: 6, background: "#fff", border: `1px solid ${T.border}` }} />
+      </div>
+    );
+  }
+  if (kind === "autoReveal") {
+    return (
+      <div style={box}>
+        <div style={{ height: 18, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
+        <div className="tut-new-row" style={{ marginTop: 8, height: 26, borderRadius: 10, background: "#fff", border: `1px solid ${T.accent}` }} />
+      </div>
+    );
+  }
+  if (kind === "pressArrow") {
+    return (
+      <div style={{ ...box, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div className="tut-plus" style={{ width: 28, height: 28, borderRadius: 10, background: "#fff", border: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", color: T.text }}>
+          <ChevronIcon dir="left" size={14} />
+        </div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: T.text }}>{label}</div>
+        <div style={{ width: 28, height: 28, borderRadius: 10, background: "#fff", border: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", color: T.text }}>
+          <ChevronIcon dir="right" size={14} />
+        </div>
+      </div>
+    );
+  }
+  if (kind === "tapDay") {
+    return (
+      <div style={box}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 3 }}>
+          {Array.from({ length: 14 }).map((_, i) => (
+            <div key={i} style={{ aspectRatio: "1", borderRadius: 4, background: i === 9 ? T.accentStrong : "#fff", border: `1px solid ${T.border}` }} />
+          ))}
+        </div>
+        <span className="tut-tap" style={{ left: "44%", top: 8 }} />
+      </div>
+    );
+  }
+  if (kind === "tapLock") {
+    return (
+      <div style={{ ...box, display: "flex", flexDirection: "column", gap: 6, justifyContent: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, height: 24, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}`, padding: "0 8px" }}>
+          <svg width="10" height="10" viewBox="0 0 24 24">
+            <rect x="5" y="10.5" width="14" height="9.5" rx="2.4" fill="none" stroke={T.textMuted} strokeWidth="1.8" />
+            <path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7" fill="none" stroke={T.textMuted} strokeWidth="1.8" />
+          </svg>
+          <div style={{ flex: 1, height: 6, borderRadius: 3, background: T.track }} />
+        </div>
+        <div style={{ height: 24, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
+        <span className="tut-tap" style={{ left: 16, top: 4 }} />
+      </div>
+    );
+  }
+  return null;
 }
 
 function pad(n) {
@@ -1624,7 +1818,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
         overflow: "hidden",
       }}
     >
-      <div style={{ flex: 1, overflowY: "auto", overscrollBehavior: "none", padding: "22px 16px 18px", minHeight: 560 }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "none", padding: "22px 16px 18px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, position: "relative" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <button
@@ -2741,94 +2935,86 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
         </div>
       )}
 
-      {infoTab && (
-        <div
-          onClick={() => setInfoTab(null)}
-          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 65, padding: 20 }}
-        >
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 20, padding: 20, boxSizing: "border-box", maxHeight: "85vh", overflowY: "auto" }}>
-            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{L[infoTab]}</div>
-            <div style={{ fontSize: 13, color: T.textSecondary, lineHeight: 1.5, marginBottom: 18, whiteSpace: "pre-line" }}>{L.tabInfo[infoTab]}</div>
-
-            <div style={{ height: 1, background: T.rowBorder, marginBottom: 16 }} />
-            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 12 }}>{L.tutorialTitle}</div>
-
-            {tutorialStep === 0 && (
-              <div style={{ position: "relative", height: 76, background: T.accentLight, borderRadius: 14, padding: 12, marginBottom: 14 }}>
-                <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                  <div style={{ flex: 1, height: 26, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
-                  <div className="tut-plus" style={{ width: 26, height: 26, borderRadius: 8, background: T.accent, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <PlusIcon size={13} />
-                  </div>
-                </div>
-                <div className="tut-new-row" style={{ marginTop: 8, height: 20, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
-                <span className="tut-tap" style={{ right: 16, top: 16 }} />
-              </div>
-            )}
-
-            {tutorialStep === 1 && (
-              <div style={{ position: "relative", height: 76, background: T.accentLight, borderRadius: 14, padding: 12, display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-                <div className="tut-checkbox" style={{ width: 20, height: 20, borderRadius: 6, border: "1.5px solid #DCDBD6", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24">
-                    <polyline className="tut-check" points="4,13 9,18 20,6" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
-                <div className="tut-strike" style={{ position: "relative", flex: 1, height: 12, borderRadius: 6, background: T.border }} />
-                <span className="tut-tap" style={{ left: 20, top: "50%", marginTop: -8 }} />
-              </div>
-            )}
-
-            {tutorialStep === 2 && (
-              <div style={{ position: "relative", height: 76, background: T.accentLight, borderRadius: 14, padding: 12, overflow: "hidden", marginBottom: 14 }}>
-                <div style={{ height: 20, borderRadius: 8, background: "#fff", border: `1px solid ${T.border}` }} />
-                <div className="tut-edit-modal" style={{ marginTop: 8, height: 34, borderRadius: 10, background: "#fff", border: `1px solid ${T.accent}`, display: "flex", alignItems: "center", padding: "0 10px", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
-                  <span style={{ fontSize: 10.5, color: T.accentStrong, fontWeight: 600 }}>{L.renameTitle}</span>
-                </div>
-                <span className="tut-hold" style={{ left: 30, top: 12 }} />
-              </div>
-            )}
-
-            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>{L.tutorialSteps[tutorialStep].title}</div>
-            <div style={{ fontSize: 12.5, color: T.textSecondary, lineHeight: 1.5, marginBottom: 16 }}>{L.tutorialSteps[tutorialStep].body}</div>
-
-            <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 16 }}>
-              {L.tutorialSteps.map((_, i) => (
-                <span
-                  key={i}
-                  style={{ width: 6, height: 6, borderRadius: "50%", background: i === tutorialStep ? T.accent : T.track }}
-                />
-              ))}
-            </div>
-
-            {(tutorialStep > 0 || tutorialStep < L.tutorialSteps.length - 1) && (
-              <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                {tutorialStep > 0 && (
-                  <button
-                    onClick={() => setTutorialStep((s) => s - 1)}
-                    style={{ flex: 1, height: 40, borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
-                  >
-                    {L.tutorialPrev}
-                  </button>
-                )}
-                {tutorialStep < L.tutorialSteps.length - 1 && (
-                  <button
-                    onClick={() => setTutorialStep((s) => s + 1)}
-                    style={{ flex: 1, height: 40, borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
-                  >
-                    {L.tutorialNext}
-                  </button>
-                )}
-              </div>
-            )}
-            <button
-              onClick={() => setInfoTab(null)}
-              style={{ width: "100%", padding: "10px 0", borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+      {infoTab && (() => {
+        const steps = (L.tutorialSteps[infoTab] || []);
+        const stepIdx = Math.min(tutorialStep, Math.max(steps.length - 1, 0));
+        const step = steps[stepIdx];
+        const demoLabel =
+          step && step.demo === "progress" ? L.overallProgress :
+          step && step.demo === "holdEdit" ? L.renameTitle :
+          step && step.demo === "pressArrow" ? (language === "ko" ? `${viewMonth}월` : fmtDate(new Date(viewYear, viewMonth - 1, 1), { month: "long" })) :
+          undefined;
+        return (
+          <div
+            onClick={() => setInfoTab(null)}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 65, padding: 20 }}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{ background: "#fff", width: "100%", maxWidth: 320, borderRadius: 20, boxSizing: "border-box", maxHeight: "85vh", display: "flex", flexDirection: "column", overflow: "hidden" }}
             >
-              {L.ok}
-            </button>
+              <div style={{ padding: "20px 20px 0", overflowY: "auto", flex: 1, minHeight: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{L[infoTab]}</div>
+                <div style={{ fontSize: 13, color: T.textSecondary, lineHeight: 1.5, marginBottom: 18, whiteSpace: "pre-line" }}>{L.tabInfo[infoTab]}</div>
+
+                {step && (
+                  <React.Fragment>
+                    <div style={{ height: 1, background: T.rowBorder, marginBottom: 16 }} />
+                    <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 12 }}>{L.tutorialTitle}</div>
+
+                    <TutorialDemo kind={step.demo} label={demoLabel} />
+
+                    <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>{step.title}</div>
+                    <div style={{ fontSize: 12.5, color: T.textSecondary, lineHeight: 1.5 }}>{step.body}</div>
+                  </React.Fragment>
+                )}
+                <div style={{ height: 16 }} />
+              </div>
+
+              <div style={{ padding: "12px 20px 20px", flexShrink: 0 }}>
+                {step && steps.length > 1 && (
+                  <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 12 }}>
+                    {steps.map((_, i) => (
+                      <span
+                        key={i}
+                        style={{ width: 6, height: 6, borderRadius: "50%", background: i === stepIdx ? T.accent : T.track }}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {step && steps.length > 1 && (
+                  <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                    {stepIdx > 0 && (
+                      <button
+                        onClick={() => setTutorialStep(stepIdx - 1)}
+                        style={{ flex: 1, height: 40, borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
+                      >
+                        {L.tutorialPrev}
+                      </button>
+                    )}
+                    {stepIdx < steps.length - 1 && (
+                      <button
+                        onClick={() => setTutorialStep(stepIdx + 1)}
+                        style={{ flex: 1, height: 40, borderRadius: 12, border: `1px solid ${T.border}`, background: "#fff", fontSize: 13, cursor: "pointer", color: T.text }}
+                      >
+                        {L.tutorialNext}
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setInfoTab(null)}
+                  style={{ width: "100%", padding: "10px 0", borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                >
+                  {L.ok}
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {firedReminder && (
         <div
