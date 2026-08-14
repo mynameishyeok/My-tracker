@@ -36,5 +36,12 @@ service cloud.firestore {
     match /userBackups/{code} {
       allow read, write: if true;
     }
+
+    // 개발자 피드백함 - 앱에서 보내기만 하고, 클라이언트에서는 다시 읽어올 수 없게 막음
+    // (개발자는 Firebase 콘솔에서 직접 확인).
+    match /feedback/{id} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
   }
 }

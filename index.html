@@ -13,6 +13,8 @@
 <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <title>my egg.</title>
+<meta property="og:title" content="my egg.">
+<meta property="og:description" content="A simple all-in-one tracker for tasks, projects, and notes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&display=swap" rel="stylesheet">
@@ -410,6 +412,15 @@ const STRINGS = {
     restoreNotFound: "해당 코드로 백업된 데이터를 찾을 수 없어요.",
     restoreSuccess: "복원됐어요.",
     restoreFailed: "복원에 실패했어요. 다시 시도해주세요.",
+    updatesTitle: "공지사항",
+    updatesEmpty: "아직 소식이 없어요.",
+    updatePopupTitle: "새로운 소식이 있어요",
+    feedbackTitle: "피드백 보내기",
+    feedbackPlaceholder: "구체적으로 적어주실수록 좋아요!",
+    feedbackSend: "보내기",
+    feedbackSending: "보내는 중...",
+    feedbackThanks: "감사합니다! 의견 잘 전달했어요.",
+    feedbackFailed: "전송에 실패했어요. 다시 시도해주세요.",
     tutorialTitle: "사용법",
     tutorialNext: "다음",
     tutorialPrev: "이전",
@@ -544,6 +555,15 @@ const STRINGS = {
     restoreNotFound: "No backup found for that code.",
     restoreSuccess: "Restored.",
     restoreFailed: "Restore failed. Please try again.",
+    updatesTitle: "Updates",
+    updatesEmpty: "No updates yet.",
+    updatePopupTitle: "What's New",
+    feedbackTitle: "Send Feedback",
+    feedbackPlaceholder: "The more specific, the better!",
+    feedbackSend: "Send",
+    feedbackSending: "Sending...",
+    feedbackThanks: "Thanks! Your feedback has been sent.",
+    feedbackFailed: "Couldn't send. Please try again.",
     tutorialTitle: "How to use",
     tutorialNext: "Next",
     tutorialPrev: "Back",
@@ -731,6 +751,13 @@ function ChevronIcon({ dir, size }) {
   return (
     <svg width={size || 16} height={size || 16} viewBox="0 0 24 24" style={{ display: "block" }}>
       <polyline points={points} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function ChatIcon({ size }) {
+  return (
+    <svg width={size || 20} height={size || 20} viewBox="0 0 24 24" style={{ display: "block" }}>
+      <path d="M4 5.5h16a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1H9l-4 3.5V16H4a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -1227,6 +1254,15 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
 
+  const [updates, setUpdates] = useState([]);
+  const [lastSeenUpdateVersion, setLastSeenUpdateVersion] = useState("");
+  const [bellOpen, setBellOpen] = useState(false);
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackText, setFeedbackText] = useState("");
+  const [feedbackSending, setFeedbackSending] = useState(false);
+  const [feedbackToast, setFeedbackToast] = useState(null); // null | "sent" | "failed"
+
   // .app-shell 자체를 filter로 반전시켜 다크모드를 만드는데, border-radius +
   // overflow:hidden 조합에서 가장자리에 원래 흰 배경이 아주 살짝 비치는 경우가 있어서,
   // body/html 배경 자체도 같이 검게 바꿔 어떤 미세한 틈이 있어도 안 보이게 함.
@@ -1324,6 +1360,11 @@ function App() {
         const r = await window.storage.get("tracker-dark-mode");
         if (r && r.value === "1") dark = true;
       } catch (e) {}
+      let seenVer = "";
+      try {
+        const r = await window.storage.get("tracker-last-seen-update-version");
+        if (r && r.value) seenVer = r.value;
+      } catch (e) {}
       if (!cancelled) {
         setProjects(proj || []);
         setTasks(tsk);
@@ -1333,6 +1374,7 @@ function App() {
         setLanguage(lang);
         setSyncCode(code);
         setDarkMode(dark);
+        setLastSeenUpdateVersion(seenVer);
         setReady(true);
       }
     }
@@ -1341,6 +1383,27 @@ function App() {
       cancelled = true;
     };
   }, []);
+
+  // 공지사항 - 배포할 때마다 updates.json 맨 위에 항목 하나만 추가하면 됨
+  useEffect(() => {
+    fetch("./updates.json")
+      .then((r) => r.json())
+      .then((data) => setUpdates(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!ready || updates.length === 0) return;
+    if (updates[0].version !== lastSeenUpdateVersion) setShowUpdatePopup(true);
+  }, [ready, updates, lastSeenUpdateVersion]);
+
+  const markUpdatesSeen = () => {
+    if (updates.length === 0) return;
+    const v = updates[0].version;
+    setLastSeenUpdateVersion(v);
+    window.storage.set("tracker-last-seen-update-version", v);
+  };
+  const hasUnreadUpdate = updates.length > 0 && updates[0].version !== lastSeenUpdateVersion;
 
   // 검색 결과 등 다른 곳에서 탭을 바꿀 때, 해당 탭이 속한 하단 네비게이션 페이지로 자동 동기화
   useEffect(() => {
@@ -1899,6 +1962,47 @@ function App() {
       window.storage.set("tracker-dark-mode", next ? "1" : "0");
     } catch (e) {}
   };
+
+  // 개발자 피드백 - 사용자↔개발자 단방향 채널. 원문은 저장하지 않고 요약만 전달한다.
+  const sendFeedback = async () => {
+    const text = feedbackText.trim();
+    if (!text || feedbackSending) return;
+    setFeedbackSending(true);
+    let summary = text;
+    try {
+      if (GEMINI_API_KEY && GEMINI_API_KEY.indexOf("여기에") === -1) {
+        const prompt = `다음은 앱 사용자가 보낸 피드백이야. 개발자가 핵심을 빠르게 파악할 수 있도록 1~2문장으로 한국어로 요약해줘. 요약 외의 다른 말은 하지 마:\n\n${text}`;
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "x-goog-api-key": GEMINI_API_KEY },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+          }
+        );
+        const data = await response.json();
+        const parts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
+        const generated = parts.map((p) => p.text || "").join("\n").trim();
+        if (generated) summary = generated;
+      }
+    } catch (e) {}
+    let sent = false;
+    try {
+      if (window.fbDb) {
+        await window.fbDb.collection("feedback").add({
+          summary,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        sent = true;
+      }
+    } catch (e) {
+      console.error("Feedback send failed", e);
+    }
+    setFeedbackSending(false);
+    if (sent) setFeedbackText("");
+    setFeedbackToast(sent ? "sent" : "failed");
+    setTimeout(() => setFeedbackToast(null), 2500);
+  };
   const todaysTasks = tasks.filter((t) => t.date === todayStr);
   const doneCount = todaysTasks.filter((t) => t.done).length;
   const projectMap = Object.fromEntries(projects.map((p) => [p.id, p]));
@@ -2174,6 +2278,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
         flexDirection: "column",
         borderRadius: 14,
         overflow: "hidden",
+        position: "relative",
       }}
     >
       <div style={{ flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "none", padding: "22px 16px 18px" }}>
@@ -2186,6 +2291,41 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               <TabIcon name="home" size={16} />
             </button>
             <InfoIcon tabKey={tab} />
+            <button
+              onClick={() => { setBellOpen(true); markUpdatesSeen(); }}
+              style={{
+                position: "relative",
+                width: 20,
+                height: 20,
+                borderRadius: "50%",
+                border: `1px solid ${T.border}`,
+                background: "#fff",
+                color: T.textMuted,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                marginLeft: 6,
+                flexShrink: 0,
+                padding: 0,
+              }}
+            >
+              <BellIcon size={11} />
+              {hasUnreadUpdate && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -1,
+                    right: -1,
+                    width: 7,
+                    height: 7,
+                    borderRadius: "50%",
+                    background: T.warn,
+                    border: "1.5px solid #fff",
+                  }}
+                />
+              )}
+            </button>
           </div>
           <span
             onClick={toggleDarkMode}
@@ -3591,6 +3731,153 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {bellOpen && (
+        <div
+          onClick={() => setBellOpen(false)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 80, padding: 20 }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 360, maxHeight: "75vh", overflowY: "auto", borderRadius: 20, padding: 20, boxSizing: "border-box" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+              <div style={{ fontSize: 15, fontWeight: 700 }}>{L.updatesTitle}</div>
+              <button onClick={() => setBellOpen(false)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", fontSize: 16 }}>
+                ✕
+              </button>
+            </div>
+            {updates.length === 0 ? (
+              <div style={{ fontSize: 13, color: T.textMuted, textAlign: "center", padding: "20px 0" }}>{L.updatesEmpty}</div>
+            ) : (
+              updates.map((u, i) => (
+                <div key={u.version + "-" + i} style={{ padding: "12px 0", borderTop: i > 0 ? `1px solid ${T.rowBorder}` : "none" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 4 }}>
+                    <div style={{ fontSize: 13.5, fontWeight: 700, color: T.text }}>{u.title}</div>
+                    <div style={{ fontSize: 10.5, color: T.textMuted, flexShrink: 0 }}>{u.date}</div>
+                  </div>
+                  <div style={{ fontSize: 12.5, color: T.textSecondary, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{u.summary}</div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {showUpdatePopup && updates.length > 0 && (
+        <div
+          onClick={() => { setShowUpdatePopup(false); markUpdatesSeen(); }}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 85, padding: 20 }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 340, borderRadius: 20, padding: 22, boxSizing: "border-box" }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T.accent, marginBottom: 4 }}>{L.updatePopupTitle}</div>
+            <div style={{ fontSize: 12.5, color: T.textMuted, marginBottom: 14 }}>{updates[0].date}</div>
+            <div style={{ fontSize: 13.5, fontWeight: 700, marginBottom: 8 }}>{updates[0].title}</div>
+            <div style={{ fontSize: 13, color: T.textSecondary, lineHeight: 1.6, marginBottom: 20, whiteSpace: "pre-wrap" }}>{updates[0].summary}</div>
+            <button
+              onClick={() => { setShowUpdatePopup(false); markUpdatesSeen(); }}
+              style={{ width: "100%", padding: "10px 0", borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+            >
+              {L.ok}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <button
+        onClick={() => setFeedbackOpen((v) => !v)}
+        style={{
+          position: "fixed",
+          bottom: "calc(env(safe-area-inset-bottom) + 90px)",
+          right: "max(14px, calc(50vw - 196px))",
+          width: 44,
+          height: 44,
+          borderRadius: "50%",
+          border: "none",
+          background: T.accent,
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.18)",
+          zIndex: 40,
+        }}
+      >
+        <ChatIcon size={20} />
+      </button>
+
+      {feedbackOpen && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "calc(env(safe-area-inset-bottom) + 146px)",
+            right: "max(14px, calc(50vw - 196px))",
+            width: "calc(100% - 28px)",
+            maxWidth: 300,
+            background: "#fff",
+            borderRadius: 18,
+            boxShadow: "0 4px 20px rgba(0,0,0,0.18)",
+            display: "flex",
+            flexDirection: "column",
+            zIndex: 40,
+            border: `1px solid ${T.border}`,
+            overflow: "hidden",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", borderBottom: `1px solid ${T.rowBorder}` }}>
+            <div style={{ fontSize: 13, fontWeight: 700 }}>{L.feedbackTitle}</div>
+            <button onClick={() => setFeedbackOpen(false)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", fontSize: 14 }}>
+              ✕
+            </button>
+          </div>
+          <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 10 }}>
+            <textarea
+              value={feedbackText}
+              onChange={(e) => setFeedbackText(e.target.value)}
+              placeholder={L.feedbackPlaceholder}
+              rows={4}
+              style={{ width: "100%", boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: 10, fontSize: 12.5, outline: "none", color: T.text, resize: "none", fontFamily: "inherit" }}
+            />
+            <button
+              onClick={sendFeedback}
+              disabled={!feedbackText.trim() || feedbackSending}
+              style={{
+                padding: "10px 0",
+                borderRadius: 12,
+                border: "none",
+                background: T.accent,
+                color: "#fff",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: feedbackText.trim() && !feedbackSending ? "pointer" : "default",
+                opacity: feedbackText.trim() && !feedbackSending ? 1 : 0.5,
+              }}
+            >
+              {feedbackSending ? L.feedbackSending : L.feedbackSend}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {feedbackToast && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "calc(env(safe-area-inset-bottom) + 100px)",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: feedbackToast === "sent" ? T.accentStrong : T.warn,
+            color: "#fff",
+            fontSize: 12.5,
+            fontWeight: 600,
+            padding: "10px 18px",
+            borderRadius: 20,
+            boxShadow: "0 4px 14px rgba(0,0,0,0.25)",
+            zIndex: 95,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {feedbackToast === "sent" ? L.feedbackThanks : L.feedbackFailed}
         </div>
       )}
     </div>
