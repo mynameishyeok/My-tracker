@@ -1385,6 +1385,7 @@ function App() {
   }, []);
 
   // 공지사항 - 배포할 때마다 updates.json 맨 위에 항목 하나만 추가하면 됨
+  // (title/summary는 { ko, en } 형태로 두 언어 다 채워야 함)
   useEffect(() => {
     fetch("./updates.json")
       .then((r) => r.json())
@@ -3752,10 +3753,10 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               updates.map((u, i) => (
                 <div key={u.version + "-" + i} style={{ padding: "12px 0", borderTop: i > 0 ? `1px solid ${T.rowBorder}` : "none" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 4 }}>
-                    <div style={{ fontSize: 13.5, fontWeight: 700, color: T.text }}>{u.title}</div>
+                    <div style={{ fontSize: 13.5, fontWeight: 700, color: T.text }}>{u.title[language] || u.title.ko}</div>
                     <div style={{ fontSize: 10.5, color: T.textMuted, flexShrink: 0 }}>{u.date}</div>
                   </div>
-                  <div style={{ fontSize: 12.5, color: T.textSecondary, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{u.summary}</div>
+                  <div style={{ fontSize: 12.5, color: T.textSecondary, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{u.summary[language] || u.summary.ko}</div>
                 </div>
               ))
             )}
@@ -3771,8 +3772,8 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: "100%", maxWidth: 340, borderRadius: 20, padding: 22, boxSizing: "border-box" }}>
             <div style={{ fontSize: 15, fontWeight: 700, color: T.accent, marginBottom: 4 }}>{L.updatePopupTitle}</div>
             <div style={{ fontSize: 12.5, color: T.textMuted, marginBottom: 14 }}>{updates[0].date}</div>
-            <div style={{ fontSize: 13.5, fontWeight: 700, marginBottom: 8 }}>{updates[0].title}</div>
-            <div style={{ fontSize: 13, color: T.textSecondary, lineHeight: 1.6, marginBottom: 20, whiteSpace: "pre-wrap" }}>{updates[0].summary}</div>
+            <div style={{ fontSize: 13.5, fontWeight: 700, marginBottom: 8 }}>{updates[0].title[language] || updates[0].title.ko}</div>
+            <div style={{ fontSize: 13, color: T.textSecondary, lineHeight: 1.6, marginBottom: 20, whiteSpace: "pre-wrap" }}>{updates[0].summary[language] || updates[0].summary.ko}</div>
             <button
               onClick={() => { setShowUpdatePopup(false); markUpdatesSeen(); }}
               style={{ width: "100%", padding: "10px 0", borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
@@ -3788,7 +3789,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
         style={{
           position: "fixed",
           bottom: "calc(env(safe-area-inset-bottom) + 90px)",
-          right: "max(14px, calc(50vw - 196px))",
+          right: "max(calc(12.5vw - 22px), calc(50vw - 179.5px))",
           width: 44,
           height: 44,
           borderRadius: "50%",
@@ -3811,7 +3812,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
           style={{
             position: "fixed",
             bottom: "calc(env(safe-area-inset-bottom) + 146px)",
-            right: "max(14px, calc(50vw - 196px))",
+            right: "max(calc(12.5vw - 22px), calc(50vw - 179.5px))",
             width: "calc(100% - 28px)",
             maxWidth: 300,
             background: "#fff",

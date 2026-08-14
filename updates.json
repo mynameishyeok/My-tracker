@@ -2,13 +2,25 @@
   {
     "version": "1.1",
     "date": "2026-08-14",
-    "title": "공지사항 · 피드백 기능이 추가됐어요",
-    "summary": "이제 오른쪽 위 종 모양 아이콘을 누르면 업데이트 소식을 모아볼 수 있어요. 화면 오른쪽 아래 말풍선 아이콘으로는 개발자에게 바로 의견을 보낼 수 있어요."
+    "title": {
+      "ko": "공지사항 · 피드백 기능이 추가됐어요",
+      "en": "Added updates & feedback"
+    },
+    "summary": {
+      "ko": "이제 오른쪽 위 종 모양 아이콘을 누르면 업데이트 소식을 모아볼 수 있어요. 화면 오른쪽 아래 말풍선 아이콘으로는 개발자에게 바로 의견을 보낼 수 있어요.",
+      "en": "Tap the bell icon in the top right to see what's new. Use the chat bubble in the bottom right to send feedback straight to the developer."
+    }
   },
   {
     "version": "1.0",
     "date": "2026-08-14",
-    "title": "안드로이드 지원이 추가됐어요",
-    "summary": "안드로이드에서도 홈 화면에 추가해 앱처럼 쓸 수 있도록 개선했어요. 좁은 화면에서 캘린더가 잘리던 문제도 함께 고쳤어요."
+    "title": {
+      "ko": "안드로이드 지원이 추가됐어요",
+      "en": "Added Android support"
+    },
+    "summary": {
+      "ko": "안드로이드에서도 홈 화면에 추가해 앱처럼 쓸 수 있도록 개선했어요. 좁은 화면에서 캘린더가 잘리던 문제도 함께 고쳤어요.",
+      "en": "You can now add this to your home screen on Android and use it like a real app. Also fixed the calendar getting cut off on narrow screens."
+    }
   }
 ]
