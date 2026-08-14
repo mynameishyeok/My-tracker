@@ -1133,7 +1133,7 @@ function matchesSearch(target, query) {
   const q = query.toLowerCase();
   if (t.includes(q)) return true;
   if (isChoseongOnly(query)) {
-    return toChoseong(target || "").includes(query);
+    return toChoseong(target || "").replace(/\s+/g, "").includes(query);
   }
   return false;
 }
