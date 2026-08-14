@@ -6,7 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="my egg.">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#FFFFFF">
+<link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/svg+xml" href="./icons/favicon.svg">
 <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
@@ -15,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin:0; padding:0; height:100%; overflow:hidden; overscroll-behavior:none; background:#FFFFFF; font-family:'Helvetica Neue',Arial,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif; }
   #root { height:100%; }
   input, textarea, button { font-family: inherit; }
@@ -2905,7 +2907,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               </button>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", marginBottom: 4 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", marginBottom: 4 }}>
               {WD.map((w, i) => (
                 <div
                   key={w}
@@ -2922,7 +2924,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               ))}
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 3 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", gap: 3 }}>
               {gridDates.map((d, i) => {
                 const inMonth = d.getMonth() + 1 === viewMonth;
                 const ds = toDateStr(d);
@@ -2947,6 +2949,8 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                       opacity: inMonth ? 1 : 0.35,
                       cursor: "pointer",
                       position: "relative",
+                      overflow: "hidden",
+                      minWidth: 0,
                     }}
                   >
                     <span
