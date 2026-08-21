@@ -341,10 +341,9 @@ const STRINGS = {
     todayAddPrompt: "오늘 할 일을 추가해보세요",
     doneOfTotal: (done, total) => `${total}개 중 ${done}개 완료`,
     addTaskPlaceholder: "오늘 할 일을 적어보세요",
-    dailyGoalLabel: "오늘의 목표",
-    dailyGoalPlaceholder: "오늘 하루 목표를 적어보세요",
     weeklyGoalLabel: "이번 주 목표",
     weeklyGoalPlaceholder: "이번 주 목표를 적어보세요",
+    weeklyGoalAdd: "주간 목표 추가 (선택)",
     overdueBy: (n) => `${n}일째 미완료`,
     none: "없음",
     noTasksToday: "아직 오늘 할 일이 없어요.",
@@ -436,7 +435,7 @@ const STRINGS = {
       today: [
         { demo: "todayAdd", title: "① 오늘 할 일 추가하기", body: "입력창에 할 일을 적고 + 버튼을 누르면 오늘 목록에 바로 추가돼요." },
         { demo: "checkOff", title: "② 완료 체크하기", body: "체크박스를 누르면 완료 표시가 되고 기록에 남아요." },
-        { demo: null, title: "③ 오늘/이번 주 목표 적기", body: "목록 위 칸에 오늘의 목표와 이번 주 목표를 적어두고, 하루를 시작할 때마다 확인해보세요." },
+        { demo: null, title: "③ 이번 주 목표 적기 (선택)", body: "할 일 목록 위 '이번 주 목표' 줄을 누르면 펼쳐져서 적을 수 있어요. 안 적어도 되고, 평소엔 접혀 있어서 화면을 차지하지 않아요. 적어두면 아카이브에서 주간 요약을 만들 때 그 목표를 얼마나 지켰는지도 함께 짚어줘요." },
         { demo: "holdEdit", title: "④ 꾹 눌러서 수정하기", body: "오타가 났다면 항목을 꾹 누르세요. 제목은 물론 연결된 프로젝트도 그 자리에서 바로 바꿀 수 있어요." },
         { demo: null, title: "⑤ 못 끝낸 일은 다음 날로", body: "그날 완료하지 못한 할 일은 다음 날로 자동으로 넘어가고, 며칠째 미완료인지도 항목 옆에 표시돼요." },
       ],
@@ -450,7 +449,7 @@ const STRINGS = {
       ],
       archive: [
         { demo: "checkOff", title: "① 완료한 할 일 모아보기", body: "체크 완료한 할 일들이 날짜별로 모여서 쌓여요." },
-        { demo: "archiveAuto", title: "② 프로젝트별로 나눠서, 비판적으로", body: "월요일~일요일이 다 지난 주는 자동으로 요약이 만들어져요. 본업, 부업처럼 프로젝트별로 나눠서 잘한 점과 부족했던 점을 구체적으로 짚어주고, 프로젝트를 완료 처리하면 그 소식도 함께 담겨요. 이번 주처럼 진행 중인 주는 '요약 만들기'를 직접 눌러주세요." },
+        { demo: "archiveAuto", title: "② 프로젝트별로 나눠서, 비판적으로", body: "월요일~일요일이 다 지난 주는 자동으로 요약이 만들어져요. 본업, 부업처럼 프로젝트별로 나눠서 잘한 점과 부족했던 점을 구체적으로 짚어주고, 프로젝트를 완료 처리하면 그 소식도 함께 담겨요. 오늘 탭에서 이번 주 목표를 적어뒀다면 그 목표를 얼마나 지켰는지도 함께 반영돼요. 이번 주처럼 진행 중인 주는 '요약 만들기'를 직접 눌러주세요." },
       ],
       projects: [
         { demo: "projectAdd", title: "① 프로젝트 만들기", body: "이름을 적고 카테고리(본업 · 부업 · 자기계발 · 기타) 중 하나를 골라 추가하세요." },
@@ -470,7 +469,7 @@ const STRINGS = {
     },
     tabInfo: {
       dashboard: "전체 진행 상황과 최근 활동을 한눈에 볼 수 있어요.",
-      today: "오늘 할 일을 적고 체크하며 관리하세요. 오늘/이번 주 목표도 함께 적을 수 있고, 못 끝낸 일은 다음 날로 자동으로 넘어가요.",
+      today: "오늘 할 일을 적고 체크하며 관리하세요. 할 일 목록 위 '이번 주 목표' 줄을 누르면 선택적으로 주간 목표를 적을 수 있고, 못 끝낸 일은 다음 날로 자동으로 넘어가요.",
       memos: "형식 없이 자유롭게 메모를 남기고 관리하세요. 목록에서는 간단히 보이고, 누르면 크게 볼 수 있어요.",
       search: "할 일, 메모, 프로젝트를 한 번에 검색하세요. 초성 검색도 가능해요.",
       archive: "완료한 할 일을 모아보고, 오늘 탭 내용을 월요일~일요일 기준으로 프로젝트별 주간 요약을 만들어볼 수 있어요. 잘한 점과 부족했던 점을 구체적으로 짚어줘요.",
@@ -493,10 +492,9 @@ const STRINGS = {
     todayAddPrompt: "Add something to do today",
     doneOfTotal: (done, total) => `${done} of ${total} done`,
     addTaskPlaceholder: "What do you need to do today?",
-    dailyGoalLabel: "Today's Goal",
-    dailyGoalPlaceholder: "What's your goal for today?",
     weeklyGoalLabel: "This Week's Goal",
     weeklyGoalPlaceholder: "What's your goal for this week?",
+    weeklyGoalAdd: "Add weekly goal (optional)",
     overdueBy: (n) => `Overdue by ${n} day${n === 1 ? "" : "s"}`,
     none: "None",
     noTasksToday: "Nothing on your list yet.",
@@ -588,7 +586,7 @@ const STRINGS = {
       today: [
         { demo: "todayAdd", title: "① Add a task", body: "Type a task in the input and tap + — it's added to today's list right away." },
         { demo: "checkOff", title: "② Check it off", body: "Tap the checkbox to mark it done. It's saved to your record." },
-        { demo: null, title: "③ Set a daily or weekly goal", body: "Write today's goal and this week's goal in the box above your task list, and check in on them as the day goes." },
+        { demo: null, title: "③ Set a weekly goal (optional)", body: "Tap the 'This Week's Goal' row above your task list to expand it and write one in. It's optional and stays collapsed otherwise, so it never takes up extra space. If you set one, Archive's weekly summary will note how well you lived up to it." },
         { demo: "holdEdit", title: "④ Long-press to edit", body: "Made a typo? Long-press the item to fix the title — or change which project it's linked to — right there." },
         { demo: null, title: "⑤ Unfinished tasks roll over", body: "Anything left undone at day's end automatically moves to the next day, with a badge showing how many days it's been overdue." },
       ],
@@ -602,7 +600,7 @@ const STRINGS = {
       ],
       archive: [
         { demo: "checkOff", title: "① Completed tasks, all in one place", body: "Tasks you've checked off pile up here by date." },
-        { demo: "archiveAuto", title: "② Broken down by project, told straight", body: "Once a Monday-Sunday week has fully passed, its summary generates automatically — split out by project like Main or Side, with specific, honest feedback on what fell short as well as what went well. Finishing a project that week shows up here too. The current, still-open week needs a manual tap on 'Generate Summary.'" },
+        { demo: "archiveAuto", title: "② Broken down by project, told straight", body: "Once a Monday-Sunday week has fully passed, its summary generates automatically — split out by project like Main or Side, with specific, honest feedback on what fell short as well as what went well. Finishing a project that week shows up here too. If you set a weekly goal on the Today tab, it'll note how well you lived up to it. The current, still-open week needs a manual tap on 'Generate Summary.'" },
       ],
       projects: [
         { demo: "projectAdd", title: "① Create a project", body: "Enter a name, pick one category (Main · Side · Growth · Other), and add it." },
@@ -622,7 +620,7 @@ const STRINGS = {
     },
     tabInfo: {
       dashboard: "See your overall progress and recent activity at a glance.",
-      today: "Add and check off today's tasks. Set a daily or weekly goal too, and unfinished tasks roll over to the next day automatically.",
+      today: "Add and check off today's tasks. Tap the 'This Week's Goal' row above the list to optionally set a weekly goal, and unfinished tasks roll over to the next day automatically.",
       memos: "Jot down and manage free-form notes. The list stays compact; tap a note to see it full-size.",
       search: "Search tasks, notes, and projects at once.",
       archive: "Review completed tasks, and build weekly summaries of your Today tab broken down by project, from Monday to Sunday, with honest feedback on what fell short.",
@@ -1281,8 +1279,8 @@ function App() {
   const [feedbackSending, setFeedbackSending] = useState(false);
   const [feedbackToast, setFeedbackToast] = useState(null); // null | "sent" | "failed"
   const [feedbackHidden, setFeedbackHidden] = useState(false);
-  const [dailyGoals, setDailyGoals] = useState({});
   const [weeklyGoals, setWeeklyGoals] = useState({});
+  const [weeklyGoalOpen, setWeeklyGoalOpen] = useState(false);
   const [expandedMemoId, setExpandedMemoId] = useState(null);
   const [renameProjectDraft, setRenameProjectDraft] = useState("");
 
@@ -1298,13 +1296,12 @@ function App() {
   useEffect(() => {
     syncCodeRef.current = syncCode;
   }, [syncCode]);
-  const cloudDataRef = useRef({ tasks: [], projects: [], notes: {}, memos: [], weeklySummaries: {}, dailyGoals: {}, weeklyGoals: {} });
+  const cloudDataRef = useRef({ tasks: [], projects: [], notes: {}, memos: [], weeklySummaries: {}, weeklyGoals: {} });
   useEffect(() => { cloudDataRef.current.tasks = tasks; }, [tasks]);
   useEffect(() => { cloudDataRef.current.projects = projects; }, [projects]);
   useEffect(() => { cloudDataRef.current.notes = notes; }, [notes]);
   useEffect(() => { cloudDataRef.current.memos = memos; }, [memos]);
   useEffect(() => { cloudDataRef.current.weeklySummaries = weeklySummaries; }, [weeklySummaries]);
-  useEffect(() => { cloudDataRef.current.dailyGoals = dailyGoals; }, [dailyGoals]);
   useEffect(() => { cloudDataRef.current.weeklyGoals = weeklyGoals; }, [weeklyGoals]);
   const tasksRef = useRef([]);
   useEffect(() => { tasksRef.current = tasks; }, [tasks]);
@@ -1328,7 +1325,6 @@ function App() {
           notes: cloudDataRef.current.notes || {},
           memos: cloudDataRef.current.memos || [],
           weeklySummaries: cloudDataRef.current.weeklySummaries || {},
-          dailyGoals: cloudDataRef.current.dailyGoals || {},
           weeklyGoals: cloudDataRef.current.weeklyGoals || {},
           updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
@@ -1366,11 +1362,6 @@ function App() {
       try {
         const r = await window.storage.get("tracker-memos");
         if (r && r.value) mm = JSON.parse(r.value);
-      } catch (e) {}
-      let dg = {};
-      try {
-        const r = await window.storage.get("tracker-daily-goals");
-        if (r && r.value) dg = JSON.parse(r.value);
       } catch (e) {}
       let wg = {};
       try {
@@ -1414,7 +1405,6 @@ function App() {
         setNotes(nt);
         setWeeklySummaries(ws);
         setMemos(mm);
-        setDailyGoals(dg);
         setWeeklyGoals(wg);
         setLanguage(lang);
         setSyncCode(code);
@@ -1751,13 +1741,6 @@ function App() {
     } catch (e) {}
     scheduleCloudSync();
   }, [scheduleCloudSync]);
-  const saveDailyGoals = useCallback(async (next) => {
-    setDailyGoals(next);
-    try {
-      await window.storage.set("tracker-daily-goals", JSON.stringify(next));
-    } catch (e) {}
-    scheduleCloudSync();
-  }, [scheduleCloudSync]);
   const saveWeeklyGoals = useCallback(async (next) => {
     setWeeklyGoals(next);
     try {
@@ -1790,14 +1773,12 @@ function App() {
       const nextNotes = data.notes || {};
       const nextMemos = data.memos || [];
       const nextWs = data.weeklySummaries || {};
-      const nextDg = data.dailyGoals || {};
       const nextWg = data.weeklyGoals || {};
       setTasks(nextTasks);
       setProjects(nextProjects);
       setNotes(nextNotes);
       setMemos(nextMemos);
       setWeeklySummaries(nextWs);
-      setDailyGoals(nextDg);
       setWeeklyGoals(nextWg);
       setSyncCode(code);
       await window.storage.set("tracker-tasks", JSON.stringify(nextTasks));
@@ -1805,7 +1786,6 @@ function App() {
       await window.storage.set("tracker-notes", JSON.stringify(nextNotes));
       await window.storage.set("tracker-memos", JSON.stringify(nextMemos));
       await window.storage.set("tracker-weekly-summaries", JSON.stringify(nextWs));
-      await window.storage.set("tracker-daily-goals", JSON.stringify(nextDg));
       await window.storage.set("tracker-weekly-goals", JSON.stringify(nextWg));
       await window.storage.set("tracker-sync-code", code);
       setCookie("tracker-sync-code", code);
@@ -2248,12 +2228,6 @@ function App() {
   const weekMondayStr = toDateStr(getMonday(today));
   // 노트와 마찬가지로, 입력 중 끝공백까지 그대로 반영해야 타이핑 중 공백이 사라지지 않음.
   // 완전히 빈 값(공백만 남았을 때)만 아예 지움.
-  const editDailyGoal = (value) => {
-    const next = { ...dailyGoals };
-    if (value.trim()) next[todayStr] = value;
-    else delete next[todayStr];
-    saveDailyGoals(next);
-  };
   const editWeeklyGoal = (value) => {
     const next = { ...weeklyGoals };
     if (value.trim()) next[weekMondayStr] = value;
@@ -2377,10 +2351,14 @@ function App() {
       );
     });
 
+    const weekGoalText = (weeklyGoals[wKeyStr] || "").trim();
+    const goalLineKo = weekGoalText ? `이번 주 목표로 적어둔 내용: "${weekGoalText}"\n이 목표를 염두에 두고, 실제로 이번 주 결과가 이 목표에 부합했는지도 짚어줘.\n\n` : "";
+    const goalLineEn = weekGoalText ? `This week's stated goal: "${weekGoalText}"\nKeep this goal in mind and note whether this week's actual results lived up to it.\n\n` : "";
+
     const prompt = language === "ko"
       ? `다음은 ${wLabel} (월요일~일요일) 한 주간, 프로젝트별로 나눈 할 일 기록이야.
 
-${sectionsKo.join("\n\n")}
+${goalLineKo}${sectionsKo.join("\n\n")}
 
 이 내용을 바탕으로 프로젝트별로 나눠서 요약해줘. 각 프로젝트마다:
 1. 프로젝트 이름을 짧은 소제목처럼 먼저 쓰고
@@ -2390,7 +2368,7 @@ ${sectionsKo.join("\n\n")}
 프로젝트마다 2~4문장, 불릿 없이 짧은 문단으로 한국어로 써줘. 할 일이 하나도 없고 완료 소식도 없는 프로젝트는 아예 언급하지 마.`
       : `Here is this week's (Monday-Sunday, ${wLabel}) task log, broken down by project.
 
-${sectionsEn.join("\n\n")}
+${goalLineEn}${sectionsEn.join("\n\n")}
 
 Write a summary broken down by project. For each project:
 1. Start with the project name as a short heading
@@ -2691,28 +2669,6 @@ Write a summary broken down by project. For each project:
               </div>
             )}
 
-            <div style={{ border: `1px solid ${T.border}`, borderRadius: 14, padding: 12, marginBottom: 16, display: "flex", flexDirection: "column", gap: 8 }}>
-              <div>
-                <div style={{ fontSize: 10.5, color: T.textMuted, marginBottom: 3 }}>{L.dailyGoalLabel}</div>
-                <input
-                  value={dailyGoals[todayStr] || ""}
-                  onChange={(e) => editDailyGoal(e.target.value)}
-                  placeholder={L.dailyGoalPlaceholder}
-                  style={{ width: "100%", border: "none", outline: "none", fontSize: 13, color: T.text, background: "transparent", padding: 0, boxSizing: "border-box" }}
-                />
-              </div>
-              <div style={{ height: 1, background: T.rowBorder }} />
-              <div>
-                <div style={{ fontSize: 10.5, color: T.textMuted, marginBottom: 3 }}>{L.weeklyGoalLabel}</div>
-                <input
-                  value={weeklyGoals[weekMondayStr] || ""}
-                  onChange={(e) => editWeeklyGoal(e.target.value)}
-                  placeholder={L.weeklyGoalPlaceholder}
-                  style={{ width: "100%", border: "none", outline: "none", fontSize: 13, color: T.text, background: "transparent", padding: 0, boxSizing: "border-box" }}
-                />
-              </div>
-            </div>
-
             <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
               <input
                 value={newTask}
@@ -2770,6 +2726,29 @@ Write a summary broken down by project. For each project:
                 ))}
               </div>
             )}
+
+            <div style={{ border: `1px solid ${T.border}`, borderRadius: 14, marginBottom: 18, background: "#fff", overflow: "hidden" }}>
+              <button
+                onClick={() => setWeeklyGoalOpen((v) => !v)}
+                style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "10px 12px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
+              >
+                <span style={{ fontSize: 12.5, color: T.textMuted, flexShrink: 0 }}>{L.weeklyGoalLabel}</span>
+                <span style={{ fontSize: 13, color: (weeklyGoals[weekMondayStr] || "").trim() ? T.text : T.textMuted, fontStyle: (weeklyGoals[weekMondayStr] || "").trim() ? "normal" : "italic", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0, textAlign: "right" }}>
+                  {(weeklyGoals[weekMondayStr] || "").trim() || L.weeklyGoalAdd}
+                </span>
+              </button>
+              {weeklyGoalOpen && (
+                <div style={{ padding: "0 12px 12px" }}>
+                  <input
+                    value={weeklyGoals[weekMondayStr] || ""}
+                    onChange={(e) => editWeeklyGoal(e.target.value)}
+                    placeholder={L.weeklyGoalPlaceholder}
+                    autoFocus
+                    style={{ width: "100%", border: `1px solid ${T.border}`, borderRadius: 10, outline: "none", fontSize: 13, color: T.text, background: "transparent", padding: "9px 11px", boxSizing: "border-box" }}
+                  />
+                </div>
+              )}
+            </div>
 
             {todaysTasks.length === 0 && (
               <div style={{ textAlign: "center", color: T.textMuted, fontSize: 13, padding: "30px 0" }}>
