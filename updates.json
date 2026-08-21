@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.2",
+    "date": "2026-08-21",
+    "title": {
+      "ko": "목표 설정, 미완료 이월, 프로젝트별 주간 요약이 추가됐어요",
+      "en": "Goals, task rollover, and per-project weekly summaries"
+    },
+    "summary": {
+      "ko": "오늘 탭에서 오늘의 목표·이번 주 목표를 적을 수 있어요. 완료하지 못한 할 일은 다음 날로 자동으로 넘어가고 며칠째 미완료인지 표시돼요. 할 일을 꾹 누르면 연결된 프로젝트도 바로 바꿀 수 있어요. 메모는 목록에서 간단히 보이고 눌러야 크게 펼쳐져요. 프로젝트는 완료 체크를 할 수 있고, 아카이브의 주간 요약이 이제 프로젝트별로 나뉘어 잘한 점과 부족한 점을 훨씬 구체적으로 짚어줘요. 피드백 버튼은 꾹 눌러서 숨기고, 홈 버튼을 꾹 누르면 다시 나타나요.",
+      "en": "You can now set today's goal and this week's goal on the Today tab. Unfinished tasks roll over to the next day automatically with a days-overdue badge. Long-press a task to change its linked project too. Notes now show compact in the list and expand full-size on tap. Projects can be checked off as done, and Archive's weekly summaries are now split by project with much more specific, honest feedback on what went well and what didn't. Long-press the feedback button to hide it, and long-press Home to bring it back."
+    }
+  },
+  {
     "version": "1.1",
     "date": "2026-08-14",
     "title": {

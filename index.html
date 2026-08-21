@@ -341,6 +341,11 @@ const STRINGS = {
     todayAddPrompt: "오늘 할 일을 추가해보세요",
     doneOfTotal: (done, total) => `${total}개 중 ${done}개 완료`,
     addTaskPlaceholder: "오늘 할 일을 적어보세요",
+    dailyGoalLabel: "오늘의 목표",
+    dailyGoalPlaceholder: "오늘 하루 목표를 적어보세요",
+    weeklyGoalLabel: "이번 주 목표",
+    weeklyGoalPlaceholder: "이번 주 목표를 적어보세요",
+    overdueBy: (n) => `${n}일째 미완료`,
     none: "없음",
     noTasksToday: "아직 오늘 할 일이 없어요.",
     generating: "생성 중...", regenerate: "다시 생성", generateSummary: "요약 만들기",
@@ -431,23 +436,27 @@ const STRINGS = {
       today: [
         { demo: "todayAdd", title: "① 오늘 할 일 추가하기", body: "입력창에 할 일을 적고 + 버튼을 누르면 오늘 목록에 바로 추가돼요." },
         { demo: "checkOff", title: "② 완료 체크하기", body: "체크박스를 누르면 완료 표시가 되고 기록에 남아요." },
-        { demo: "holdEdit", title: "③ 꾹 눌러서 수정하기", body: "오타가 났다면 항목을 꾹 누르세요. 지우고 다시 만들 필요 없이 바로 고칠 수 있어요." },
+        { demo: null, title: "③ 오늘/이번 주 목표 적기", body: "목록 위 칸에 오늘의 목표와 이번 주 목표를 적어두고, 하루를 시작할 때마다 확인해보세요." },
+        { demo: "holdEdit", title: "④ 꾹 눌러서 수정하기", body: "오타가 났다면 항목을 꾹 누르세요. 제목은 물론 연결된 프로젝트도 그 자리에서 바로 바꿀 수 있어요." },
+        { demo: null, title: "⑤ 못 끝낸 일은 다음 날로", body: "그날 완료하지 못한 할 일은 다음 날로 자동으로 넘어가고, 며칠째 미완료인지도 항목 옆에 표시돼요." },
       ],
       memos: [
         { demo: "memoAdd", title: "① 메모 추가하기", body: "오른쪽 위 + 버튼을 누르면 새 메모 칸이 생겨요." },
-        { demo: "memoDelete", title: "② 자유롭게 적고 지우기", body: "입력하는 즉시 자동으로 저장되고, ✕를 누르면 그 메모가 삭제돼요." },
+        { demo: "memoAdd", title: "② 눌러서 크게 보기", body: "목록에서는 첫 줄과 날짜만 간단히 보이고, 메모를 누르면 크게 펼쳐져서 한눈에 볼 수 있어요. 다시 누르면 접혀요." },
+        { demo: "memoDelete", title: "③ 자유롭게 적고 지우기", body: "입력하는 즉시 자동으로 저장되고, ✕를 누르면 그 메모가 삭제돼요." },
       ],
       search: [
         { demo: "searchType", title: "① 한 번에 검색하기", body: "할 일, 메모, 프로젝트, 요약 기록을 한 번에 찾을 수 있어요. 초성만 입력해도 찾아져요 (예: 'ㅎㅇ'로 '회의' 검색)." },
       ],
       archive: [
         { demo: "checkOff", title: "① 완료한 할 일 모아보기", body: "체크 완료한 할 일들이 날짜별로 모여서 쌓여요." },
-        { demo: "archiveAuto", title: "② 주간 요약은 자동으로", body: "월요일~일요일이 다 지난 주는 자동으로 요약이 만들어져요. 이번 주처럼 아직 진행 중인 주만 '요약 만들기'를 직접 눌러주세요." },
+        { demo: "archiveAuto", title: "② 프로젝트별로 나눠서, 비판적으로", body: "월요일~일요일이 다 지난 주는 자동으로 요약이 만들어져요. 본업, 부업처럼 프로젝트별로 나눠서 잘한 점과 부족했던 점을 구체적으로 짚어주고, 프로젝트를 완료 처리하면 그 소식도 함께 담겨요. 이번 주처럼 진행 중인 주는 '요약 만들기'를 직접 눌러주세요." },
       ],
       projects: [
         { demo: "projectAdd", title: "① 프로젝트 만들기", body: "이름을 적고 카테고리(본업 · 부업 · 자기계발 · 기타) 중 하나를 골라 추가하세요." },
         { demo: "projectCategory", title: "② 오늘 탭에 자동으로 연결돼요", body: "오늘 탭에서 할 일을 추가할 때 이 프로젝트를 선택하면, 고른 카테고리 색상 태그가 그 할 일에 그대로 붙어요. 어떤 일이 본업인지 부업인지 자기계발인지 한눈에 구분할 수 있어요." },
         { demo: "holdEdit", title: "③ 이름을 꾹 눌러서 수정", body: "오타가 났다면 프로젝트 이름을 꾹 누르세요. 바로 수정할 수 있어요." },
+        { demo: "checkOff", title: "④ 완료되면 체크하기", body: "프로젝트가 끝나면 이름 앞 체크박스를 눌러 완료 표시하세요. 완료 소식은 그 주 아카이브 요약에도 함께 반영돼요." },
       ],
       calendar: [
         { demo: "calendarNav", title: "① 월 넘기기", body: "위쪽 화살표로 이전/다음 달로 이동하고, 공휴일은 자동으로 표시돼요." },
@@ -461,11 +470,11 @@ const STRINGS = {
     },
     tabInfo: {
       dashboard: "전체 진행 상황과 최근 활동을 한눈에 볼 수 있어요.",
-      today: "오늘 할 일을 적고 체크하며 관리하세요.",
-      memos: "형식 없이 자유롭게 메모를 남기고 관리하세요.",
+      today: "오늘 할 일을 적고 체크하며 관리하세요. 오늘/이번 주 목표도 함께 적을 수 있고, 못 끝낸 일은 다음 날로 자동으로 넘어가요.",
+      memos: "형식 없이 자유롭게 메모를 남기고 관리하세요. 목록에서는 간단히 보이고, 누르면 크게 볼 수 있어요.",
       search: "할 일, 메모, 프로젝트를 한 번에 검색하세요. 초성 검색도 가능해요.",
-      archive: "완료한 할 일을 모아보고, 오늘 탭 내용을 월요일~일요일 기준 한 주 단위로 요약한 기록도 만들어볼 수 있어요.",
-      projects: "프로젝트를 등록하고 카테고리별로 관리하세요.",
+      archive: "완료한 할 일을 모아보고, 오늘 탭 내용을 월요일~일요일 기준으로 프로젝트별 주간 요약을 만들어볼 수 있어요. 잘한 점과 부족했던 점을 구체적으로 짚어줘요.",
+      projects: "프로젝트를 등록하고 카테고리별로 관리하세요. 완료되면 체크 표시할 수 있어요.",
       calendar: "월별 일정과 공휴일을 확인하고, 날짜별로 메모를 남기세요.",
       plaza: "누구나 방을 만들어 다른 사람과 텍스트와 파일을 나눌 수 있는 공간이에요.\n\n· 방을 만들 때 4자리 PIN을 설정할 수 있어요 (선택사항). PIN을 설정하면 입장할 때 그 PIN이 필요하고, 비워두면 누구나 바로 입장할 수 있어요.\n· 방 하나에 최대 3명까지 들어올 수 있어요.\n· 광장에는 방을 최대 5개까지만 만들 수 있어요. 방은 자동으로 없어지지 않고, 방을 만든 사람만 삭제할 수 있어요. 5개가 다 찼다면 방장에게 정리를 부탁하세요.\n· 공유한 파일은 올린 날로부터 7일 후 자동으로 삭제돼요 (대화 내용은 남아있어요).\n· 로그인이 없는 앱이라 PIN은 화면에서만 확인하는 가벼운 수준의 보호예요. 완전한 보안이 아니니 민감한 파일은 올리지 마세요.",
     },
@@ -484,6 +493,11 @@ const STRINGS = {
     todayAddPrompt: "Add something to do today",
     doneOfTotal: (done, total) => `${done} of ${total} done`,
     addTaskPlaceholder: "What do you need to do today?",
+    dailyGoalLabel: "Today's Goal",
+    dailyGoalPlaceholder: "What's your goal for today?",
+    weeklyGoalLabel: "This Week's Goal",
+    weeklyGoalPlaceholder: "What's your goal for this week?",
+    overdueBy: (n) => `Overdue by ${n} day${n === 1 ? "" : "s"}`,
     none: "None",
     noTasksToday: "Nothing on your list yet.",
     generating: "Generating...", regenerate: "Regenerate", generateSummary: "Generate Summary",
@@ -574,23 +588,27 @@ const STRINGS = {
       today: [
         { demo: "todayAdd", title: "① Add a task", body: "Type a task in the input and tap + — it's added to today's list right away." },
         { demo: "checkOff", title: "② Check it off", body: "Tap the checkbox to mark it done. It's saved to your record." },
-        { demo: "holdEdit", title: "③ Long-press to edit", body: "Made a typo? Long-press the item to fix it instantly — no need to delete and redo it." },
+        { demo: null, title: "③ Set a daily or weekly goal", body: "Write today's goal and this week's goal in the box above your task list, and check in on them as the day goes." },
+        { demo: "holdEdit", title: "④ Long-press to edit", body: "Made a typo? Long-press the item to fix the title — or change which project it's linked to — right there." },
+        { demo: null, title: "⑤ Unfinished tasks roll over", body: "Anything left undone at day's end automatically moves to the next day, with a badge showing how many days it's been overdue." },
       ],
       memos: [
         { demo: "memoAdd", title: "① Add a note", body: "Tap the + in the top right to create a new note card." },
-        { demo: "memoDelete", title: "② Write freely, delete anytime", body: "Notes save automatically as you type. Tap ✕ to delete one." },
+        { demo: "memoAdd", title: "② Tap to open it up", body: "The list shows just the first line and date. Tap a note to expand it full-size, tap again to collapse." },
+        { demo: "memoDelete", title: "③ Write freely, delete anytime", body: "Notes save automatically as you type. Tap ✕ to delete one." },
       ],
       search: [
         { demo: "searchType", title: "① Search everything at once", body: "Find tasks, notes, projects, and summaries in one place. Choseong-only search works too for Korean text." },
       ],
       archive: [
         { demo: "checkOff", title: "① Completed tasks, all in one place", body: "Tasks you've checked off pile up here by date." },
-        { demo: "archiveAuto", title: "② Weekly summaries build themselves", body: "Once a Monday-Sunday week has fully passed, its summary generates automatically. Only the current, still-open week needs a manual tap on 'Generate Summary.'" },
+        { demo: "archiveAuto", title: "② Broken down by project, told straight", body: "Once a Monday-Sunday week has fully passed, its summary generates automatically — split out by project like Main or Side, with specific, honest feedback on what fell short as well as what went well. Finishing a project that week shows up here too. The current, still-open week needs a manual tap on 'Generate Summary.'" },
       ],
       projects: [
         { demo: "projectAdd", title: "① Create a project", body: "Enter a name, pick one category (Main · Side · Growth · Other), and add it." },
         { demo: "projectCategory", title: "② It links straight to Today", body: "Pick this project when adding a task on the Today tab, and that task gets tagged with its category color — so you can tell at a glance whether it's Main, Side, or Growth work." },
         { demo: "holdEdit", title: "③ Long-press the name to edit", body: "Made a typo? Long-press a project's name to fix it right away." },
+        { demo: "checkOff", title: "④ Check it off when it's done", body: "Tap the checkbox next to a finished project. That completion gets folded into that week's archive summary too." },
       ],
       calendar: [
         { demo: "calendarNav", title: "① Flip through months", body: "Use the arrows at the top to move between months. Holidays show up automatically." },
@@ -604,11 +622,11 @@ const STRINGS = {
     },
     tabInfo: {
       dashboard: "See your overall progress and recent activity at a glance.",
-      today: "Add and check off today's tasks.",
-      memos: "Jot down and manage free-form notes.",
+      today: "Add and check off today's tasks. Set a daily or weekly goal too, and unfinished tasks roll over to the next day automatically.",
+      memos: "Jot down and manage free-form notes. The list stays compact; tap a note to see it full-size.",
       search: "Search tasks, notes, and projects at once.",
-      archive: "Review completed tasks, and build weekly summaries of your Today tab from Monday to Sunday.",
-      projects: "Add and manage your projects by category.",
+      archive: "Review completed tasks, and build weekly summaries of your Today tab broken down by project, from Monday to Sunday, with honest feedback on what fell short.",
+      projects: "Add and manage your projects by category. Check them off when they're done.",
       calendar: "View the month's schedule and holidays, and leave notes on any date.",
       plaza: "A space where anyone can create a room to share text and files with others.\n\n· When creating a room, you can optionally set a 4-digit PIN. If you set one, that PIN is needed to enter; leave it blank and anyone can join instantly.\n· Each room holds up to 3 people.\n· Up to 5 rooms can exist in the Plaza at once. Rooms don't expire on their own — only the creator can delete one. If all 5 are taken, ask a room's creator to clear it out.\n· Shared files are automatically deleted 7 days after upload (the conversation itself stays).\n· This app has no login, so the PIN is just a light, on-screen check — not real security. Don't share anything sensitive.",
     },
@@ -1262,6 +1280,11 @@ function App() {
   const [feedbackText, setFeedbackText] = useState("");
   const [feedbackSending, setFeedbackSending] = useState(false);
   const [feedbackToast, setFeedbackToast] = useState(null); // null | "sent" | "failed"
+  const [feedbackHidden, setFeedbackHidden] = useState(false);
+  const [dailyGoals, setDailyGoals] = useState({});
+  const [weeklyGoals, setWeeklyGoals] = useState({});
+  const [expandedMemoId, setExpandedMemoId] = useState(null);
+  const [renameProjectDraft, setRenameProjectDraft] = useState("");
 
   // .app-shell 자체를 filter로 반전시켜 다크모드를 만드는데, border-radius +
   // overflow:hidden 조합에서 가장자리에 원래 흰 배경이 아주 살짝 비치는 경우가 있어서,
@@ -1275,12 +1298,20 @@ function App() {
   useEffect(() => {
     syncCodeRef.current = syncCode;
   }, [syncCode]);
-  const cloudDataRef = useRef({ tasks: [], projects: [], notes: {}, memos: [], weeklySummaries: {} });
+  const cloudDataRef = useRef({ tasks: [], projects: [], notes: {}, memos: [], weeklySummaries: {}, dailyGoals: {}, weeklyGoals: {} });
   useEffect(() => { cloudDataRef.current.tasks = tasks; }, [tasks]);
   useEffect(() => { cloudDataRef.current.projects = projects; }, [projects]);
   useEffect(() => { cloudDataRef.current.notes = notes; }, [notes]);
   useEffect(() => { cloudDataRef.current.memos = memos; }, [memos]);
   useEffect(() => { cloudDataRef.current.weeklySummaries = weeklySummaries; }, [weeklySummaries]);
+  useEffect(() => { cloudDataRef.current.dailyGoals = dailyGoals; }, [dailyGoals]);
+  useEffect(() => { cloudDataRef.current.weeklyGoals = weeklyGoals; }, [weeklyGoals]);
+  const tasksRef = useRef([]);
+  useEffect(() => { tasksRef.current = tasks; }, [tasks]);
+  const feedbackLongPressRef = useRef(null);
+  const feedbackLongPressFiredRef = useRef(false);
+  const homeLongPressRef = useRef(null);
+  const homeLongPressFiredRef = useRef(false);
   const cloudSyncTimerRef = useRef(null);
   // 로컬 저장은 즉시 하되, 클라우드 백업은 3초 동안 추가 변경이 없을 때 한 번만 보냄
   // (메모 타이핑처럼 짧은 시간에 여러 번 저장되는 경우 매번 보내지 않기 위함)
@@ -1297,6 +1328,8 @@ function App() {
           notes: cloudDataRef.current.notes || {},
           memos: cloudDataRef.current.memos || [],
           weeklySummaries: cloudDataRef.current.weeklySummaries || {},
+          dailyGoals: cloudDataRef.current.dailyGoals || {},
+          weeklyGoals: cloudDataRef.current.weeklyGoals || {},
           updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
         setBackupSavedAt(new Date());
@@ -1333,6 +1366,16 @@ function App() {
       try {
         const r = await window.storage.get("tracker-memos");
         if (r && r.value) mm = JSON.parse(r.value);
+      } catch (e) {}
+      let dg = {};
+      try {
+        const r = await window.storage.get("tracker-daily-goals");
+        if (r && r.value) dg = JSON.parse(r.value);
+      } catch (e) {}
+      let wg = {};
+      try {
+        const r = await window.storage.get("tracker-weekly-goals");
+        if (r && r.value) wg = JSON.parse(r.value);
       } catch (e) {}
       let lang = "ko";
       try {
@@ -1371,6 +1414,8 @@ function App() {
         setNotes(nt);
         setWeeklySummaries(ws);
         setMemos(mm);
+        setDailyGoals(dg);
+        setWeeklyGoals(wg);
         setLanguage(lang);
         setSyncCode(code);
         setDarkMode(dark);
@@ -1706,6 +1751,20 @@ function App() {
     } catch (e) {}
     scheduleCloudSync();
   }, [scheduleCloudSync]);
+  const saveDailyGoals = useCallback(async (next) => {
+    setDailyGoals(next);
+    try {
+      await window.storage.set("tracker-daily-goals", JSON.stringify(next));
+    } catch (e) {}
+    scheduleCloudSync();
+  }, [scheduleCloudSync]);
+  const saveWeeklyGoals = useCallback(async (next) => {
+    setWeeklyGoals(next);
+    try {
+      await window.storage.set("tracker-weekly-goals", JSON.stringify(next));
+    } catch (e) {}
+    scheduleCloudSync();
+  }, [scheduleCloudSync]);
 
   const requestRestore = () => {
     const code = restoreCodeDraft.trim();
@@ -1731,17 +1790,23 @@ function App() {
       const nextNotes = data.notes || {};
       const nextMemos = data.memos || [];
       const nextWs = data.weeklySummaries || {};
+      const nextDg = data.dailyGoals || {};
+      const nextWg = data.weeklyGoals || {};
       setTasks(nextTasks);
       setProjects(nextProjects);
       setNotes(nextNotes);
       setMemos(nextMemos);
       setWeeklySummaries(nextWs);
+      setDailyGoals(nextDg);
+      setWeeklyGoals(nextWg);
       setSyncCode(code);
       await window.storage.set("tracker-tasks", JSON.stringify(nextTasks));
       await window.storage.set("tracker-projects", JSON.stringify(nextProjects));
       await window.storage.set("tracker-notes", JSON.stringify(nextNotes));
       await window.storage.set("tracker-memos", JSON.stringify(nextMemos));
       await window.storage.set("tracker-weekly-summaries", JSON.stringify(nextWs));
+      await window.storage.set("tracker-daily-goals", JSON.stringify(nextDg));
+      await window.storage.set("tracker-weekly-goals", JSON.stringify(nextWg));
       await window.storage.set("tracker-sync-code", code);
       setCookie("tracker-sync-code", code);
       setRestoreStatus(L.restoreSuccess);
@@ -1764,7 +1829,7 @@ function App() {
       const closedWeeks = new Set();
       tasks.forEach((t) => {
         if (!t.date) return;
-        const wkStart = toDateStr(getMonday(new Date(t.date + "T00:00:00")));
+        const wkStart = toDateStr(getMonday(new Date((t.originalDate || t.date) + "T00:00:00")));
         if (wkStart < currentMonday) closedWeeks.add(wkStart);
       });
       const missing = Array.from(closedWeeks)
@@ -1782,6 +1847,24 @@ function App() {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, tasks]);
+
+  // 그 날 완료 못 한 할 일은 오늘 날짜로 자동으로 넘어옴 (원래 마감일은 originalDate에 그대로 남겨서
+  // "며칠째 미완료"인지 계산하고, 주간 요약의 지각 판정에도 원래 마감일을 계속 씀).
+  // todayStr이 바뀔 때마다(자정을 넘겨서 다시 렌더링될 때마다) 다시 확인함.
+  useEffect(() => {
+    if (!ready) return;
+    const current = tasksRef.current;
+    let changed = false;
+    const next = current.map((t) => {
+      if (!t.done && t.date < todayStr) {
+        changed = true;
+        return { ...t, originalDate: t.originalDate || t.date, date: todayStr };
+      }
+      return t;
+    });
+    if (changed) saveTasks(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, todayStr]);
 
   if (!ready) {
     return (
@@ -1810,6 +1893,7 @@ function App() {
       projectId: newTaskProj || null,
       done: false,
       date: todayStr,
+      originalDate: todayStr,
     };
     saveTasks([t, ...tasks]);
     setNewTask("");
@@ -1903,13 +1987,21 @@ function App() {
   const deleteProject = (id) => {
     setConfirmDeleteProjectId(id);
   };
+  const toggleProjectDone = (id) => {
+    saveProjects(projects.map((p) => {
+      if (p.id !== id) return p;
+      const done = !p.done;
+      return { ...p, done, completedAt: done ? new Date().toISOString() : null };
+    }));
+  };
   const confirmDeleteProject = () => {
     saveProjects(projects.filter((p) => p.id !== confirmDeleteProjectId));
     setConfirmDeleteProjectId(null);
   };
-  const openRename = (type, id, value) => {
+  const openRename = (type, id, value, projectId) => {
     setRenameTarget({ type, id });
     setRenameDraft(value);
+    setRenameProjectDraft(projectId || "");
   };
   const saveRename = async () => {
     if (!renameTarget) return;
@@ -1919,7 +2011,7 @@ function App() {
       return;
     }
     if (renameTarget.type === "task") {
-      saveTasks(tasks.map((t) => (t.id === renameTarget.id ? { ...t, title: value } : t)));
+      saveTasks(tasks.map((t) => (t.id === renameTarget.id ? { ...t, title: value, projectId: renameProjectDraft || null } : t)));
     } else if (renameTarget.type === "project") {
       saveProjects(projects.map((p) => (p.id === renameTarget.id ? { ...p, name: value } : p)));
     } else if (renameTarget.type === "room") {
@@ -1935,6 +2027,7 @@ function App() {
   const addMemo = () => {
     const m = { id: "m-" + Date.now(), text: "", createdAt: new Date().toISOString() };
     saveMemos([m, ...memos]);
+    setExpandedMemoId(m.id);
   };
   const updateMemo = (id, text) => {
     saveMemos(memos.map((m) => (m.id === id ? { ...m, text } : m)));
@@ -1962,6 +2055,46 @@ function App() {
     try {
       window.storage.set("tracker-dark-mode", next ? "1" : "0");
     } catch (e) {}
+  };
+
+  // 피드백 버튼 꾹 누르면 숨기고, 홈 버튼을 꾹 누르면 다시 보이게 함.
+  // 짧게 누르는 원래 클릭(피드백 열기/닫기, 홈 이동)과 겹치지 않도록
+  // 롱프레스가 실제로 발동했을 때만 뒤따르는 클릭을 무시함.
+  const startFeedbackLongPress = () => {
+    feedbackLongPressFiredRef.current = false;
+    feedbackLongPressRef.current = setTimeout(() => {
+      feedbackLongPressFiredRef.current = true;
+      setFeedbackHidden(true);
+      setFeedbackOpen(false);
+    }, 500);
+  };
+  const cancelFeedbackLongPress = () => {
+    if (feedbackLongPressRef.current) clearTimeout(feedbackLongPressRef.current);
+  };
+  const handleFeedbackClick = () => {
+    if (feedbackLongPressFiredRef.current) {
+      feedbackLongPressFiredRef.current = false;
+      return;
+    }
+    setFeedbackOpen((v) => !v);
+  };
+
+  const startHomeLongPress = () => {
+    homeLongPressFiredRef.current = false;
+    homeLongPressRef.current = setTimeout(() => {
+      homeLongPressFiredRef.current = true;
+      setFeedbackHidden(false);
+    }, 500);
+  };
+  const cancelHomeLongPress = () => {
+    if (homeLongPressRef.current) clearTimeout(homeLongPressRef.current);
+  };
+  const handleHomeClick = () => {
+    if (homeLongPressFiredRef.current) {
+      homeLongPressFiredRef.current = false;
+      return;
+    }
+    goHome();
   };
 
   // 개발자 피드백 - 사용자↔개발자 단방향 채널. 원문은 저장하지 않고 요약만 전달한다.
@@ -2112,6 +2245,22 @@ function App() {
     saveNotes(next);
   };
 
+  const weekMondayStr = toDateStr(getMonday(today));
+  // 노트와 마찬가지로, 입력 중 끝공백까지 그대로 반영해야 타이핑 중 공백이 사라지지 않음.
+  // 완전히 빈 값(공백만 남았을 때)만 아예 지움.
+  const editDailyGoal = (value) => {
+    const next = { ...dailyGoals };
+    if (value.trim()) next[todayStr] = value;
+    else delete next[todayStr];
+    saveDailyGoals(next);
+  };
+  const editWeeklyGoal = (value) => {
+    const next = { ...weeklyGoals };
+    if (value.trim()) next[weekMondayStr] = value;
+    else delete next[weekMondayStr];
+    saveWeeklyGoals(next);
+  };
+
   const todayLabel = fmtDate(today, { month: "long", day: "numeric", weekday: language === "ko" ? "short" : "long" });
 
   // ---- 주간 탭 계산 ----
@@ -2155,7 +2304,7 @@ function App() {
   // 완료 시점 기준 평가: 마감일 당일 완료 = 잘한 점, 1~2일 늦음 = 미흡,
   // 3일 이상 늦었거나 3일 넘도록 미완료 = 많이 부족, 그 외 아직 기한 안 지난 미완료 = 진행 중
   function taskDelayCategory(t, refDate) {
-    const due = new Date(t.date + "T00:00:00");
+    const due = new Date((t.originalDate || t.date) + "T00:00:00");
     if (t.done) {
       if (!t.completedAt) return "onTime";
       const completed = new Date(t.completedAt);
@@ -2172,64 +2321,83 @@ function App() {
   const generateSummaryForWeek = async (weekStartDate) => {
     const wDates = Array.from({ length: 7 }, (_, i) => addDays(weekStartDate, i));
     const wKeyStr = toDateStr(weekStartDate);
+    const wEndStr = toDateStr(wDates[6]);
     const wLabel = language === "ko"
       ? `${weekStartDate.getMonth() + 1}/${weekStartDate.getDate()} - ${wDates[6].getMonth() + 1}/${wDates[6].getDate()}`
       : `${fmtDate(weekStartDate, { month: "short", day: "numeric" })} – ${fmtDate(wDates[6], { month: "short", day: "numeric" })}`;
-    const weekTasks = tasks.filter((t) => wDates.some((d) => toDateStr(d) === t.date));
+    // 원래 마감일(originalDate) 기준으로 그 주에 속하는지 판단 - 다음날로 넘어간 할 일도
+    // 원래 속했던 주의 요약에서 계속 다뤄지도록 함
+    const weekTasks = tasks.filter((t) => wDates.some((d) => toDateStr(d) === (t.originalDate || t.date)));
     const refDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const nameFor = (t) => {
-      const proj = t.projectId ? projectMap[t.projectId] : null;
-      return proj ? `${t.title} (${proj.name})` : t.title;
-    };
-    const onTime = [], late = [], veryLate = [], stillOpen = [];
+
+    // 프로젝트별로 묶기 (미분류 포함), 할 일이 없어도 이번 주에 완료 처리된 프로젝트는 포함
+    const groups = {};
     weekTasks.forEach((t) => {
-      const cat = taskDelayCategory(t, refDate);
-      if (cat === "onTime") onTime.push(nameFor(t));
-      else if (cat === "late") late.push(nameFor(t));
-      else if (cat === "veryLate") veryLate.push(nameFor(t));
-      else stillOpen.push(nameFor(t));
+      const key = t.projectId || "__unassigned__";
+      if (!groups[key]) {
+        groups[key] = { name: t.projectId ? ((projectMap[t.projectId] && projectMap[t.projectId].name) || L.unassigned) : L.unassigned, tasks: [] };
+      }
+      groups[key].tasks.push(t);
     });
+    projects.forEach((p) => {
+      if (!p.completedAt) return;
+      const cDay = toDateStr(new Date(p.completedAt));
+      if (cDay >= wKeyStr && cDay <= wEndStr && !groups[p.id]) {
+        groups[p.id] = { name: p.name, tasks: [] };
+      }
+    });
+
     const fmt = (list, none) => (list.length ? list.map((s) => "- " + s).join("\n") : none);
+    const sectionsKo = [];
+    const sectionsEn = [];
+    Object.entries(groups).forEach(([key, g]) => {
+      const onTime = [], late = [], veryLate = [], stillOpen = [];
+      g.tasks.forEach((t) => {
+        const cat = taskDelayCategory(t, refDate);
+        if (cat === "onTime") onTime.push(t.title);
+        else if (cat === "late") late.push(t.title);
+        else if (cat === "veryLate") veryLate.push(t.title);
+        else stillOpen.push(t.title);
+      });
+      const proj = key !== "__unassigned__" ? projectMap[key] : null;
+      const completedThisWeek = !!(proj && proj.completedAt && toDateStr(new Date(proj.completedAt)) >= wKeyStr && toDateStr(new Date(proj.completedAt)) <= wEndStr);
+      sectionsKo.push(
+        `[프로젝트: ${g.name}]${completedThisWeek ? " - 이번 주에 완료(종료)됨" : ""}\n` +
+        `잘한 점 (제때 완료): ${fmt(onTime, "없음")}\n` +
+        `미흡 (1~2일 늦게 완료): ${fmt(late, "없음")}\n` +
+        `많이 부족 (3일 이상 늦었거나 여전히 미완료): ${fmt(veryLate, "없음")}\n` +
+        `진행 중 (아직 기한 안 지남): ${fmt(stillOpen, "없음")}`
+      );
+      sectionsEn.push(
+        `[Project: ${g.name}]${completedThisWeek ? " - completed/closed this week" : ""}\n` +
+        `Did well (on time): ${fmt(onTime, "none")}\n` +
+        `Lacking (1-2 days late): ${fmt(late, "none")}\n` +
+        `Seriously lacking (3+ days late or still open): ${fmt(veryLate, "none")}\n` +
+        `In progress (due date not passed): ${fmt(stillOpen, "none")}`
+      );
+    });
 
     const prompt = language === "ko"
-      ? `다음은 ${wLabel} (월요일~일요일) 한 주간의 할 일 기록이야. 평가 기준은 이래:
-- 마감일 당일에 완료: 잘한 점
-- 마감일보다 1~2일 늦게 완료: 미흡
-- 마감일보다 3일 이상 늦게 완료됐거나, 3일 이상 지나도록 아직 완료 못 함: 많이 부족
-- 아직 기한이 3일 안 지났고 미완료: 진행 중 (평가에서 감점하지 말 것)
+      ? `다음은 ${wLabel} (월요일~일요일) 한 주간, 프로젝트별로 나눈 할 일 기록이야.
 
-잘한 점 (제때 완료):
-${fmt(onTime, "(없음)")}
+${sectionsKo.join("\n\n")}
 
-미흡 (1~2일 늦게 완료):
-${fmt(late, "(없음)")}
+이 내용을 바탕으로 프로젝트별로 나눠서 요약해줘. 각 프로젝트마다:
+1. 프로젝트 이름을 짧은 소제목처럼 먼저 쓰고
+2. 잘한 점은 인정해주되 과장하지 말고
+3. 부족했던 점은 절대 두루뭉술하게 넘어가지 말 것 - 어떤 일이 얼마나 늦었는지, 왜 부족했는지 구체적으로 콕 짚어서 비판적으로 지적해줘. 잘못한 게 있으면 확실하게 짚고 넘어가는 게 이 요약의 핵심이야.
+4. 그 프로젝트가 이번 주에 완료(종료)됐다면 짧게 축하 한마디 추가
+프로젝트마다 2~4문장, 불릿 없이 짧은 문단으로 한국어로 써줘. 할 일이 하나도 없고 완료 소식도 없는 프로젝트는 아예 언급하지 마.`
+      : `Here is this week's (Monday-Sunday, ${wLabel}) task log, broken down by project.
 
-많이 부족 (3일 이상 늦었거나 여전히 미완료):
-${fmt(veryLate, "(없음)")}
+${sectionsEn.join("\n\n")}
 
-진행 중 (아직 기한 안 지남):
-${fmt(stillOpen, "(없음)")}
-
-이 내용을 바탕으로 이번 주에 잘한 점과 부족했던 점을 구분해서 4~6줄로 담백하게 한국어로 요약해줘. 위 분류를 자연스럽게 반영해서 쓰고, 불릿 없이 짧은 문단으로 써줘.`
-      : `Here is this week's (Monday-Sunday, ${wLabel}) task log. The grading rule is:
-- Completed on its due date: did well
-- Completed 1-2 days after the due date: lacking
-- Completed 3+ days late, or still not done 3+ days past the due date: seriously lacking
-- Due date hasn't passed 3 days yet and still open: in progress (don't penalize this)
-
-Did well (completed on time):
-${fmt(onTime, "(none)")}
-
-Lacking (completed 1-2 days late):
-${fmt(late, "(none)")}
-
-Seriously lacking (3+ days late or still incomplete):
-${fmt(veryLate, "(none)")}
-
-In progress (due date not passed yet):
-${fmt(stillOpen, "(none)")}
-
-Write a plain, natural 4-6 sentence summary in English distinguishing what went well from what fell short this week, reflecting the categories above. Short paragraph, no bullet points.`;
+Write a summary broken down by project. For each project:
+1. Start with the project name as a short heading
+2. Acknowledge what went well, but don't overpraise
+3. Never gloss over shortcomings - call out specifically which items were late and why they fell short. Being honest and specific about what went wrong is the whole point of this summary.
+4. If the project was completed/closed this week, add a short congratulatory note
+2-4 sentences per project, short paragraphs, no bullet points, in English. Skip any project with no tasks and no completion news this week.`;
 
     if (!GEMINI_API_KEY || GEMINI_API_KEY.indexOf("여기에") !== -1) {
       return {
@@ -2286,7 +2454,19 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, position: "relative" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <button
-              onClick={goHome}
+              onClick={handleHomeClick}
+              onMouseDown={startHomeLongPress}
+              onMouseUp={cancelHomeLongPress}
+              onMouseLeave={cancelHomeLongPress}
+              onTouchStart={startHomeLongPress}
+              onTouchMove={cancelHomeLongPress}
+              onTouchEnd={cancelHomeLongPress}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                cancelHomeLongPress();
+                homeLongPressFiredRef.current = false;
+                setFeedbackHidden(false);
+              }}
               style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 30, height: 30, border: "none", borderRadius: 12, background: T.accentLight, color: T.accentStrong, cursor: "pointer", padding: 0, flexShrink: 0 }}
             >
               <TabIcon name="home" size={16} />
@@ -2511,6 +2691,28 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               </div>
             )}
 
+            <div style={{ border: `1px solid ${T.border}`, borderRadius: 14, padding: 12, marginBottom: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+              <div>
+                <div style={{ fontSize: 10.5, color: T.textMuted, marginBottom: 3 }}>{L.dailyGoalLabel}</div>
+                <input
+                  value={dailyGoals[todayStr] || ""}
+                  onChange={(e) => editDailyGoal(e.target.value)}
+                  placeholder={L.dailyGoalPlaceholder}
+                  style={{ width: "100%", border: "none", outline: "none", fontSize: 13, color: T.text, background: "transparent", padding: 0, boxSizing: "border-box" }}
+                />
+              </div>
+              <div style={{ height: 1, background: T.rowBorder }} />
+              <div>
+                <div style={{ fontSize: 10.5, color: T.textMuted, marginBottom: 3 }}>{L.weeklyGoalLabel}</div>
+                <input
+                  value={weeklyGoals[weekMondayStr] || ""}
+                  onChange={(e) => editWeeklyGoal(e.target.value)}
+                  placeholder={L.weeklyGoalPlaceholder}
+                  style={{ width: "100%", border: "none", outline: "none", fontSize: 13, color: T.text, background: "transparent", padding: 0, boxSizing: "border-box" }}
+                />
+              </div>
+            </div>
+
             <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
               <input
                 value={newTask}
@@ -2591,7 +2793,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     <Checkbox done={t.done} onClick={() => toggleTask(t.id)} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div
-                        {...longPressHandlers(() => openRename("task", t.id, t.title))}
+                        {...longPressHandlers(() => openRename("task", t.id, t.title, t.projectId))}
                         style={{
                           fontSize: 14,
                           color: t.done ? T.textMuted : T.text,
@@ -2603,7 +2805,14 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                       >
                         {t.title}
                       </div>
-                      <ProjectTag projectId={t.projectId} />
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                        <ProjectTag projectId={t.projectId} />
+                        {t.originalDate && t.originalDate < t.date && (
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 4, fontSize: 11, color: T.warn, background: T.holidayBg, borderRadius: 8, padding: "2px 7px" }}>
+                            {L.overdueBy(Math.round((new Date(t.date) - new Date(t.originalDate)) / 86400000))}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <button
                       onClick={() => openReminder(t.id)}
@@ -2655,35 +2864,57 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
               </div>
             )}
 
-            {memos.map((m) => (
-              <div key={m.id} style={{ border: `1px solid ${T.border}`, borderRadius: 16, padding: 12, marginBottom: 10, background: "#fff" }}>
-                <textarea
-                  value={m.text}
-                  onChange={(e) => updateMemo(m.id, e.target.value)}
-                  placeholder={L.memoPlaceholder}
-                  rows={3}
-                  style={{
-                    width: "100%",
-                    border: "none",
-                    outline: "none",
-                    resize: "vertical",
-                    fontSize: 13.5,
-                    color: T.text,
-                    fontFamily: "inherit",
-                    boxSizing: "border-box",
-                    background: "transparent",
-                  }}
-                />
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 6, paddingTop: 8, borderTop: `1px solid ${T.rowBorder}` }}>
-                  <span style={{ fontSize: 10.5, color: T.textMuted }}>
-                    {fmtDate(new Date(m.createdAt), { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
-                  </span>
-                  <button onClick={() => deleteMemo(m.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 2 , fontSize: 16 }}>
-                    ✕
+            {memos.map((m) => {
+              const isOpen = expandedMemoId === m.id;
+              const firstLine = (m.text || "").split("\n")[0].trim();
+              return (
+                <div key={m.id} style={{ border: `1px solid ${T.border}`, borderRadius: 16, marginBottom: 10, background: "#fff", overflow: "hidden" }}>
+                  <button
+                    onClick={() => setExpandedMemoId(isOpen ? null : m.id)}
+                    style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", gap: 10, padding: 12, background: "none", border: "none", cursor: "pointer", textAlign: "left" }}
+                  >
+                    <span style={{ fontSize: 13.5, color: firstLine ? T.text : T.textMuted, fontStyle: firstLine ? "normal" : "italic", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0 }}>
+                      {firstLine || L.emptyMemo}
+                    </span>
+                    <span style={{ fontSize: 10.5, color: T.textMuted, flexShrink: 0 }}>
+                      {fmtDate(new Date(m.createdAt), { month: "short", day: "numeric" })}
+                    </span>
                   </button>
+                  {isOpen && (
+                    <div style={{ padding: "0 12px 12px" }}>
+                      <textarea
+                        value={m.text}
+                        onChange={(e) => updateMemo(m.id, e.target.value)}
+                        placeholder={L.memoPlaceholder}
+                        rows={8}
+                        autoFocus
+                        style={{
+                          width: "100%",
+                          border: `1px solid ${T.border}`,
+                          borderRadius: 12,
+                          padding: 10,
+                          outline: "none",
+                          resize: "vertical",
+                          fontSize: 13.5,
+                          color: T.text,
+                          fontFamily: "inherit",
+                          boxSizing: "border-box",
+                          background: "transparent",
+                        }}
+                      />
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
+                        <span style={{ fontSize: 10.5, color: T.textMuted }}>
+                          {fmtDate(new Date(m.createdAt), { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                        <button onClick={() => deleteMemo(m.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 2, fontSize: 16 }}>
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -2778,7 +3009,7 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                       {matchedMemos.map((m) => (
                         <button
                           key={m.id}
-                          onClick={() => setTab("memos")}
+                          onClick={() => { setTab("memos"); setExpandedMemoId(m.id); }}
                           style={{ display: "block", width: "100%", textAlign: "left", border: `1px solid ${T.border}`, borderRadius: 16, padding: 12, marginBottom: 8, background: "#fff", cursor: "pointer" }}
                         >
                           <div style={{ fontSize: 13, color: T.text, whiteSpace: "pre-wrap", wordBreak: "break-word", maxHeight: 60, overflow: "hidden" }}>
@@ -2999,13 +3230,14 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                     <div key={p.id} style={{ background: "#fff", padding: 14, borderBottom: idx < projects.length - 1 ? `1px solid ${T.rowBorder}` : "none" }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+                          <Checkbox done={!!p.done} onClick={() => toggleProjectDone(p.id)} />
                           <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, padding: "2px 8px", borderRadius: 8, background: T.chipBg, color: T.chipText, flexShrink: 0 }}>
                             <Dot color={cs.dot} />
                             {catLabel(p.category)}
                           </span>
                           <span
                             {...longPressHandlers(() => openRename("project", p.id, p.name))}
-                            style={{ fontSize: 14.5, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", userSelect: "none", WebkitTouchCallout: "none" }}
+                            style={{ fontSize: 14.5, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", userSelect: "none", WebkitTouchCallout: "none", color: p.done ? T.textMuted : T.text, textDecoration: p.done ? "line-through" : "none" }}
                           >
                             {p.name}
                           </span>
@@ -3497,8 +3729,25 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
                 if (e.key === "Enter") saveRename();
               }}
               autoFocus
-              style={{ width: "100%", height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: "0 12px", fontSize: 13.5, outline: "none", color: T.text, marginBottom: 14 }}
+              style={{ width: "100%", height: 40, boxSizing: "border-box", border: `1px solid ${T.border}`, borderRadius: 12, padding: "0 12px", fontSize: 13.5, outline: "none", color: T.text, marginBottom: renameTarget.type === "task" && projects.length > 0 ? 10 : 14 }}
             />
+            {renameTarget.type === "task" && projects.length > 0 && (
+              <div style={{ display: "flex", gap: 6, overflowX: "auto", marginBottom: 14, paddingBottom: 2 }}>
+                <button onClick={() => setRenameProjectDraft("")} style={chipStyle(renameProjectDraft === "")}>
+                  {L.none}
+                </button>
+                {projects.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => setRenameProjectDraft(p.id)}
+                    style={chipStyle(renameProjectDraft === p.id)}
+                  >
+                    <Dot color={CATEGORY_STYLES[p.category].dot} />
+                    {p.name}
+                  </button>
+                ))}
+              </div>
+            )}
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 onClick={() => setRenameTarget(null)}
@@ -3784,30 +4033,45 @@ Write a plain, natural 4-6 sentence summary in English distinguishing what went 
         </div>
       )}
 
-      <button
-        onClick={() => setFeedbackOpen((v) => !v)}
-        style={{
-          position: "fixed",
-          bottom: "calc(env(safe-area-inset-bottom) + 118px)",
-          right: "max(calc(12.5vw - 22px), calc(50vw - 179.5px))",
-          width: 44,
-          height: 44,
-          borderRadius: "50%",
-          border: "none",
-          background: T.accent,
-          color: "#fff",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.18)",
-          zIndex: 40,
-        }}
-      >
-        <ChatIcon size={20} />
-      </button>
+      {!feedbackHidden && (
+        <button
+          onClick={handleFeedbackClick}
+          onMouseDown={startFeedbackLongPress}
+          onMouseUp={cancelFeedbackLongPress}
+          onMouseLeave={cancelFeedbackLongPress}
+          onTouchStart={startFeedbackLongPress}
+          onTouchMove={cancelFeedbackLongPress}
+          onTouchEnd={cancelFeedbackLongPress}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            cancelFeedbackLongPress();
+            feedbackLongPressFiredRef.current = false;
+            setFeedbackHidden(true);
+            setFeedbackOpen(false);
+          }}
+          style={{
+            position: "fixed",
+            bottom: "calc(env(safe-area-inset-bottom) + 118px)",
+            right: "max(calc(12.5vw - 22px), calc(50vw - 179.5px))",
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            border: "none",
+            background: T.accent,
+            color: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.18)",
+            zIndex: 40,
+          }}
+        >
+          <ChatIcon size={20} />
+        </button>
+      )}
 
-      {feedbackOpen && (
+      {feedbackOpen && !feedbackHidden && (
         <div
           style={{
             position: "fixed",
