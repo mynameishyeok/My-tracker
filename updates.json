@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.7",
+    "date": "2026-09-06",
+    "title": {
+      "ko": "쇼츠에 확대 아이콘이 생겼어요",
+      "en": "A fullscreen icon for Shorts"
+    },
+    "summary": {
+      "ko": "두 번 탭이 눈에 안 띄는 것 같아서, 영상 우측 하단에 확대 아이콘을 만들었어요. 한 번 누르면 크게 보이고, 크게 본 화면에서도 같은 자리에 축소 아이콘이 있어요 (두 번 탭도 여전히 똑같이 동작해요). 그리고 재생할 때 옆이나 아래에 보이던 검은 선도 없앴어요 — 유튜브 재생창이 실제로는 고정 크기로 만들어져서 박스에 꽉 안 맞았던 게 원인이었어요.",
+      "en": "Since double-tap wasn't very discoverable, added an expand icon to the bottom-right corner of each video. One tap goes fullscreen, and the fullscreen view has a matching shrink icon in the same spot (double-tap still works too, as a shortcut). Also fixed the stray black line that showed up around playing videos — turned out YouTube's player was rendering at a fixed pixel size instead of filling its box."
+    }
+  },
+  {
     "version": "1.6",
     "date": "2026-09-06",
     "title": {
