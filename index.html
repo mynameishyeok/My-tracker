@@ -330,7 +330,7 @@ const STRINGS = {
   ko: {
     loading: "불러오는 중...",
     dashboard: "대시보드", today: "목표", projects: "프로젝트",
-    calendar: "캘린더", memos: "메모", search: "검색", archive: "아카이브", plaza: "광장",
+    calendar: "캘린더", memos: "메모", search: "검색", archive: "아카이브", plaza: "광장", videos: "볼거리",
     statProjects: "전체 프로젝트", statTasks: "전체 할 일", statCompletion: "전체 완료율", statToday: "오늘 완료",
     overallProgress: "전체 진행률",
     noTasksYet: "아직 등록된 할 일이 없어요",
@@ -345,6 +345,10 @@ const STRINGS = {
     todayTasksHeading: "오늘 할 일",
     weeklyGoalPlaceholder: "주간 목표를 작성하세요",
     noWeeklyGoals: "아직 이번 주 목표가 없어요.",
+    videoUrlPlaceholder: "유튜브/인스타그램 링크를 붙여넣으세요",
+    noVideos: "아직 저장한 링크가 없어요.",
+    openExternally: "새 창에서 열기",
+    unsupportedLink: "미리보기를 지원하지 않는 링크예요.",
     overdueBy: (n) => `${n}일째 미완료`,
     none: "없음",
     noTasksToday: "아직 오늘 할 일이 없어요.",
@@ -467,6 +471,11 @@ const STRINGS = {
         { demo: "plazaJoin", title: "② 방 입장하기", body: "자물쇠 표시가 있는 방은 PIN을 입력해야 입장할 수 있고, 없는 방은 바로 들어갈 수 있어요." },
         { demo: "holdEdit", title: "③ 제목 수정 · 파일은 7일 후 삭제", body: "방 제목도 꾹 누르면 바로 수정할 수 있고, 공유한 파일은 7일 후 자동으로 사라져요." },
       ],
+      videos: [
+        { demo: null, title: "① 링크 붙여넣기", body: "유튜브나 인스타그램 링크를 입력창에 붙여넣고 + 버튼을 누르면 목록 맨 위에 저장돼요." },
+        { demo: null, title: "② 눌러서 바로 재생", body: "유튜브는 썸네일을 누르면 그 자리에서 바로 재생돼요. 쇼츠는 세로로, 일반 영상은 가로로 나와요. 인스타그램은 저장하자마자 바로 재생 화면이 나와요." },
+        { demo: null, title: "③ 지원하지 않는 링크", body: "미리보기가 안 되는 링크는 카드로 저장되고, '새 창에서 열기' 버튼으로 볼 수 있어요." },
+      ],
     },
     tabInfo: {
       dashboard: "전체 진행 상황과 최근 활동을 한눈에 볼 수 있어요.",
@@ -477,12 +486,13 @@ const STRINGS = {
       projects: "프로젝트를 등록하고 카테고리별로 관리하세요. 완료되면 체크 표시할 수 있어요.",
       calendar: "월별 일정과 공휴일을 확인하고, 날짜별로 메모를 남기세요.",
       plaza: "누구나 방을 만들어 다른 사람과 텍스트와 파일을 나눌 수 있는 공간이에요.\n\n· 방을 만들 때 4자리 PIN을 설정할 수 있어요 (선택사항). PIN을 설정하면 입장할 때 그 PIN이 필요하고, 비워두면 누구나 바로 입장할 수 있어요.\n· 방 하나에 최대 3명까지 들어올 수 있어요.\n· 광장에는 방을 최대 5개까지만 만들 수 있어요. 방은 자동으로 없어지지 않고, 방을 만든 사람만 삭제할 수 있어요. 5개가 다 찼다면 방장에게 정리를 부탁하세요.\n· 공유한 파일은 올린 날로부터 7일 후 자동으로 삭제돼요 (대화 내용은 남아있어요).\n· 로그인이 없는 앱이라 PIN은 화면에서만 확인하는 가벼운 수준의 보호예요. 완전한 보안이 아니니 민감한 파일은 올리지 마세요.",
+      videos: "나중에 보고 싶은 유튜브(쇼츠 포함)나 인스타그램 릴스 링크를 붙여넣으면 앱 안에서 바로 재생할 수 있어요. 정리하지 않고 그냥 쌓아두고, 시간 될 때 위에서부터 하나씩 찾아보세요.\n\n· 인스타그램 임베드는 Meta 정책에 따라 동작이 달라질 수 있어요. 안 될 경우 '새 창에서 열기'로 보세요.\n· 미리보기가 안 되는 링크는 카드로만 저장되고, 새 창에서 열어서 볼 수 있어요.",
     },
   },
   en: {
     loading: "Loading...",
     dashboard: "Dashboard", today: "Goal", projects: "Projects",
-    calendar: "Calendar", memos: "Notes", search: "Search", archive: "Archive", plaza: "Plaza",
+    calendar: "Calendar", memos: "Notes", search: "Search", archive: "Archive", plaza: "Plaza", videos: "Watch",
     statProjects: "Total Projects", statTasks: "Total Tasks", statCompletion: "Completion Rate", statToday: "Today's Progress",
     overallProgress: "Overall Progress",
     noTasksYet: "No tasks yet",
@@ -497,6 +507,10 @@ const STRINGS = {
     todayTasksHeading: "Today's Tasks",
     weeklyGoalPlaceholder: "Write your weekly goal",
     noWeeklyGoals: "No goals for this week yet.",
+    videoUrlPlaceholder: "Paste a YouTube/Instagram link",
+    noVideos: "No saved links yet.",
+    openExternally: "Open externally",
+    unsupportedLink: "Preview isn't supported for this link.",
     overdueBy: (n) => `Overdue by ${n} day${n === 1 ? "" : "s"}`,
     none: "None",
     noTasksToday: "Nothing on your list yet.",
@@ -619,6 +633,11 @@ const STRINGS = {
         { demo: "plazaJoin", title: "② Join a room", body: "Rooms with a lock icon need their PIN to enter; rooms without one let you in instantly." },
         { demo: "holdEdit", title: "③ Rename it, files auto-expire", body: "Long-press a room's title to rename it. Shared files disappear automatically after 7 days." },
       ],
+      videos: [
+        { demo: null, title: "① Paste a link", body: "Paste a YouTube or Instagram link into the input and tap + — it's saved to the top of the list." },
+        { demo: null, title: "② Tap to play", body: "For YouTube, tap the thumbnail to play it right there — Shorts play vertically, regular videos horizontally. Instagram links show a playable embed as soon as you save them." },
+        { demo: null, title: "③ Unsupported links", body: "A link that can't be previewed is still saved as a card — use the 'Open externally' button to view it." },
+      ],
     },
     tabInfo: {
       dashboard: "See your overall progress and recent activity at a glance.",
@@ -629,6 +648,7 @@ const STRINGS = {
       projects: "Add and manage your projects by category. Check them off when they're done.",
       calendar: "View the month's schedule and holidays, and leave notes on any date.",
       plaza: "A space where anyone can create a room to share text and files with others.\n\n· When creating a room, you can optionally set a 4-digit PIN. If you set one, that PIN is needed to enter; leave it blank and anyone can join instantly.\n· Each room holds up to 3 people.\n· Up to 5 rooms can exist in the Plaza at once. Rooms don't expire on their own — only the creator can delete one. If all 5 are taken, ask a room's creator to clear it out.\n· Shared files are automatically deleted 7 days after upload (the conversation itself stays).\n· This app has no login, so the PIN is just a light, on-screen check — not real security. Don't share anything sensitive.",
+      videos: "Paste a YouTube (Shorts included) or Instagram Reels link you want to watch later, and play it right inside the app. Don't bother organizing — just let them pile up and work through them from the top whenever you have time.\n\n· Instagram embeds depend on Meta's policy and may stop working — use 'Open externally' if one breaks.\n· A link that can't be previewed is still saved as a card, openable in a new tab.",
     },
   },
 };
@@ -636,6 +656,7 @@ const STRINGS = {
 const NAV_PAGES = [
   ["dashboard", "today", "projects", "calendar"],
   ["memos", "search", "archive", "plaza"],
+  ["videos"],
 ];
 
 const FIXED_HOLIDAYS = [
@@ -741,6 +762,12 @@ const NAV_ICONS = {
     </React.Fragment>
   ),
   home: <path d="M4 11.8 L12 5 L20 11.8 L18 11.8 L18 20 L6 20 L6 11.8 Z" fill="currentColor" />,
+  videos: (
+    <React.Fragment>
+      <rect x="3" y="5.5" width="18" height="13" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M10.2 9.3 L15 12 L10.2 14.7 Z" fill="currentColor" />
+    </React.Fragment>
+  ),
 };
 function TabIcon({ name, size }) {
   return (
@@ -1155,6 +1182,16 @@ function matchesSearch(target, query) {
   }
   return false;
 }
+// 붙여넣은 링크가 유튜브/인스타그램인지 판별하고, 임베드에 필요한 ID를 뽑아냄.
+// 인식 못한 링크는 kind:"other"로 남겨서 "새 창에서 열기" 카드로 대체 표시함.
+function parseVideoUrl(url) {
+  const u = (url || "").trim();
+  const yt = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{6,})/);
+  if (yt) return { kind: "youtube", embedId: yt[1], vertical: /\/shorts\//.test(u) };
+  const ig = u.match(/instagram\.com\/(?:reel|reels|p|tv)\/([a-zA-Z0-9_-]+)/);
+  if (ig) return { kind: "instagram", embedId: ig[1], vertical: true };
+  return { kind: "other", embedId: null, vertical: false };
+}
 function chipStyle(selected) {
   return {
     padding: "6px 12px",
@@ -1283,6 +1320,9 @@ function App() {
   const [feedbackToast, setFeedbackToast] = useState(null); // null | "sent" | "failed"
   const [feedbackHidden, setFeedbackHidden] = useState(false);
   const [weeklyGoals, setWeeklyGoals] = useState([]);
+  const [savedVideos, setSavedVideos] = useState([]);
+  const [newVideoUrl, setNewVideoUrl] = useState("");
+  const [playingVideoId, setPlayingVideoId] = useState(null);
   const [expandedMemoId, setExpandedMemoId] = useState(null);
   const [renameProjectDraft, setRenameProjectDraft] = useState("");
 
@@ -1298,13 +1338,14 @@ function App() {
   useEffect(() => {
     syncCodeRef.current = syncCode;
   }, [syncCode]);
-  const cloudDataRef = useRef({ tasks: [], projects: [], notes: {}, memos: [], weeklySummaries: {}, weeklyGoals: [] });
+  const cloudDataRef = useRef({ tasks: [], projects: [], notes: {}, memos: [], weeklySummaries: {}, weeklyGoals: [], savedVideos: [] });
   useEffect(() => { cloudDataRef.current.tasks = tasks; }, [tasks]);
   useEffect(() => { cloudDataRef.current.projects = projects; }, [projects]);
   useEffect(() => { cloudDataRef.current.notes = notes; }, [notes]);
   useEffect(() => { cloudDataRef.current.memos = memos; }, [memos]);
   useEffect(() => { cloudDataRef.current.weeklySummaries = weeklySummaries; }, [weeklySummaries]);
   useEffect(() => { cloudDataRef.current.weeklyGoals = weeklyGoals; }, [weeklyGoals]);
+  useEffect(() => { cloudDataRef.current.savedVideos = savedVideos; }, [savedVideos]);
   const tasksRef = useRef([]);
   useEffect(() => { tasksRef.current = tasks; }, [tasks]);
   const feedbackLongPressRef = useRef(null);
@@ -1328,6 +1369,7 @@ function App() {
           memos: cloudDataRef.current.memos || [],
           weeklySummaries: cloudDataRef.current.weeklySummaries || {},
           weeklyGoals: cloudDataRef.current.weeklyGoals || [],
+          savedVideos: cloudDataRef.current.savedVideos || [],
           updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
         setBackupSavedAt(new Date());
@@ -1373,6 +1415,14 @@ function App() {
           if (Array.isArray(parsed)) wg = parsed;
         }
       } catch (e) {}
+      let sv = [];
+      try {
+        const r = await window.storage.get("tracker-saved-videos");
+        if (r && r.value) {
+          const parsed = JSON.parse(r.value);
+          if (Array.isArray(parsed)) sv = parsed;
+        }
+      } catch (e) {}
       let lang = "ko";
       try {
         const r = await window.storage.get("tracker-language");
@@ -1411,6 +1461,7 @@ function App() {
         setWeeklySummaries(ws);
         setMemos(mm);
         setWeeklyGoals(wg);
+        setSavedVideos(sv);
         setLanguage(lang);
         setSyncCode(code);
         setDarkMode(dark);
@@ -1753,6 +1804,13 @@ function App() {
     } catch (e) {}
     scheduleCloudSync();
   }, [scheduleCloudSync]);
+  const saveSavedVideos = useCallback(async (next) => {
+    setSavedVideos(next);
+    try {
+      await window.storage.set("tracker-saved-videos", JSON.stringify(next));
+    } catch (e) {}
+    scheduleCloudSync();
+  }, [scheduleCloudSync]);
 
   const requestRestore = () => {
     const code = restoreCodeDraft.trim();
@@ -1779,12 +1837,14 @@ function App() {
       const nextMemos = data.memos || [];
       const nextWs = data.weeklySummaries || {};
       const nextWg = Array.isArray(data.weeklyGoals) ? data.weeklyGoals : [];
+      const nextSv = Array.isArray(data.savedVideos) ? data.savedVideos : [];
       setTasks(nextTasks);
       setProjects(nextProjects);
       setNotes(nextNotes);
       setMemos(nextMemos);
       setWeeklySummaries(nextWs);
       setWeeklyGoals(nextWg);
+      setSavedVideos(nextSv);
       setSyncCode(code);
       await window.storage.set("tracker-tasks", JSON.stringify(nextTasks));
       await window.storage.set("tracker-projects", JSON.stringify(nextProjects));
@@ -1792,6 +1852,7 @@ function App() {
       await window.storage.set("tracker-memos", JSON.stringify(nextMemos));
       await window.storage.set("tracker-weekly-summaries", JSON.stringify(nextWs));
       await window.storage.set("tracker-weekly-goals", JSON.stringify(nextWg));
+      await window.storage.set("tracker-saved-videos", JSON.stringify(nextSv));
       await window.storage.set("tracker-sync-code", code);
       setCookie("tracker-sync-code", code);
       setRestoreStatus(L.restoreSuccess);
@@ -1922,6 +1983,18 @@ function App() {
   };
   const deleteWeeklyGoal = (id) => {
     saveWeeklyGoals(weeklyGoals.filter((g) => g.id !== id));
+  };
+  const addSavedVideo = () => {
+    const url = newVideoUrl.trim();
+    if (!url) return;
+    const { kind, embedId, vertical } = parseVideoUrl(url);
+    const v = { id: "v-" + Date.now(), url, kind, embedId, vertical, addedAt: new Date().toISOString() };
+    saveSavedVideos([v, ...savedVideos]);
+    setNewVideoUrl("");
+  };
+  const deleteSavedVideo = (id) => {
+    if (playingVideoId === id) setPlayingVideoId(null);
+    saveSavedVideos(savedVideos.filter((v) => v.id !== id));
   };
   const ensureFcmToken = async () => {
     if (fcmToken) return fcmToken;
@@ -3547,6 +3620,107 @@ Write a summary broken down by project. For each project:
                 {plazaError && <div style={{ fontSize: 11.5, color: T.warn, marginTop: 6 }}>{plazaError}</div>}
               </div>
             )}
+          </div>
+        )}
+
+        {tab === "videos" && (
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 16 }}>{L.videos}</div>
+
+            <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
+              <input
+                value={newVideoUrl}
+                onChange={(e) => setNewVideoUrl(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") addSavedVideo();
+                }}
+                placeholder={L.videoUrlPlaceholder}
+                style={{
+                  flex: 1,
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 12,
+                  padding: "11px 14px",
+                  fontSize: 14,
+                  outline: "none",
+                  background: "#fff",
+                  minWidth: 0,
+                  color: T.text,
+                }}
+              />
+              <button
+                onClick={addSavedVideo}
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: 12,
+                  background: T.accent,
+                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                  color: "#fff",
+                }}
+              >
+                <PlusIcon size={18} />
+              </button>
+            </div>
+
+            {savedVideos.length === 0 && (
+              <div style={{ textAlign: "center", color: T.textMuted, fontSize: 13, padding: "30px 0" }}>
+                {L.noVideos}
+              </div>
+            )}
+
+            {savedVideos.map((v) => (
+              <div key={v.id} style={{ border: `1px solid ${T.border}`, borderRadius: 16, marginBottom: 14, overflow: "hidden", background: "#fff" }}>
+                {v.kind === "youtube" && (
+                  playingVideoId === v.id ? (
+                    <div style={{ position: "relative", width: v.vertical ? "60%" : "100%", margin: v.vertical ? "0 auto" : 0, aspectRatio: v.vertical ? "9/16" : "16/9", background: "#000" }}>
+                      <iframe
+                        src={`https://www.youtube.com/embed/${v.embedId}?autoplay=1`}
+                        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setPlayingVideoId(v.id)}
+                      style={{ position: "relative", width: v.vertical ? "60%" : "100%", margin: v.vertical ? "0 auto" : 0, display: "block", aspectRatio: v.vertical ? "9/16" : "16/9", background: "#000", border: "none", cursor: "pointer", padding: 0 }}
+                    >
+                      <img src={`https://i.ytimg.com/vi/${v.embedId}/hqdefault.jpg`} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                      <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 52, height: 52, borderRadius: "50%", background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M9 6.5 L18 12 L9 17.5 Z" fill="#fff" /></svg>
+                      </span>
+                    </button>
+                  )
+                )}
+                {v.kind === "instagram" && (
+                  <iframe
+                    src={`https://www.instagram.com/reel/${v.embedId}/embed`}
+                    style={{ width: "100%", height: 480, border: "none", display: "block" }}
+                    scrolling="no"
+                  />
+                )}
+                {v.kind === "other" && (
+                  <div style={{ padding: 14 }}>
+                    <div style={{ fontSize: 13, color: T.textMuted, marginBottom: 8 }}>{L.unsupportedLink}</div>
+                    <div style={{ fontSize: 12.5, color: T.text, wordBreak: "break-all", marginBottom: 10 }}>{v.url}</div>
+                    <a href={v.url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", fontSize: 12.5, padding: "7px 12px", borderRadius: 10, border: `1px solid ${T.border}`, color: T.text, textDecoration: "none" }}>
+                      {L.openExternally}
+                    </a>
+                  </div>
+                )}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px" }}>
+                  <span style={{ fontSize: 10.5, color: T.textMuted }}>{fmtDate(new Date(v.addedAt), { month: "short", day: "numeric" })}</span>
+                  <button onClick={() => deleteSavedVideo(v.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0, fontSize: 16 }}>
+                    ✕
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
