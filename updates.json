@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.6",
+    "date": "2026-09-06",
+    "title": {
+      "ko": "'쇼츠' 탭이 더 똑똑해졌어요",
+      "en": "The Shorts tab got smarter"
+    },
+    "summary": {
+      "ko": "'볼거리' 탭 이름을 '쇼츠'로 바꿨어요. 영상 아래를 두 번 탭하면 화면 가득 크게 볼 수 있고, 다시 두 번 탭하면 원래 크기로 돌아와요. 크게 보는 중엔 오른쪽/왼쪽으로 스와이프해서 다음/이전 영상으로 넘어갈 수 있어요. 주제는 직접 입력하는 대신 요리·운동·유머·정보·기타 5개 중에서 고르는 방식으로 바뀌었고, 태그는 영상 구석에 작게만 표시돼요. 유튜브 영상이 삭제되거나 비공개로 바뀌면 재생 시도 시 자동으로 목록에서 지워지고, 재생 화면 주변에 생기던 검은 선도 없앴어요.",
+      "en": "Renamed the 'Watch' tab to 'Shorts'. Double-tap below a video to view it full-screen, and double-tap again to shrink it back. While full-screen, swipe right or left to move to the next or previous video. Topics are now picked from 5 fixed categories (Cooking, Fitness, Comedy, Info, Other) instead of free typing, and the tag now shows as a small label in the corner instead of a full row. A YouTube video that gets deleted or turns private is now automatically removed from your list the next time you try to play it, and we fixed a stray black line that used to appear around playing videos."
+    }
+  },
+  {
     "version": "1.5",
     "date": "2026-09-06",
     "title": {
