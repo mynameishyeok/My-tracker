@@ -358,10 +358,10 @@ const STRINGS = {
     noSummaryYet: "아직 만든 요약이 없어요.",
     memosEmpty: "오른쪽 위 + 버튼을 눌러 메모를 추가해보세요.",
     memoPlaceholder: "아무거나 적어보세요...",
-    searchPlaceholder: "할 일, 메모, 프로젝트 검색 (초성 검색 가능)",
+    searchPlaceholder: "할 일, 메모, 프로젝트, 볼거리 검색 (초성 검색 가능)",
     searchPrompt: "검색어를 입력해보세요.",
     noResults: "일치하는 결과가 없어요.",
-    resultsTasks: "할 일", resultsMemos: "메모", resultsProjects: "프로젝트", resultsSummaries: "주간 요약",
+    resultsTasks: "할 일", resultsMemos: "메모", resultsProjects: "프로젝트", resultsSummaries: "주간 요약", resultsVideos: "볼거리",
     emptyMemo: "(빈 메모)",
     weeklySummaryHistory: "주간 요약 기록",
     noSummariesArchive: "아직 만들어진 주간 요약이 없어요.",
@@ -452,7 +452,7 @@ const STRINGS = {
         { demo: "memoDelete", title: "③ 자유롭게 적고 지우기", body: "입력하는 즉시 자동으로 저장되고, ✕를 누르면 그 메모가 삭제돼요." },
       ],
       search: [
-        { demo: "searchType", title: "① 한 번에 검색하기", body: "할 일, 메모, 프로젝트, 요약 기록을 한 번에 찾을 수 있어요. 초성만 입력해도 찾아져요 (예: 'ㅎㅇ'로 '회의' 검색)." },
+        { demo: "searchType", title: "① 한 번에 검색하기", body: "할 일, 메모, 프로젝트, 요약 기록은 물론 볼거리에 저장한 링크도 주제나 링크 주소로 한 번에 찾을 수 있어요. 초성만 입력해도 찾아져요 (예: 'ㅎㅇ'로 '회의' 검색). 볼거리 결과를 누르면 바로 그 영상이 재생돼요." },
       ],
       archive: [
         { demo: "checkOff", title: "① 완료한 할 일 모아보기", body: "체크 완료한 할 일들이 날짜별로 모여서 쌓여요." },
@@ -484,7 +484,7 @@ const STRINGS = {
       dashboard: "전체 진행 상황과 최근 활동을 한눈에 볼 수 있어요.",
       today: "'이번 주 목표'와 '오늘 할 일'을 같은 방식으로 추가하고 체크하며 관리하세요. 프로젝트 선택 칩은 둘 다에 공통으로 쓰여요. 못 끝낸 일은 다음 날로 자동으로 넘어가요.",
       memos: "형식 없이 자유롭게 메모를 남기고 관리하세요. 목록에서는 간단히 보이고, 누르면 크게 볼 수 있어요.",
-      search: "할 일, 메모, 프로젝트를 한 번에 검색하세요. 초성 검색도 가능해요.",
+      search: "할 일, 메모, 프로젝트, 볼거리(주제·링크)를 한 번에 검색하세요. 초성 검색도 가능해요.",
       archive: "완료한 할 일을 모아보고, 목표 탭 내용을 월요일~일요일 기준으로 프로젝트별 주간 요약을 만들어볼 수 있어요. 잘한 점과 부족했던 점, 이번 주 목표 달성 여부까지 구체적으로 짚어줘요.",
       projects: "프로젝트를 등록하고 카테고리별로 관리하세요. 완료되면 체크 표시할 수 있어요.",
       calendar: "월별 일정과 공휴일을 확인하고, 날짜별로 메모를 남기세요.",
@@ -523,10 +523,10 @@ const STRINGS = {
     noSummaryYet: "No summary yet.",
     memosEmpty: "Tap + in the top right to add a note.",
     memoPlaceholder: "Jot down anything...",
-    searchPlaceholder: "Search tasks, notes, and projects",
+    searchPlaceholder: "Search tasks, notes, projects, Watch",
     searchPrompt: "Start typing to search.",
     noResults: "No matches found.",
-    resultsTasks: "Tasks", resultsMemos: "Notes", resultsProjects: "Projects", resultsSummaries: "Weekly Summaries",
+    resultsTasks: "Tasks", resultsMemos: "Notes", resultsProjects: "Projects", resultsSummaries: "Weekly Summaries", resultsVideos: "Watch",
     emptyMemo: "(Empty note)",
     weeklySummaryHistory: "Weekly Summary History",
     noSummariesArchive: "No weekly summaries yet.",
@@ -617,7 +617,7 @@ const STRINGS = {
         { demo: "memoDelete", title: "③ Write freely, delete anytime", body: "Notes save automatically as you type. Tap ✕ to delete one." },
       ],
       search: [
-        { demo: "searchType", title: "① Search everything at once", body: "Find tasks, notes, projects, and summaries in one place. Choseong-only search works too for Korean text." },
+        { demo: "searchType", title: "① Search everything at once", body: "Find tasks, notes, projects, and summaries, plus saved Watch links by topic or URL, all in one place. Choseong-only search works too for Korean text. Tap a Watch result to jump straight to it and start playing." },
       ],
       archive: [
         { demo: "checkOff", title: "① Completed tasks, all in one place", body: "Tasks you've checked off pile up here by date." },
@@ -649,7 +649,7 @@ const STRINGS = {
       dashboard: "See your overall progress and recent activity at a glance.",
       today: "Add and check off 'This Week's Goals' and 'Today's Tasks' the same way, using one shared project chip selector for both. Unfinished tasks roll over to the next day automatically.",
       memos: "Jot down and manage free-form notes. The list stays compact; tap a note to see it full-size.",
-      search: "Search tasks, notes, and projects at once.",
+      search: "Search tasks, notes, projects, and Watch links (by topic or URL) all at once.",
       archive: "Review completed tasks, and build weekly summaries of your Goal tab broken down by project, from Monday to Sunday, with honest feedback on what fell short and whether that week's goals were achieved.",
       projects: "Add and manage your projects by category. Check them off when they're done.",
       calendar: "View the month's schedule and holidays, and leave notes on any date.",
@@ -3120,7 +3120,8 @@ Write a summary broken down by project. For each project:
               const matchedMemos = memos.filter((m) => matchesSearch(m.text, searchQuery));
               const matchedProjects = projects.filter((p) => matchesSearch(p.name, searchQuery));
               const matchedSummaries = archivedSummaries.filter((s) => matchesSearch(s.text, searchQuery));
-              const noResults = matchedTasks.length === 0 && matchedMemos.length === 0 && matchedProjects.length === 0 && matchedSummaries.length === 0;
+              const matchedVideos = savedVideos.filter((v) => matchesSearch(v.topic, searchQuery) || matchesSearch(v.url, searchQuery));
+              const noResults = matchedTasks.length === 0 && matchedMemos.length === 0 && matchedProjects.length === 0 && matchedSummaries.length === 0 && matchedVideos.length === 0;
               return (
                 <div>
                   {noResults && (
@@ -3225,6 +3226,30 @@ Write a summary broken down by project. For each project:
                             <span style={{ fontSize: 10.5, color: T.textMuted, marginLeft: "auto" }}>{formatWeekRangeLabel(s.weekStart)}</span>
                           </div>
                           <div style={{ fontSize: 12.5, color: T.text, lineHeight: 1.5, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{s.text}</div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {matchedVideos.length > 0 && (
+                    <div style={{ marginBottom: 18 }}>
+                      <div style={{ fontSize: 11.5, fontWeight: 600, color: T.textSecondary, marginBottom: 6 }}>{L.resultsVideos} ({matchedVideos.length})</div>
+                      {matchedVideos.map((v) => (
+                        <button
+                          key={v.id}
+                          onClick={() => {
+                            setTab("videos");
+                            setActiveTopic("");
+                            if (v.kind === "youtube") setPlayingVideoId(v.id);
+                          }}
+                          style={{ display: "flex", width: "100%", alignItems: "center", gap: 8, textAlign: "left", border: `1px solid ${T.border}`, borderRadius: 16, padding: 12, marginBottom: 8, background: "#fff", cursor: "pointer" }}
+                        >
+                          {v.topic && (
+                            <span style={{ fontSize: 11, color: T.chipText, background: T.chipBg, borderRadius: 8, padding: "2px 7px", flexShrink: 0 }}>
+                              {v.topic}
+                            </span>
+                          )}
+                          <span style={{ fontSize: 12.5, color: T.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{v.url}</span>
                         </button>
                       ))}
                     </div>
