@@ -349,6 +349,8 @@ const STRINGS = {
     noVideos: "아직 저장한 링크가 없어요.",
     openExternally: "새 창에서 열기",
     unsupportedLink: "미리보기를 지원하지 않는 링크예요.",
+    allTopics: "전체",
+    newTopicPlaceholder: "+ 새 주제",
     overdueBy: (n) => `${n}일째 미완료`,
     none: "없음",
     noTasksToday: "아직 오늘 할 일이 없어요.",
@@ -475,6 +477,7 @@ const STRINGS = {
         { demo: null, title: "① 링크 붙여넣기", body: "유튜브나 인스타그램 링크를 입력창에 붙여넣고 + 버튼을 누르면 목록 맨 위에 저장돼요." },
         { demo: null, title: "② 눌러서 바로 재생", body: "유튜브는 썸네일을 누르면 그 자리에서 바로 재생돼요. 쇼츠는 세로로, 일반 영상은 가로로 나와요. 인스타그램은 저장하자마자 바로 재생 화면이 나와요." },
         { demo: null, title: "③ 지원하지 않는 링크", body: "미리보기가 안 되는 링크는 카드로 저장되고, '새 창에서 열기' 버튼으로 볼 수 있어요." },
+        { demo: null, title: "④ 주제별로 정리하기", body: "맨 위 칩 목록에서 주제를 고르거나 '+ 새 주제'에 새로 적으면, 그 다음부터 저장하는 링크가 그 주제로 태그돼요. 주제 칩을 누르면 그 주제로 저장한 링크만 모아볼 수 있어요. '전체'를 누르면 다시 다 보여요. 안 골라도 되고, 재생하는 방식은 그대로예요." },
       ],
     },
     tabInfo: {
@@ -486,7 +489,7 @@ const STRINGS = {
       projects: "프로젝트를 등록하고 카테고리별로 관리하세요. 완료되면 체크 표시할 수 있어요.",
       calendar: "월별 일정과 공휴일을 확인하고, 날짜별로 메모를 남기세요.",
       plaza: "누구나 방을 만들어 다른 사람과 텍스트와 파일을 나눌 수 있는 공간이에요.\n\n· 방을 만들 때 4자리 PIN을 설정할 수 있어요 (선택사항). PIN을 설정하면 입장할 때 그 PIN이 필요하고, 비워두면 누구나 바로 입장할 수 있어요.\n· 방 하나에 최대 3명까지 들어올 수 있어요.\n· 광장에는 방을 최대 5개까지만 만들 수 있어요. 방은 자동으로 없어지지 않고, 방을 만든 사람만 삭제할 수 있어요. 5개가 다 찼다면 방장에게 정리를 부탁하세요.\n· 공유한 파일은 올린 날로부터 7일 후 자동으로 삭제돼요 (대화 내용은 남아있어요).\n· 로그인이 없는 앱이라 PIN은 화면에서만 확인하는 가벼운 수준의 보호예요. 완전한 보안이 아니니 민감한 파일은 올리지 마세요.",
-      videos: "나중에 보고 싶은 유튜브(쇼츠 포함)나 인스타그램 릴스 링크를 붙여넣으면 앱 안에서 바로 재생할 수 있어요. 정리하지 않고 그냥 쌓아두고, 시간 될 때 위에서부터 하나씩 찾아보세요.\n\n· 인스타그램 임베드는 Meta 정책에 따라 동작이 달라질 수 있어요. 안 될 경우 '새 창에서 열기'로 보세요.\n· 미리보기가 안 되는 링크는 카드로만 저장되고, 새 창에서 열어서 볼 수 있어요.",
+      videos: "나중에 보고 싶은 유튜브(쇼츠 포함)나 인스타그램 릴스 링크를 붙여넣으면 앱 안에서 바로 재생할 수 있어요. 맨 위 주제 칩으로 원하면 주제별로 정리해서 모아볼 수도 있고, 안 골라도 그냥 쌓아두고 볼 수 있어요.\n\n· 인스타그램 임베드는 Meta 정책에 따라 동작이 달라질 수 있어요. 안 될 경우 '새 창에서 열기'로 보세요.\n· 미리보기가 안 되는 링크는 카드로만 저장되고, 새 창에서 열어서 볼 수 있어요.",
     },
   },
   en: {
@@ -511,6 +514,8 @@ const STRINGS = {
     noVideos: "No saved links yet.",
     openExternally: "Open externally",
     unsupportedLink: "Preview isn't supported for this link.",
+    allTopics: "All",
+    newTopicPlaceholder: "+ New topic",
     overdueBy: (n) => `Overdue by ${n} day${n === 1 ? "" : "s"}`,
     none: "None",
     noTasksToday: "Nothing on your list yet.",
@@ -637,6 +642,7 @@ const STRINGS = {
         { demo: null, title: "① Paste a link", body: "Paste a YouTube or Instagram link into the input and tap + — it's saved to the top of the list." },
         { demo: null, title: "② Tap to play", body: "For YouTube, tap the thumbnail to play it right there — Shorts play vertically, regular videos horizontally. Instagram links show a playable embed as soon as you save them." },
         { demo: null, title: "③ Unsupported links", body: "A link that can't be previewed is still saved as a card — use the 'Open externally' button to view it." },
+        { demo: null, title: "④ Organize by topic", body: "Pick a topic chip at the top, or type one into '+ New topic' — links you save from then on get tagged with it. Tap a topic chip to see only links saved under it; tap 'All' to see everything again. It's entirely optional, and doesn't change how playback works." },
       ],
     },
     tabInfo: {
@@ -648,7 +654,7 @@ const STRINGS = {
       projects: "Add and manage your projects by category. Check them off when they're done.",
       calendar: "View the month's schedule and holidays, and leave notes on any date.",
       plaza: "A space where anyone can create a room to share text and files with others.\n\n· When creating a room, you can optionally set a 4-digit PIN. If you set one, that PIN is needed to enter; leave it blank and anyone can join instantly.\n· Each room holds up to 3 people.\n· Up to 5 rooms can exist in the Plaza at once. Rooms don't expire on their own — only the creator can delete one. If all 5 are taken, ask a room's creator to clear it out.\n· Shared files are automatically deleted 7 days after upload (the conversation itself stays).\n· This app has no login, so the PIN is just a light, on-screen check — not real security. Don't share anything sensitive.",
-      videos: "Paste a YouTube (Shorts included) or Instagram Reels link you want to watch later, and play it right inside the app. Don't bother organizing — just let them pile up and work through them from the top whenever you have time.\n\n· Instagram embeds depend on Meta's policy and may stop working — use 'Open externally' if one breaks.\n· A link that can't be previewed is still saved as a card, openable in a new tab.",
+      videos: "Paste a YouTube (Shorts included) or Instagram Reels link you want to watch later, and play it right inside the app. Use the topic chips at the top if you want to sort them, or ignore them entirely and just let links pile up.\n\n· Instagram embeds depend on Meta's policy and may stop working — use 'Open externally' if one breaks.\n· A link that can't be previewed is still saved as a card, openable in a new tab.",
     },
   },
 };
@@ -1323,6 +1329,8 @@ function App() {
   const [savedVideos, setSavedVideos] = useState([]);
   const [newVideoUrl, setNewVideoUrl] = useState("");
   const [playingVideoId, setPlayingVideoId] = useState(null);
+  const [activeTopic, setActiveTopic] = useState(""); // "" = 전체, "__uncategorized__" = 미분류
+  const [newTopicDraft, setNewTopicDraft] = useState("");
   const [expandedMemoId, setExpandedMemoId] = useState(null);
   const [renameProjectDraft, setRenameProjectDraft] = useState("");
 
@@ -1988,7 +1996,8 @@ function App() {
     const url = newVideoUrl.trim();
     if (!url) return;
     const { kind, embedId, vertical } = parseVideoUrl(url);
-    const v = { id: "v-" + Date.now(), url, kind, embedId, vertical, addedAt: new Date().toISOString() };
+    const topic = activeTopic === "__uncategorized__" ? "" : activeTopic;
+    const v = { id: "v-" + Date.now(), url, kind, embedId, vertical, topic, addedAt: new Date().toISOString() };
     saveSavedVideos([v, ...savedVideos]);
     setNewVideoUrl("");
   };
@@ -2329,6 +2338,13 @@ function App() {
 
   const weekMondayStr = toDateStr(getMonday(today));
   const thisWeekGoals = weeklyGoals.filter((g) => g.weekKey === weekMondayStr);
+
+  const videoTopics = Array.from(new Set(savedVideos.map((v) => v.topic).filter(Boolean))).sort();
+  const hasUncategorizedVideo = savedVideos.some((v) => !v.topic);
+  const filteredVideos =
+    activeTopic === "" ? savedVideos
+    : activeTopic === "__uncategorized__" ? savedVideos.filter((v) => !v.topic)
+    : savedVideos.filter((v) => v.topic === activeTopic);
 
   const todayLabel = fmtDate(today, { month: "long", day: "numeric", weekday: language === "ko" ? "short" : "long" });
 
@@ -3667,13 +3683,44 @@ Write a summary broken down by project. For each project:
               </button>
             </div>
 
-            {savedVideos.length === 0 && (
+            <div style={{ display: "flex", gap: 6, overflowX: "auto", marginBottom: 18, paddingBottom: 2, alignItems: "center" }}>
+              <button onClick={() => setActiveTopic("")} style={chipStyle(activeTopic === "")}>
+                {L.allTopics}
+              </button>
+              {videoTopics.map((t) => (
+                <button key={t} onClick={() => setActiveTopic(t)} style={chipStyle(activeTopic === t)}>
+                  {t}
+                </button>
+              ))}
+              {hasUncategorizedVideo && videoTopics.length > 0 && (
+                <button onClick={() => setActiveTopic("__uncategorized__")} style={chipStyle(activeTopic === "__uncategorized__")}>
+                  {L.unassigned}
+                </button>
+              )}
+              <input
+                value={newTopicDraft}
+                onChange={(e) => setNewTopicDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    const t = newTopicDraft.trim();
+                    if (t) {
+                      setActiveTopic(t);
+                      setNewTopicDraft("");
+                    }
+                  }
+                }}
+                placeholder={L.newTopicPlaceholder}
+                style={{ flexShrink: 0, width: 96, border: `1px solid ${T.border}`, borderRadius: 10, padding: "6px 10px", fontSize: 12.5, outline: "none", background: "#fff", color: T.text }}
+              />
+            </div>
+
+            {filteredVideos.length === 0 && (
               <div style={{ textAlign: "center", color: T.textMuted, fontSize: 13, padding: "30px 0" }}>
                 {L.noVideos}
               </div>
             )}
 
-            {savedVideos.map((v) => (
+            {filteredVideos.map((v) => (
               <div key={v.id} style={{ border: `1px solid ${T.border}`, borderRadius: 16, marginBottom: 14, overflow: "hidden", background: "#fff" }}>
                 {v.kind === "youtube" && (
                   playingVideoId === v.id ? (
@@ -3714,7 +3761,14 @@ Write a summary broken down by project. For each project:
                   </div>
                 )}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px" }}>
-                  <span style={{ fontSize: 10.5, color: T.textMuted }}>{fmtDate(new Date(v.addedAt), { month: "short", day: "numeric" })}</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+                    {v.topic && (
+                      <span style={{ fontSize: 10.5, color: T.chipText, background: T.chipBg, borderRadius: 8, padding: "2px 7px", flexShrink: 0 }}>
+                        {v.topic}
+                      </span>
+                    )}
+                    <span style={{ fontSize: 10.5, color: T.textMuted, flexShrink: 0 }}>{fmtDate(new Date(v.addedAt), { month: "short", day: "numeric" })}</span>
+                  </span>
                   <button onClick={() => deleteSavedVideo(v.id)} style={{ background: "none", border: "none", color: T.textMuted, cursor: "pointer", padding: 4, flexShrink: 0, fontSize: 16 }}>
                     ✕
                   </button>
