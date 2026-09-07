@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.8",
+    "date": "2026-09-07",
+    "title": {
+      "ko": "이번 주 목표도 할 일처럼 이월돼요",
+      "en": "Weekly goals now roll over like tasks"
+    },
+    "summary": {
+      "ko": "이번 주 목표도 오늘 할 일과 똑같이 관리할 수 있어요. 그 주에 못 끝낸 목표는 사라지지 않고 다음 주로 자동으로 넘어가면서 '몇 주째 미완료'인지 표시되고, 아카이브 주간 요약에서도 원래 속했던 주 기준으로 계속 짚어줘요. 목표를 꾹 누르면 제목과 연결된 프로젝트도 바로 수정할 수 있어요. 그리고 하단 탭에서 잘 안 쓰는 '광장'을 3페이지로 옮기고, 그 자리에 '쇼츠'를 넣었어요.",
+      "en": "This Week's Goals now work just like Today's Tasks. A goal you don't finish that week no longer disappears — it automatically rolls to the next week with a badge showing how many weeks it's been overdue, and Archive's weekly summary still credits it to the week it originally belonged to. Long-press a goal to edit its title or linked project. Also moved the rarely-used Plaza tab to its own third page and put Shorts in its old spot."
+    }
+  },
+  {
     "version": "1.7",
     "date": "2026-09-06",
     "title": {
