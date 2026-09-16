@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.9",
+    "date": "2026-09-16",
+    "title": {
+      "ko": "완료된 프로젝트는 아카이브로 정리돼요",
+      "en": "Completed projects now tidy themselves into Archive"
+    },
+    "summary": {
+      "ko": "프로젝트를 완료 처리하면 프로젝트 탭에서 빠지고 아카이브의 '완료된 프로젝트'로 옮겨가요. 그 프로젝트에 남아있던 할 일과 이번 주 목표도 함께 완료 처리돼서 목표 탭에 계속 남아있지 않아요. 아카이브의 완료한 할 일 목록은 날짜별로 접혀있어서, 날짜를 눌러야 펼쳐지고 스크롤이 길게 늘어지지 않아요.",
+      "en": "Marking a project done now removes it from the Projects tab and files it under 'Completed Projects' in Archive. Any tasks or weekly goals still open under that project get completed too, so they stop lingering on the Goal tab. Archive's completed-tasks list is now collapsed by date — tap a date to expand it, instead of one long scroll."
+    }
+  },
+  {
     "version": "1.8",
     "date": "2026-09-07",
     "title": {
