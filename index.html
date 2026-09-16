@@ -1507,30 +1507,45 @@ function App() {
   useEffect(() => {
     let cancelled = false;
     async function load() {
-      let proj = null;
+      let proj = [];
       let tsk = [];
       let nt = {};
       let ws = {};
       let mm = [];
       try {
         const r = await window.storage.get("tracker-projects");
-        if (r && r.value) proj = JSON.parse(r.value);
+        if (r && r.value) {
+          const parsed = JSON.parse(r.value);
+          if (Array.isArray(parsed)) proj = parsed;
+        }
       } catch (e) {}
       try {
         const r = await window.storage.get("tracker-tasks");
-        if (r && r.value) tsk = JSON.parse(r.value);
+        if (r && r.value) {
+          const parsed = JSON.parse(r.value);
+          if (Array.isArray(parsed)) tsk = parsed;
+        }
       } catch (e) {}
       try {
         const r = await window.storage.get("tracker-notes");
-        if (r && r.value) nt = JSON.parse(r.value);
+        if (r && r.value) {
+          const parsed = JSON.parse(r.value);
+          if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) nt = parsed;
+        }
       } catch (e) {}
       try {
         const r = await window.storage.get("tracker-weekly-summaries");
-        if (r && r.value) ws = JSON.parse(r.value);
+        if (r && r.value) {
+          const parsed = JSON.parse(r.value);
+          if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) ws = parsed;
+        }
       } catch (e) {}
       try {
         const r = await window.storage.get("tracker-memos");
-        if (r && r.value) mm = JSON.parse(r.value);
+        if (r && r.value) {
+          const parsed = JSON.parse(r.value);
+          if (Array.isArray(parsed)) mm = parsed;
+        }
       } catch (e) {}
       let wg = [];
       try {
@@ -1956,11 +1971,11 @@ function App() {
         return;
       }
       const data = doc.data();
-      const nextTasks = data.tasks || [];
-      const nextProjects = data.projects || [];
-      const nextNotes = data.notes || {};
-      const nextMemos = data.memos || [];
-      const nextWs = data.weeklySummaries || {};
+      const nextTasks = Array.isArray(data.tasks) ? data.tasks : [];
+      const nextProjects = Array.isArray(data.projects) ? data.projects : [];
+      const nextNotes = data.notes && typeof data.notes === "object" && !Array.isArray(data.notes) ? data.notes : {};
+      const nextMemos = Array.isArray(data.memos) ? data.memos : [];
+      const nextWs = data.weeklySummaries && typeof data.weeklySummaries === "object" && !Array.isArray(data.weeklySummaries) ? data.weeklySummaries : {};
       const nextWg = Array.isArray(data.weeklyGoals) ? data.weeklyGoals : [];
       const nextSv = Array.isArray(data.savedVideos) ? data.savedVideos : [];
       setTasks(nextTasks);
