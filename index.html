@@ -3378,11 +3378,11 @@ Write a summary broken down by project. For each project:
                           return (
                             <button
                               key={p.id}
-                              onClick={() => setTab("projects")}
+                              onClick={() => setTab(p.done ? "archive" : "projects")}
                               style={{ display: "flex", width: "100%", alignItems: "center", gap: 8, background: "#fff", border: "none", padding: "12px 14px", borderBottom: idx < matchedProjects.length - 1 ? `1px solid ${T.rowBorder}` : "none", cursor: "pointer", textAlign: "left" }}
                             >
                               <Dot color={cs.dot} />
-                              <span style={{ fontSize: 14, fontWeight: 500 }}>{p.name}</span>
+                              <span style={{ fontSize: 14, fontWeight: 500, color: p.done ? T.textMuted : T.text, textDecoration: p.done ? "line-through" : "none" }}>{p.name}</span>
                             </button>
                           );
                         })}
@@ -3641,14 +3641,14 @@ Write a summary broken down by project. For each project:
                     <div key={p.id} style={{ background: "#fff", padding: 14, borderBottom: idx < openProjects.length - 1 ? `1px solid ${T.rowBorder}` : "none" }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                          <Checkbox done={!!p.done} onClick={() => toggleProjectDone(p.id)} />
+                          <Checkbox done={false} onClick={() => toggleProjectDone(p.id)} />
                           <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, padding: "2px 8px", borderRadius: 8, background: T.chipBg, color: T.chipText, flexShrink: 0 }}>
                             <Dot color={cs.dot} />
                             {catLabel(p.category)}
                           </span>
                           <span
                             {...longPressHandlers(() => openRename("project", p.id, p.name))}
-                            style={{ fontSize: 14.5, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", userSelect: "none", WebkitTouchCallout: "none", color: p.done ? T.textMuted : T.text, textDecoration: p.done ? "line-through" : "none" }}
+                            style={{ fontSize: 14.5, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", userSelect: "none", WebkitTouchCallout: "none", color: T.text }}
                           >
                             {p.name}
                           </span>
@@ -3969,7 +3969,7 @@ Write a summary broken down by project. For each project:
                 <div key={v.id} style={{ border: `1px solid ${T.border}`, borderRadius: 16, marginBottom: 14, overflow: "hidden", background: "#fff" }}>
                   {v.kind === "youtube" && (
                     playingVideoId === v.id ? (
-                      <div style={{ position: "relative", width: v.vertical ? "60%" : "100%", margin: v.vertical ? "0 auto" : 0, aspectRatio: v.vertical ? "9/16" : "16/9", background: "#000" }}>
+                      <div style={{ position: "relative", width: v.vertical ? "60%" : "100%", margin: v.vertical ? "0 auto" : 0, aspectRatio: v.vertical ? "9/16" : "16/9", background: "#000", filter: darkMode ? "invert(1) hue-rotate(180deg)" : "none" }}>
                         <div style={{ position: "absolute", inset: 0 }}>
                           <YouTubePlayerFrame embedId={v.embedId} onUnavailable={() => handleVideoUnavailable(v.id)} />
                         </div>
@@ -3977,7 +3977,7 @@ Write a summary broken down by project. For each project:
                         {expandBtn}
                       </div>
                     ) : (
-                      <div style={{ position: "relative", width: v.vertical ? "60%" : "100%", margin: v.vertical ? "0 auto" : 0, aspectRatio: v.vertical ? "9/16" : "16/9", background: "#000" }}>
+                      <div style={{ position: "relative", width: v.vertical ? "60%" : "100%", margin: v.vertical ? "0 auto" : 0, aspectRatio: v.vertical ? "9/16" : "16/9", background: "#000", filter: darkMode ? "invert(1) hue-rotate(180deg)" : "none" }}>
                         <button
                           onClick={() => setPlayingVideoId(v.id)}
                           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block", background: "none", border: "none", cursor: "pointer", padding: 0 }}
@@ -3993,7 +3993,7 @@ Write a summary broken down by project. For each project:
                     )
                   )}
                   {v.kind === "instagram" && (
-                    <div style={{ position: "relative", width: "100%", height: 480, background: "#000" }}>
+                    <div style={{ position: "relative", width: "100%", height: 480, background: "#000", filter: darkMode ? "invert(1) hue-rotate(180deg)" : "none" }}>
                       <iframe
                         src={`https://www.instagram.com/reel/${v.embedId}/embed`}
                         style={{ width: "100%", height: "100%", border: "none", display: "block" }}
@@ -4726,7 +4726,7 @@ Write a summary broken down by project. For each project:
             // 오른쪽으로 스와이프 = 다음 영상, 왼쪽으로 스와이프 = 이전 영상
             goFullscreenAdjacent(dx > 0 ? 1 : -1);
           }}
-          style={{ position: "fixed", inset: 0, background: "#000", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 150 }}
+          style={{ position: "fixed", inset: 0, background: "#000", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 150, filter: darkMode ? "invert(1) hue-rotate(180deg)" : "none" }}
         >
           <button
             onClick={() => setFullscreenVideoId(null)}
